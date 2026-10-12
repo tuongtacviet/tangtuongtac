@@ -237,7 +237,7 @@ function render(){
       <div class="info"><div class="name">${s.name}${s.refill?'<span class="badge">Bảo hành</span>':""}</div>
       <div class="meta">Tối thiểu ${fmt0(s.min)} · Tối đa ${fmt0(s.max)} · Mã gói #${s.id}</div></div>
       <div class="price"><div class="p">${fmt(s.price_vnd_1000)}</div><div class="u">mỗi 1.000 lượt</div></div>
-      <button class="btn" onclick="openOrder(${s.id})">Đặt đơn</button>
+      <button class="btn" onclick="openOrder('${s.id}')">Đặt đơn</button>
     </div>`).join("")}</div>`; }).join("")
   : `<p style="color:var(--muted);padding:18px 0">Không tìm thấy gói phù hợp. Thử từ khóa khác hoặc chọn lại nền tảng.</p>`;
 }
@@ -252,7 +252,7 @@ function toggleGroup(btn){
 
 let curSvc = null;
 function openOrder(id){
-  curSvc = CATALOG.find(s=>s.id===id); if(!curSvc) return;
+  curSvc = CATALOG.find(s=>String(s.id)===String(id)); if(!curSvc) return;
   $("#mSvc").textContent = curSvc.name + ` — ${fmt(curSvc.price_vnd_1000)}/1.000 lượt · tối thiểu ${fmt0(curSvc.min)}, tối đa ${fmt0(curSvc.max)}`;
   $("#mLink").value = ""; $("#mQty").value = curSvc.min || 100; $("#mErr").textContent = ""; $("#mDone").innerHTML = "";
   $("#mPay").innerHTML = CONFIG.BANK_INFO
