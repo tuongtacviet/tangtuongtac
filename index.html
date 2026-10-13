@@ -227,7 +227,6 @@ footer h4{color:var(--text);margin:12px 0 6px;font-size:15px}
       <button class="btn" id="aRegister" style="width:100%;margin-top:8px">Tạo tài khoản</button>
       <div class="orline">hoặc tiếp tục bằng</div>
       <div class="socrow">
-        <button class="socbtn fb" id="aFb">Facebook</button>
         <button class="socbtn gg" id="aGg">Google</button>
       </div>
       <p style="text-align:center;margin-top:12px;font-size:14px">Đã có tài khoản? <a href="#" id="aToLogin" style="color:var(--green)">Đăng nhập</a></p>
@@ -241,7 +240,6 @@ footer h4{color:var(--text);margin:12px 0 6px;font-size:15px}
       <button class="btn" id="aLogin" style="width:100%;margin-top:8px">Đăng nhập</button>
       <div class="orline">hoặc tiếp tục bằng</div>
       <div class="socrow">
-        <button class="socbtn fb" id="lFb">Facebook</button>
         <button class="socbtn gg" id="lGg">Google</button>
       </div>
       <p style="text-align:center;margin-top:12px;font-size:14px">Chưa có tài khoản? <a href="#" id="aToReg" style="color:var(--green)">Tạo tài khoản</a></p>
@@ -545,7 +543,7 @@ async function loadTopupHist(){
       : `<p style="color:var(--muted)">Chưa có lần nạp nào.</p>`;
   }catch(e){ box.innerHTML = `<p style="color:var(--muted)">Chưa tải được lịch sử.</p>`; }
 }
-// Nhận token sau khi đăng nhập Google/Facebook xong (Worker redirect về ?token=...)
+// Nhận token sau khi đăng nhập Google xong (Worker redirect về ?token=...)
 (function(){
   const m = location.search.match(/[?&]token=([A-Za-z0-9]+)/);
   if(m){ localStorage.setItem("ttt_token", m[1]); history.replaceState(null, "", location.pathname); }
