@@ -254,15 +254,25 @@ let curSvc = null;
 function openOrder(id){
   curSvc = CATALOG.find(s=>String(s.id)===String(id)); if(!curSvc) return;
   $("#mSvc").textContent = curSvc.name + ` — ${fmt(curSvc.price_vnd_1000)}/1.000 lượt · tối thiểu ${fmt0(curSvc.min)}, tối đa ${fmt0(curSvc.max)}`;
-  $("#mLink").value = ""; $("#mQty").value = curSvc.min || 100; $("#mErr").textContent = ""; $("#mDone").innerHTML = "";
-  $("#mPay").innerHTML = CONFIG.BANK_INFO
-    ? `Quét mã QR để chuyển khoản:<br><img src="${CONFIG.BANK_QR}" alt="Mã QR VietQR VietinBank" style="width:190px;max-width:70%;border-radius:10px;margin:10px 0;background:#fff;padding:6px"><br>Hoặc chuyển khoản thủ công: <b>${CONFIG.BANK_INFO}</b><br>Nội dung chuyển khoản: <b>mã đơn của bạn</b> (hiển thị sau khi đặt đơn thành công).`
-    : `Thông tin chuyển khoản sẽ hiển thị tại đây khi cửa hàng mở bán chính thức.` + (CONFIG.SUPPORT ? `<br>Cần hỗ trợ: ${CONFIG.SUPPORT}` : "");
+  $("#mLink").value = ""; $("#mQty").value = curSvc.min || 100; $("#mErr").textContent = ""; $("#mErr").dataset.minlock = ""; $("#mDone").innerHTML = "";
+  $("#mPay").innerHTML = `Thông tin chuyển khoản (mã QR + số tài khoản) sẽ hiện ra ngay sau khi bạn bấm <b>Đặt đơn</b>.`;
   updTotal(); $("#modal").classList.add("open");
 }
+const MIN_ORDER_VND = 10000; // đơn tối thiểu: ngân hàng không nhận chuyển khoản nhỏ hơn
+function orderTotal(){ if(!curSvc) return 0; const q = Number($("#mQty").value||0); return Math.round(curSvc.price_vnd_1000 * q / 1000); }
 function updTotal(){
-  if(!curSvc) return; const q = Number($("#mQty").value||0);
-  $("#mTotal").textContent = fmt(Math.round(curSvc.price_vnd_1000 * q / 1000));
+  if(!curSvc) return;
+  const q = Number($("#mQty").value||0), amt = orderTotal();
+  $("#mTotal").textContent = fmt(amt);
+  const need = Math.max(Math.ceil(MIN_ORDER_VND / curSvc.price_vnd_1000 * 1000), Number(curSvc.min||1));
+  const btn = $("#mSubmit");
+  if(amt < MIN_ORDER_VND){
+    btn.disabled = true; $("#mErr").dataset.minlock = "1";
+    $("#mErr").textContent = `Đơn tối thiểu ${fmt(MIN_ORDER_VND)} để chuyển khoản được (ngân hàng không nhận số tiền nhỏ hơn). Bạn tăng số lượng lên ít nhất ${need.toLocaleString("vi-VN")} nhé.`;
+  } else {
+    btn.disabled = false;
+    if($("#mErr").dataset.minlock){ $("#mErr").dataset.minlock = ""; $("#mErr").textContent = ""; }
+  }
 }
 $("#mQty")?.addEventListener("input", updTotal);
 document.addEventListener("input", e=>{ if(e.target.id==="mQty") updTotal(); });
@@ -274,6 +284,8 @@ $("#mSubmit").onclick = async ()=>{
   if(!/^https?:\/\/.+/i.test(link)){ err.textContent = "Bạn dán link cần tăng vào nhé (link phải bắt đầu bằng https://)."; return; }
   if(!q || q < Number(curSvc.min||1)){ err.textContent = `Số lượng tối thiểu của gói này là ${fmt0(curSvc.min)}.`; return; }
   if(curSvc.max && Number(curSvc.max) < 2147483647 && q > Number(curSvc.max)){ err.textContent = `Số lượng tối đa của gói này là ${fmt0(curSvc.max)}.`; return; }
+  const amt0 = orderTotal();
+  if(amt0 < MIN_ORDER_VND){ err.textContent = `Đơn tối thiểu ${fmt(MIN_ORDER_VND)} để chuyển khoản được. Bạn tăng số lượng lên giúp cửa hàng nhé.`; return; }
   err.textContent = "";
   if(!CONFIG.API_BASE){
     $("#mDone").innerHTML = `<p class="ok">Bạn đã soạn xong đơn: gói #${curSvc.id}, số lượng ${q.toLocaleString("vi-VN")}, tổng ${$("#mTotal").textContent}. Hệ thống đặt đơn tự động đang được kích hoạt — cửa hàng sẽ mở nhận đơn ngay khi hoàn tất bước này.</p>`;
@@ -281,9 +293,9 @@ $("#mSubmit").onclick = async ()=>{
   }
   const btn = $("#mSubmit"); btn.disabled = true; btn.textContent = "Đang gửi đơn...";
   try{
-    const r = await fetch(CONFIG.API_BASE + "/api/order", {method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({service: curSvc.id, link, quantity: q})});
+    const r = await fetch(CONFIG.API_BASE + "/api/order", {method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({service: curSvc.id, link, quantity: q, total: amt0})});
     const d = await r.json();
-    if(d.order){ const amt = Math.round(curSvc.price_vnd_1000 * q / 1000); const qrDyn = `https://img.vietqr.io/image/ICB-0868895144-compact.png?amount=${amt}&addInfo=${encodeURIComponent(d.order)}&accountName=DINH%20CONG%20HUY`; $("#mDone").innerHTML = `<p class="ok">Đặt đơn thành công! Mã đơn của bạn: <b>${d.order}</b>.</p><p style="margin-top:8px">Quét mã QR dưới đây để thanh toán đúng số tiền <b>${amt.toLocaleString("vi-VN")}đ</b> (nội dung chuyển khoản đã điền sẵn mã đơn):</p><img src="${qrDyn}" alt="Mã QR thanh toán kèm mã đơn" style="width:200px;max-width:75%;border-radius:10px;margin-top:8px;background:#fff;padding:6px"><p style="margin-top:8px">Đơn sẽ chạy ngay khi thanh toán được xác nhận. Lưu mã đơn <b>${d.order}</b> để tra trạng thái.</p>`; }
+    if(d.order){ const amt = Math.round(curSvc.price_vnd_1000 * q / 1000); const qrDyn = `https://img.vietqr.io/image/ICB-0868895144-compact.png?amount=${amt}&addInfo=${encodeURIComponent(d.order)}&accountName=DINH%20CONG%20HUY`; $("#mDone").innerHTML = `<p class="ok">Đặt đơn thành công! Mã đơn của bạn: <b>${d.order}</b>.</p><p style="margin-top:8px">Quét mã QR dưới đây để thanh toán đúng số tiền <b>${amt.toLocaleString("vi-VN")}đ</b> (nội dung chuyển khoản đã điền sẵn mã đơn):</p><img src="${qrDyn}" alt="Mã QR thanh toán kèm mã đơn" style="width:200px;max-width:75%;border-radius:10px;margin-top:8px;background:#fff;padding:6px"><p style="margin-top:8px">Hoặc chuyển khoản thủ công: <b>${CONFIG.BANK_INFO}</b> — nội dung chuyển khoản: <b>${d.order}</b>.</p><p style="margin-top:8px">Đơn sẽ chạy ngay khi thanh toán được xác nhận. Lưu mã đơn <b>${d.order}</b> để tra trạng thái.</p>`; }
     else { err.textContent = d.error || "Gửi đơn chưa thành công, bạn thử lại giúp cửa hàng nhé."; }
   }catch(e){ err.textContent = "Không kết nối được hệ thống đặt đơn, bạn thử lại sau ít phút nhé."; }
   btn.disabled = false; btn.textContent = "Đặt đơn";
