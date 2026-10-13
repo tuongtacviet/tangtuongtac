@@ -26,41 +26,59 @@ button:disabled{opacity:.5;cursor:default}
 <div class="wrap">
   <h1>🔧 Quản trị — duyệt nạp tiền</h1>
   <div class="card" id="gate">
-    <p class="muted">Nhập mật khẩu quản trị (ADMIN_PASS trên Worker) để xem yêu cầu nạp đang chờ.</p>
+    <p class="muted">Nhập mật khẩu quản trị (ADMIN_PASS trên Worker) để xem các ca cần xử lý.</p>
     <input id="pw" type="password" placeholder="Mật khẩu quản trị" autocomplete="off">
     <div style="margin-top:10px"><button id="go">Vào trang quản trị</button></div>
     <div class="err" id="gerr"></div>
   </div>
   <div class="card" id="panel" style="display:none">
     <div style="display:flex;justify-content:space-between;align-items:center">
-      <h2 style="margin:0">Yêu cầu nạp đang chờ</h2>
+      <h2 style="margin:0">Cần xử lý tay</h2>
       <div><button class="ghost" id="reload">Tải lại</button> <button class="ghost" id="logout">Thoát</button></div>
     </div>
+    <p class="muted" id="summary"></p>
     <div id="list"><p class="muted">Đang tải...</p></div>
+    <h2 style="margin:18px 0 0">Tiền vào không khớp mã nạp</h2>
+    <p class="muted">Các khoản tiền vào không gắn với mã nạp nào (khách ghi sai nội dung...). Đối chiếu thêm tại SePay → Giao dịch nếu cần.</p>
+    <div id="unmatched"><p class="muted">Đang tải...</p></div>
   </div>
 </div>
 <script>
 const API_BASE = "https://smm-proxy.hungcuonghnhm.workers.dev";
 const pw = ()=>sessionStorage.getItem("ttt_admin") || "";
 const fmt = n => Number(n||0).toLocaleString("vi-VN") + "đ";
+const reasonVi = r => r === "underpaid" ? "Chuyển thiếu tiền" : "Cần kiểm tra";
 async function load(){
   const box = document.getElementById("list");
+  const ubox = document.getElementById("unmatched");
+  const summary = document.getElementById("summary");
   box.innerHTML = `<p class="muted">Đang tải...</p>`;
+  ubox.innerHTML = `<p class="muted">Đang tải...</p>`;
+  summary.textContent = "";
   try{
     const r = await fetch(API_BASE + "/api/admin/topups?pass=" + encodeURIComponent(pw()));
     const d = await r.json();
-    if(d.error){ box.innerHTML = `<p class="err">${d.error}</p>`; return; }
-    const rows = d.pending || [];
+    if(d.error){ box.innerHTML = `<p class="err">${d.error}</p>`; ubox.innerHTML = ""; return; }
+    const rows = d.needs_action || [];
+    const waiting = d.waiting_count || 0;
+    summary.innerHTML = waiting
+      ? `<span class="ok">Ổn:</span> ${waiting} mã đang chờ khách chuyển tiền (tự ẩn, không cần xử lý).`
+      : `<span class="ok">Ổn:</span> không có mã nào đang chờ khách chuyển tiền.`;
     box.innerHTML = rows.length ? rows.map(t=>`
       <div class="row">
-        <div><b>${t.code}</b> · ${fmt(t.amount_vnd)}<br><span class="muted">${t.display_name || t.username || "khách"} · ${new Date(t.created_at).toLocaleString("vi-VN")}</span></div>
+        <div><b>${t.code}</b> · yêu cầu ${fmt(t.amount_vnd)} · đã nhận ${fmt(t.received_vnd)}${t.transfers > 1 ? ` (${t.transfers} lần chuyển)` : ""}<br><span class="muted" style="color:#fbbf24">${reasonVi(t.reason)}</span><br><span class="muted">${t.display_name || t.username || "khách"} · ${new Date(t.created_at).toLocaleString("vi-VN")}</span></div>
         <div style="display:flex;gap:8px">
           <button data-c="${t.code}" data-a="ok">Xác nhận đã nhận tiền</button>
           <button class="danger" data-c="${t.code}" data-a="no">Từ chối</button>
         </div>
-      </div>`).join("") : `<p class="muted">Không có yêu cầu nào đang chờ.</p>`;
+      </div>`).join("") : `<p class="muted">Không có ca nào cần xử lý. 🎉</p>`;
     box.querySelectorAll("button[data-c]").forEach(b=>b.onclick=()=>act(b.dataset.c, b.dataset.a, b));
-  }catch(e){ box.innerHTML = `<p class="err">Không kết nối được.</p>`; }
+    const um = d.unmatched || [];
+    ubox.innerHTML = um.length ? um.map(e=>`
+      <div class="row">
+        <div><b>${fmt(e.amount_vnd)}</b> · <span class="muted">${e.content || "(không có nội dung)"}</span><br><span class="muted">${new Date(e.created_at).toLocaleString("vi-VN")}</span></div>
+      </div>`).join("") : `<p class="muted">Không có khoản nào.</p>`;
+  }catch(e){ box.innerHTML = `<p class="err">Không kết nối được.</p>`; ubox.innerHTML = ""; }
 }
 async function act(code, a, btn){
   if(a === "ok" && !confirm(`Xác nhận đã nhận ${code}? Tiền sẽ cộng vào ví khách ngay.`)) return;
