@@ -528,7 +528,8 @@ $("#tCreate").onclick = async ()=>{
     const r = await api("/api/topup", {method:"POST", body:{amount_vnd: amt}});
     const d = await r.json();
     if(d.code){
-      $("#tDone").innerHTML = `<div class="qrbox"><p class="ok">Mã nạp của bạn: <b>${d.code}</b></p><p>Quét mã QR để chuyển đúng <b>${fmt(d.amount_vnd)}</b> — nội dung chuyển khoản đã điền sẵn mã nạp:</p><img src="${d.qr_url}" alt="QR nạp tiền" style="width:200px;max-width:75%;border-radius:10px;margin-top:8px;background:#fff;padding:6px"><p style="margin-top:8px">Hoặc chuyển khoản thủ công: <b>${d.bank.bank} · ${d.bank.account} · ${d.bank.name}</b> — nội dung: <b>${d.code}</b>.</p><p style="color:var(--muted);font-size:14px">Cửa hàng xác nhận sau khi nhận được tiền, số dư sẽ cộng vào ví của bạn.</p></div>`;
+      const tc = d.transfer_content || d.code;
+      $("#tDone").innerHTML = `<div class="qrbox"><p class="ok">Mã nạp của bạn: <b>${d.code}</b></p><p>Quét mã QR để chuyển đúng <b>${fmt(d.amount_vnd)}</b> — nội dung chuyển khoản đã điền sẵn, <b>giữ nguyên nội dung</b> để hệ thống tự cộng tiền:</p><img src="${d.qr_url}" alt="QR nạp tiền" style="width:200px;max-width:75%;border-radius:10px;margin-top:8px;background:#fff;padding:6px"><p style="margin-top:8px">Hoặc chuyển khoản thủ công: <b>${d.bank.bank} · ${d.bank.account} · ${d.bank.name}</b> — nội dung: <b>${tc}</b>.</p><p style="color:var(--muted);font-size:14px">Tiền vào là số dư tự cộng vào ví ngay, không cần chờ xác nhận.</p></div>`;
       loadTopupHist();
     } else err.textContent = d.error || "Tạo mã nạp chưa thành công.";
   }catch(e){ err.textContent = "Không kết nối được, bạn thử lại nhé."; }
