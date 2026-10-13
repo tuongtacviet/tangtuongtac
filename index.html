@@ -254,25 +254,14 @@ let curSvc = null;
 function openOrder(id){
   curSvc = CATALOG.find(s=>String(s.id)===String(id)); if(!curSvc) return;
   $("#mSvc").textContent = curSvc.name + ` — ${fmt(curSvc.price_vnd_1000)}/1.000 lượt · tối thiểu ${fmt0(curSvc.min)}, tối đa ${fmt0(curSvc.max)}`;
-  $("#mLink").value = ""; $("#mQty").value = curSvc.min || 100; $("#mErr").textContent = ""; $("#mErr").dataset.minlock = ""; $("#mDone").innerHTML = "";
+  $("#mLink").value = ""; $("#mQty").value = curSvc.min || 100; $("#mErr").textContent = ""; $("#mDone").innerHTML = "";
   $("#mPay").innerHTML = `Thông tin chuyển khoản (mã QR + số tài khoản) sẽ hiện ra ngay sau khi bạn bấm <b>Đặt đơn</b>.`;
   updTotal(); $("#modal").classList.add("open");
 }
-const MIN_ORDER_VND = 10000; // đơn tối thiểu: ngân hàng không nhận chuyển khoản nhỏ hơn
 function orderTotal(){ if(!curSvc) return 0; const q = Number($("#mQty").value||0); return Math.round(curSvc.price_vnd_1000 * q / 1000); }
 function updTotal(){
   if(!curSvc) return;
-  const q = Number($("#mQty").value||0), amt = orderTotal();
-  $("#mTotal").textContent = fmt(amt);
-  const need = Math.max(Math.ceil(MIN_ORDER_VND / curSvc.price_vnd_1000 * 1000), Number(curSvc.min||1));
-  const btn = $("#mSubmit");
-  if(amt < MIN_ORDER_VND){
-    btn.disabled = true; $("#mErr").dataset.minlock = "1";
-    $("#mErr").textContent = `Đơn tối thiểu ${fmt(MIN_ORDER_VND)} để chuyển khoản được (ngân hàng không nhận số tiền nhỏ hơn). Bạn tăng số lượng lên ít nhất ${need.toLocaleString("vi-VN")} nhé.`;
-  } else {
-    btn.disabled = false;
-    if($("#mErr").dataset.minlock){ $("#mErr").dataset.minlock = ""; $("#mErr").textContent = ""; }
-  }
+  $("#mTotal").textContent = fmt(orderTotal());
 }
 $("#mQty")?.addEventListener("input", updTotal);
 document.addEventListener("input", e=>{ if(e.target.id==="mQty") updTotal(); });
@@ -285,7 +274,6 @@ $("#mSubmit").onclick = async ()=>{
   if(!q || q < Number(curSvc.min||1)){ err.textContent = `Số lượng tối thiểu của gói này là ${fmt0(curSvc.min)}.`; return; }
   if(curSvc.max && Number(curSvc.max) < 2147483647 && q > Number(curSvc.max)){ err.textContent = `Số lượng tối đa của gói này là ${fmt0(curSvc.max)}.`; return; }
   const amt0 = orderTotal();
-  if(amt0 < MIN_ORDER_VND){ err.textContent = `Đơn tối thiểu ${fmt(MIN_ORDER_VND)} để chuyển khoản được. Bạn tăng số lượng lên giúp cửa hàng nhé.`; return; }
   err.textContent = "";
   if(!CONFIG.API_BASE){
     $("#mDone").innerHTML = `<p class="ok">Bạn đã soạn xong đơn: gói #${curSvc.id}, số lượng ${q.toLocaleString("vi-VN")}, tổng ${$("#mTotal").textContent}. Hệ thống đặt đơn tự động đang được kích hoạt — cửa hàng sẽ mở nhận đơn ngay khi hoàn tất bước này.</p>`;
