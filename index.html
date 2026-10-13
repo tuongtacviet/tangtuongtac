@@ -88,12 +88,34 @@ footer h4{color:var(--text);margin:12px 0 6px;font-size:15px}
 .sheet .notice{margin:12px 0 2px;padding:12px 14px}
 .sheet .notice h3{font-size:15px}
 .sheet .notice li{font-size:13.8px;padding:2.5px 0}
+.acctbar{display:flex;align-items:center;gap:8px;margin-left:auto;flex-wrap:wrap}
+.abtn{border:1px solid var(--line);background:#0f172a;color:#e2e8f0;border-radius:10px;padding:8px 14px;font-weight:700;cursor:pointer;font-size:14px}
+.abtn:hover{border-color:var(--green)}
+.abtn.primary{background:var(--green);border-color:var(--green);color:#052e16}
+.abal{font-weight:800;color:var(--green);font-size:15px}
+.nudge{border:1px dashed var(--green);border-radius:12px;padding:14px;margin-top:12px;background:rgba(34,197,94,.07)}
+.nudge p{margin:0 0 10px}
+.amodal input{width:100%;box-sizing:border-box;background:#0f172a;border:1px solid var(--line);color:#e2e8f0;border-radius:10px;padding:10px 12px;margin:6px 0 4px;font-size:15px}
+.socrow{display:flex;gap:10px;margin-top:10px}
+.socbtn{flex:1;display:flex;align-items:center;justify-content:center;gap:8px;border:1px solid var(--line);background:#fff;color:#111;border-radius:10px;padding:10px;font-weight:700;cursor:pointer;font-size:14px}
+.socbtn.fb{background:#1877F2;border-color:#1877F2;color:#fff}
+.socbtn.gg{background:#fff;border-color:#dadce0;color:#3c4043}
+.orline{display:flex;align-items:center;gap:10px;color:var(--muted);margin:14px 0 6px;font-size:13px}
+.orline::before,.orline::after{content:"";flex:1;height:1px;background:var(--line)}
+.qrbox{text-align:center;margin-top:10px}
+.chipsrow{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}
+.amtchip{border:1px solid var(--line);background:#0f172a;color:#e2e8f0;border-radius:999px;padding:8px 14px;cursor:pointer;font-weight:700}
+.amtchip.sel{background:var(--green);border-color:var(--green);color:#052e16}
+.tlist{margin-top:10px;font-size:14px}
+.tlist .tr{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--line)}
+.st-pending{color:#fbbf24}.st-confirmed{color:var(--green)}.st-rejected{color:#f87171}
 </style>
 </head>
 <body>
 <header><div class="wrap hbar">
   <div class="logo">TĂNG TƯƠNG TÁC <span>VIỆT</span></div>
   <div class="search"><input id="q" type="search" placeholder="Tìm dịch vụ: follow TikTok, like Facebook, view YouTube..." aria-label="Tìm dịch vụ"></div>
+  <div id="acctBar" class="acctbar"></div>
 </div></header>
 
 <div class="wrap">
@@ -172,11 +194,75 @@ footer h4{color:var(--text);margin:12px 0 6px;font-size:15px}
     <div class="err" id="mErr"></div>
     <div class="total"><span>Tổng thanh toán</span><b id="mTotal">0đ</b></div>
     <div class="paybox" id="mPay"></div>
-    <div style="display:flex;gap:10px;margin-top:16px;flex-wrap:wrap">
+    <div id="mGuestActions" style="display:flex;gap:10px;margin-top:16px;flex-wrap:wrap">
       <button class="btn" id="mSubmit" style="flex:1">Đặt đơn</button>
       <button class="btn ghost" id="mClose">Đóng</button>
     </div>
+    <div id="mNudge" class="nudge" style="display:none"></div>
+    <div id="mWalletActions" style="display:none;margin-top:16px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;flex-wrap:wrap;gap:8px">
+        <span>Ví của bạn: <b class="abal" id="mBal">0đ</b></span>
+        <button class="abtn primary" id="mTopupBtn">Nạp tiền</button>
+      </div>
+      <div class="err" id="mWErr"></div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <button class="btn" id="mWalletSubmit" style="flex:1">Đặt đơn</button>
+        <button class="btn ghost" id="mClose2">Đóng</button>
+      </div>
+    </div>
     <div id="mDone" style="margin-top:14px"></div>
+  </div>
+</div>
+
+<div class="modal" id="accountModal" role="dialog" aria-modal="true" aria-labelledby="aTitle">
+  <div class="sheet amodal">
+    <h2 id="aTitle">Tạo tài khoản để giữ tiền của bạn</h2>
+    <p style="color:var(--muted);font-size:14px;margin-top:0">Tài khoản giữ số dư ví của bạn — nạp tối thiểu 10.000đ, mỗi đơn nhỏ sẽ trừ dần tự động, không cần chuyển khoản từng đơn.</p>
+    <div id="aReg">
+      <label for="aUser">Tên đăng nhập</label>
+      <input id="aUser" placeholder="vd: quanghuy88" autocomplete="username">
+      <label for="aPass">Mật khẩu</label>
+      <input id="aPass" type="password" placeholder="Tối thiểu 6 ký tự" autocomplete="new-password">
+      <div class="err" id="aErr"></div>
+      <button class="btn" id="aRegister" style="width:100%;margin-top:8px">Tạo tài khoản</button>
+      <div class="orline">hoặc tiếp tục bằng</div>
+      <div class="socrow">
+        <button class="socbtn fb" id="aFb">Facebook</button>
+        <button class="socbtn gg" id="aGg">Google</button>
+      </div>
+      <p style="text-align:center;margin-top:12px;font-size:14px">Đã có tài khoản? <a href="#" id="aToLogin" style="color:var(--green)">Đăng nhập</a></p>
+    </div>
+    <div id="aLog" style="display:none">
+      <label for="lUser">Tên đăng nhập</label>
+      <input id="lUser" placeholder="Tên đăng nhập" autocomplete="username">
+      <label for="lPass">Mật khẩu</label>
+      <input id="lPass" type="password" placeholder="Mật khẩu" autocomplete="current-password">
+      <div class="err" id="lErr"></div>
+      <button class="btn" id="aLogin" style="width:100%;margin-top:8px">Đăng nhập</button>
+      <div class="orline">hoặc tiếp tục bằng</div>
+      <div class="socrow">
+        <button class="socbtn fb" id="lFb">Facebook</button>
+        <button class="socbtn gg" id="lGg">Google</button>
+      </div>
+      <p style="text-align:center;margin-top:12px;font-size:14px">Chưa có tài khoản? <a href="#" id="aToReg" style="color:var(--green)">Tạo tài khoản</a></p>
+    </div>
+    <div style="margin-top:12px"><button class="btn ghost" id="aClose" style="width:100%">Đóng</button></div>
+  </div>
+</div>
+
+<div class="modal" id="topupModal" role="dialog" aria-modal="true" aria-labelledby="tTitle">
+  <div class="sheet amodal">
+    <h2 id="tTitle">Nạp tiền vào ví</h2>
+    <p style="color:var(--muted);font-size:14px;margin-top:0">Nạp tối thiểu 10.000đ. Chuyển khoản đúng <b>số tiền</b> và <b>nội dung</b> bên dưới, cửa hàng xác nhận rồi cộng tiền vào ví của bạn.</p>
+    <div class="chipsrow" id="tAmts"></div>
+    <label for="tAmt">Số tiền (đ)</label>
+    <input id="tAmt" type="number" inputmode="numeric" min="10000" step="1000" value="50000">
+    <div class="err" id="tErr"></div>
+    <button class="btn" id="tCreate" style="width:100%;margin-top:8px">Tạo mã nạp</button>
+    <div id="tDone"></div>
+    <h3 style="margin-top:16px">Lịch sử nạp</h3>
+    <div class="tlist" id="tHist"><p style="color:var(--muted)">Bạn đăng nhập để xem lịch sử nạp.</p></div>
+    <div style="margin-top:12px"><button class="btn ghost" id="tClose" style="width:100%">Đóng</button></div>
   </div>
 </div>
 
@@ -262,6 +348,33 @@ function orderTotal(){ if(!curSvc) return 0; const q = Number($("#mQty").value||
 function updTotal(){
   if(!curSvc) return;
   $("#mTotal").textContent = fmt(orderTotal());
+  refreshOrderActions();
+}
+// Chọn luồng đặt đơn theo trạng thái đăng nhập + tổng tiền:
+// - chưa đăng nhập & >=10k: đặt khách vãng lai (chuyển khoản sau)
+// - chưa đăng nhập & <10k: gợi ý nạp ví (không cho đặt khách vãng lai)
+// - đã đăng nhập: trừ ví
+function refreshOrderActions(){
+  if(!curSvc) return;
+  const amt = orderTotal();
+  const guest = $("#mGuestActions"), nudge = $("#mNudge"), wall = $("#mWalletActions");
+  guest.style.display = "none"; nudge.style.display = "none"; wall.style.display = "none";
+  if(!ME){
+    if(amt >= 10000){ guest.style.display = "flex"; }
+    else {
+      nudge.style.display = "block";
+      nudge.innerHTML = `<p>💰 Đơn dưới <b>10.000đ</b> không chuyển khoản ngân hàng được.</p><p>👉 <b>Nạp tối thiểu 10.000đ vào tài khoản của bạn</b> để đặt đơn số lượng nhỏ — mỗi đơn sẽ trừ dần tự động, không cần chuyển khoản từng đơn.</p><button class="btn" id="mNudgeTopup" style="width:100%">Nạp ngay</button>`;
+      const b = $("#mNudgeTopup");
+      if(b) b.onclick = ()=>{ $("#modal").classList.remove("open"); openAccount("reg"); };
+    }
+  } else {
+    wall.style.display = "block";
+    $("#mBal").textContent = fmt(ME.balance_vnd);
+    const btn = $("#mWalletSubmit"), we = $("#mWErr");
+    we.textContent = "";
+    if(ME.balance_vnd >= amt){ btn.disabled = false; btn.textContent = `Đặt đơn — trừ ${fmt(amt)} từ ví`; }
+    else { btn.disabled = false; btn.textContent = `Đặt đơn`; we.textContent = `Ví của bạn còn ${fmt(ME.balance_vnd)}, chưa đủ ${fmt(amt)} — bấm Nạp tiền ở trên để nạp thêm nhé.`; }
+  }
 }
 $("#mQty")?.addEventListener("input", updTotal);
 document.addEventListener("input", e=>{ if(e.target.id==="mQty") updTotal(); });
@@ -288,6 +401,155 @@ $("#mSubmit").onclick = async ()=>{
   }catch(e){ err.textContent = "Không kết nối được hệ thống đặt đơn, bạn thử lại sau ít phút nhé."; }
   btn.disabled = false; btn.textContent = "Đặt đơn";
 };
+$("#mClose2").onclick = ()=>$("#modal").classList.remove("open");
+$("#mTopupBtn").onclick = ()=>{ $("#modal").classList.remove("open"); openTopup(); };
+
+// Đặt đơn trừ ví (khách đã đăng nhập)
+$("#mWalletSubmit").onclick = async ()=>{
+  const link = $("#mLink").value.trim(), q = Number($("#mQty").value||0), amt = orderTotal(), err = $("#mWErr");
+  if(!/^https?:\/\/.+/i.test(link)){ err.textContent = "Bạn dán link cần tăng vào nhé (link phải bắt đầu bằng https://)."; return; }
+  if(!q || q < Number(curSvc.min||1)){ err.textContent = `Số lượng tối thiểu của gói này là ${fmt0(curSvc.min)}.`; return; }
+  if(curSvc.max && Number(curSvc.max) < 2147483647 && q > Number(curSvc.max)){ err.textContent = `Số lượng tối đa của gói này là ${fmt0(curSvc.max)}.`; return; }
+  if(ME.balance_vnd < amt){ err.textContent = `Ví của bạn còn ${fmt(ME.balance_vnd)}, chưa đủ ${fmt(amt)} — bấm Nạp tiền ở trên để nạp thêm nhé.`; return; }
+  err.textContent = "";
+  const btn = $("#mWalletSubmit"); btn.disabled = true; btn.textContent = "Đang gửi đơn...";
+  try{
+    const r = await api("/api/order/wallet", {method:"POST", body:{service: curSvc.id, link, quantity: q, total: amt}});
+    const d = await r.json();
+    if(d.order){
+      ME.balance_vnd = d.balance_vnd; renderAcct(); refreshOrderActions();
+      $("#mDone").innerHTML = `<p class="ok">Đặt đơn thành công! Mã đơn của bạn: <b>${d.order}</b>.</p><p style="margin-top:8px">Đã trừ <b>${fmt(amt)}</b> từ ví. Số dư còn lại: <b>${fmt(d.balance_vnd)}</b>.</p><p style="margin-top:8px">Lưu mã đơn <b>${d.order}</b> để tra trạng thái.</p>`;
+    } else if(r.status === 402 || d.need_topup){
+      err.innerHTML = `${d.error || "Ví chưa đủ số dư."} <a href="#" id="mGoTopup" style="color:var(--green)">Nạp tiền ngay</a>`;
+      const g = $("#mGoTopup"); if(g) g.onclick = (e)=>{ e.preventDefault(); $("#modal").classList.remove("open"); openTopup(); };
+    } else { err.textContent = d.error || "Gửi đơn chưa thành công, bạn thử lại giúp cửa hàng nhé."; }
+  }catch(e){ err.textContent = "Không kết nối được hệ thống đặt đơn, bạn thử lại sau ít phút nhé."; }
+  btn.disabled = false; refreshOrderActions();
+};
+
+/* ====== TÀI KHOẢN & VÍ ====== */
+let ME = null;
+const getToken = ()=>localStorage.getItem("ttt_token");
+async function api(path, opts={}){
+  const h = {"Content-Type":"application/json"};
+  const t = getToken(); if(t) h["Authorization"] = "Bearer " + t;
+  return fetch(CONFIG.API_BASE + path, {...opts, headers:{...h, ...(opts.headers||{})}, body: opts.body ? JSON.stringify(opts.body) : undefined});
+}
+async function refreshMe(){
+  const t = getToken();
+  if(!t || !CONFIG.API_BASE){ ME = null; renderAcct(); return; }
+  try{
+    const r = await api("/api/me"); const d = await r.json();
+    ME = (d && (d.username || d.display_name || d.balance_vnd != null)) ? d : null;
+    if(!ME) localStorage.removeItem("ttt_token");
+  }catch(e){ ME = null; }
+  renderAcct();
+  if(curSvc) refreshOrderActions();
+}
+function renderAcct(){
+  const bar = $("#acctBar"); if(!bar) return;
+  if(!ME){
+    bar.innerHTML = `<button class="abtn" id="hLogin">Đăng nhập</button><button class="abtn primary" id="hReg">Tạo tài khoản</button>`;
+    $("#hLogin").onclick = ()=>openAccount("login");
+    $("#hReg").onclick = ()=>openAccount("reg");
+  } else {
+    const nm = ME.display_name || ME.username || "Khách";
+    bar.innerHTML = `<span title="${nm}"><b class="abal">${fmt(ME.balance_vnd)}</b></span><button class="abtn primary" id="hTopup">Nạp tiền</button><button class="abtn" id="hLogout">Thoát</button>`;
+    $("#hTopup").onclick = openTopup;
+    $("#hLogout").onclick = async ()=>{ try{ await api("/api/auth/logout",{method:"POST"}); }catch(e){} localStorage.removeItem("ttt_token"); ME = null; renderAcct(); refreshOrderActions(); };
+  }
+}
+function openAccount(tab){
+  $("#aReg").style.display = tab === "reg" ? "" : "none";
+  $("#aLog").style.display = tab === "login" ? "" : "none";
+  $("#aTitle").textContent = tab === "reg" ? "Tạo tài khoản để giữ tiền của bạn" : "Đăng nhập";
+  $("#aErr").textContent = ""; $("#lErr").textContent = "";
+  $("#accountModal").classList.add("open");
+}
+$("#aToLogin").onclick = (e)=>{ e.preventDefault(); openAccount("login"); };
+$("#aToReg").onclick = (e)=>{ e.preventDefault(); openAccount("reg"); };
+$("#aClose").onclick = ()=>$("#accountModal").classList.remove("open");
+$("#accountModal").addEventListener("click", e=>{ if(e.target.id==="accountModal") $("#accountModal").classList.remove("open"); });
+async function afterAuth(d){
+  if(d.token){
+    localStorage.setItem("ttt_token", d.token);
+    ME = {username: d.username, display_name: d.display_name, balance_vnd: d.balance_vnd||0};
+    renderAcct(); $("#accountModal").classList.remove("open"); refreshOrderActions();
+    return true;
+  }
+  return false;
+}
+$("#aRegister").onclick = async ()=>{
+  const u = $("#aUser").value.trim(), p = $("#aPass").value, err = $("#aErr");
+  err.textContent = "";
+  const btn = $("#aRegister"); btn.disabled = true;
+  try{
+    const r = await api("/api/auth/register", {method:"POST", body:{username:u, password:p}});
+    const d = await r.json();
+    if(!(await afterAuth(d))) err.textContent = d.error || "Tạo tài khoản chưa thành công.";
+  }catch(e){ err.textContent = "Không kết nối được, bạn thử lại nhé."; }
+  btn.disabled = false;
+};
+$("#aLogin").onclick = async ()=>{
+  const u = $("#lUser").value.trim(), p = $("#lPass").value, err = $("#lErr");
+  err.textContent = "";
+  const btn = $("#aLogin"); btn.disabled = true;
+  try{
+    const r = await api("/api/auth/login", {method:"POST", body:{username:u, password:p}});
+    const d = await r.json();
+    if(!(await afterAuth(d))) err.textContent = d.error || "Đăng nhập chưa thành công.";
+  }catch(e){ err.textContent = "Không kết nối được, bạn thử lại nhé."; }
+  btn.disabled = false;
+};
+// Đăng nhập mạng xã hội (cần cửa hàng cấu hình OAuth trên Worker)
+const goSocial = (p)=>{ location.href = CONFIG.API_BASE + "/api/auth/" + p; };
+["aFb","lFb"].forEach(id=>{ const el = document.getElementById(id); if(el) el.onclick = ()=>goSocial("facebook"); });
+["aGg","lGg"].forEach(id=>{ const el = document.getElementById(id); if(el) el.onclick = ()=>goSocial("google"); });
+
+/* ====== NẠP TIỀN ====== */
+const TAMTS = [10000,20000,50000,100000,200000,500000];
+function openTopup(){
+  if(!ME){ openAccount("reg"); return; }
+  $("#tErr").textContent = ""; $("#tDone").innerHTML = "";
+  $("#tAmts").innerHTML = TAMTS.map(a=>`<button class="amtchip${a===50000?" sel":""}" data-a="${a}">${fmt(a)}</button>`).join("");
+  document.querySelectorAll("#tAmts .amtchip").forEach(b=>b.onclick=()=>{
+    document.querySelectorAll("#tAmts .amtchip").forEach(x=>x.classList.remove("sel"));
+    b.classList.add("sel"); $("#tAmt").value = b.dataset.a;
+  });
+  loadTopupHist();
+  $("#topupModal").classList.add("open");
+}
+$("#tClose").onclick = ()=>$("#topupModal").classList.remove("open");
+$("#topupModal").addEventListener("click", e=>{ if(e.target.id==="topupModal") $("#topupModal").classList.remove("open"); });
+$("#tCreate").onclick = async ()=>{
+  const amt = Math.round(Number($("#tAmt").value||0)), err = $("#tErr");
+  err.textContent = ""; $("#tDone").innerHTML = "";
+  if(!(amt >= 10000)){ err.textContent = "Nạp tối thiểu 10.000đ."; return; }
+  const btn = $("#tCreate"); btn.disabled = true; btn.textContent = "Đang tạo mã...";
+  try{
+    const r = await api("/api/topup", {method:"POST", body:{amount_vnd: amt}});
+    const d = await r.json();
+    if(d.code){
+      $("#tDone").innerHTML = `<div class="qrbox"><p class="ok">Mã nạp của bạn: <b>${d.code}</b></p><p>Quét mã QR để chuyển đúng <b>${fmt(d.amount_vnd)}</b> — nội dung chuyển khoản đã điền sẵn mã nạp:</p><img src="${d.qr_url}" alt="QR nạp tiền" style="width:200px;max-width:75%;border-radius:10px;margin-top:8px;background:#fff;padding:6px"><p style="margin-top:8px">Hoặc chuyển khoản thủ công: <b>${d.bank.bank} · ${d.bank.account} · ${d.bank.name}</b> — nội dung: <b>${d.code}</b>.</p><p style="color:var(--muted);font-size:14px">Cửa hàng xác nhận sau khi nhận được tiền, số dư sẽ cộng vào ví của bạn.</p></div>`;
+      loadTopupHist();
+    } else err.textContent = d.error || "Tạo mã nạp chưa thành công.";
+  }catch(e){ err.textContent = "Không kết nối được, bạn thử lại nhé."; }
+  btn.disabled = false; btn.textContent = "Tạo mã nạp";
+};
+async function loadTopupHist(){
+  const box = $("#tHist"); if(!ME){ box.innerHTML = `<p style="color:var(--muted)">Bạn đăng nhập để xem lịch sử nạp.</p>`; return; }
+  try{
+    const r = await api("/api/topups"); const d = await r.json();
+    const rows = d.topups || [];
+    box.innerHTML = rows.length ? rows.map(t=>`<div class="tr"><span><b>${t.code}</b> · ${fmt(t.amount_vnd)}</span><span class="st-${t.status}">${t.status==="pending"?"Chờ xác nhận":t.status==="confirmed"?"Đã cộng tiền":"Từ chối"}</span></div>`).join("")
+      : `<p style="color:var(--muted)">Chưa có lần nạp nào.</p>`;
+  }catch(e){ box.innerHTML = `<p style="color:var(--muted)">Chưa tải được lịch sử.</p>`; }
+}
+// Nhận token sau khi đăng nhập Google/Facebook xong (Worker redirect về ?token=...)
+(function(){
+  const m = location.search.match(/[?&]token=([A-Za-z0-9]+)/);
+  if(m){ localStorage.setItem("ttt_token", m[1]); history.replaceState(null, "", location.pathname); }
+})();
 
 $("#statusForm").addEventListener("submit", async e=>{
   e.preventDefault();
@@ -304,7 +566,7 @@ $("#statusForm").addEventListener("submit", async e=>{
 });
 
 $("#q").addEventListener("input", e=>{ curQ = e.target.value.trim().toLowerCase(); render(); });
-buildTabs(); render();
+buildTabs(); render(); refreshMe();
 </script>
 </body>
 </html>

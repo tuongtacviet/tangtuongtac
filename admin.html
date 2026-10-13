@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quản trị — Tăng Tương Tác Việt</title>
+<style>
+:root{--green:#22c55e;--line:#1e293b;--muted:#94a3b8}
+*{box-sizing:border-box}
+body{background:#0b1120;color:#e2e8f0;font-family:system-ui,-apple-system,sans-serif;margin:0;padding:20px}
+.wrap{max-width:860px;margin:0 auto}
+h1{font-size:22px}
+.card{background:#0f172a;border:1px solid var(--line);border-radius:14px;padding:16px;margin:12px 0}
+input{background:#0b1120;border:1px solid var(--line);color:#e2e8f0;border-radius:10px;padding:10px 12px;font-size:15px;width:100%}
+button{background:var(--green);border:none;color:#052e16;font-weight:800;border-radius:10px;padding:10px 16px;cursor:pointer;font-size:15px}
+button.ghost{background:transparent;border:1px solid var(--line);color:#e2e8f0}
+button.danger{background:#ef4444;color:#fff}
+button:disabled{opacity:.5;cursor:default}
+.row{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;padding:10px 0;border-bottom:1px solid var(--line)}
+.muted{color:var(--muted);font-size:13px}
+.err{color:#f87171;margin-top:8px}
+.ok{color:var(--green)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>🔧 Quản trị — duyệt nạp tiền</h1>
+  <div class="card" id="gate">
+    <p class="muted">Nhập mật khẩu quản trị (ADMIN_PASS trên Worker) để xem yêu cầu nạp đang chờ.</p>
+    <input id="pw" type="password" placeholder="Mật khẩu quản trị" autocomplete="off">
+    <div style="margin-top:10px"><button id="go">Vào trang quản trị</button></div>
+    <div class="err" id="gerr"></div>
+  </div>
+  <div class="card" id="panel" style="display:none">
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <h2 style="margin:0">Yêu cầu nạp đang chờ</h2>
+      <div><button class="ghost" id="reload">Tải lại</button> <button class="ghost" id="logout">Thoát</button></div>
+    </div>
+    <div id="list"><p class="muted">Đang tải...</p></div>
+  </div>
+</div>
+<script>
+const API_BASE = "https://smm-proxy.hungcuonghnhm.workers.dev";
+const pw = ()=>sessionStorage.getItem("ttt_admin") || "";
+const fmt = n => Number(n||0).toLocaleString("vi-VN") + "đ";
+async function load(){
+  const box = document.getElementById("list");
+  box.innerHTML = `<p class="muted">Đang tải...</p>`;
+  try{
+    const r = await fetch(API_BASE + "/api/admin/topups?pass=" + encodeURIComponent(pw()));
+    const d = await r.json();
+    if(d.error){ box.innerHTML = `<p class="err">${d.error}</p>`; return; }
+    const rows = d.pending || [];
+    box.innerHTML = rows.length ? rows.map(t=>`
+      <div class="row">
+        <div><b>${t.code}</b> · ${fmt(t.amount_vnd)}<br><span class="muted">${t.display_name || t.username || "khách"} · ${new Date(t.created_at).toLocaleString("vi-VN")}</span></div>
+        <div style="display:flex;gap:8px">
+          <button data-c="${t.code}" data-a="ok">Xác nhận đã nhận tiền</button>
+          <button class="danger" data-c="${t.code}" data-a="no">Từ chối</button>
+        </div>
+      </div>`).join("") : `<p class="muted">Không có yêu cầu nào đang chờ.</p>`;
+    box.querySelectorAll("button[data-c]").forEach(b=>b.onclick=()=>act(b.dataset.c, b.dataset.a, b));
+  }catch(e){ box.innerHTML = `<p class="err">Không kết nối được.</p>`; }
+}
+async function act(code, a, btn){
+  if(a === "ok" && !confirm(`Xác nhận đã nhận ${code}? Tiền sẽ cộng vào ví khách ngay.`)) return;
+  btn.disabled = true;
+  try{
+    const r = await fetch(API_BASE + "/api/admin/topup/" + (a === "ok" ? "confirm" : "reject"), {
+      method:"POST", headers:{"Content-Type":"application/json"},
+      body: JSON.stringify({code, pass: pw()})
+    });
+    const d = await r.json();
+    if(d.ok){ load(); } else { alert(d.error || "Thất bại"); btn.disabled = false; }
+  }catch(e){ alert("Không kết nối được."); btn.disabled = false; }
+}
+document.getElementById("go").onclick = ()=>{
+  const v = document.getElementById("pw").value;
+  if(!v){ document.getElementById("gerr").textContent = "Bạn nhập mật khẩu."; return; }
+  sessionStorage.setItem("ttt_admin", v);
+  document.getElementById("pw").value = "";
+  document.getElementById("gate").style.display = "none";
+  document.getElementById("panel").style.display = "";
+  load();
+};
+document.getElementById("reload").onclick = load;
+document.getElementById("logout").onclick = ()=>{ sessionStorage.removeItem("ttt_admin"); location.reload(); };
+if(pw()){ document.getElementById("gate").style.display = "none"; document.getElementById("panel").style.display = ""; load(); }
+</script>
+</body>
+</html>
