@@ -115,7 +115,7 @@ footer h4{color:var(--text);margin:12px 0 6px;font-size:15px}
 <body>
 <header><div class="wrap hbar">
   <div class="logo">TĂNG TƯƠNG TÁC <span>VIỆT</span></div>
-  <div class="search"><input id="q" type="search" placeholder="Tìm dịch vụ: follow TikTok, like Facebook, view YouTube..." aria-label="Tìm dịch vụ"></div>
+  <div class="search"><input id="q" type="search" placeholder="Tìm dịch vụ: follow TikTok, like Facebook... hoặc gõ số thứ tự (vd: 25)" aria-label="Tìm dịch vụ"></div>
   <div id="acctBar" class="acctbar"></div>
 </div></header>
 
@@ -306,10 +306,11 @@ function buildTabs(){
   document.querySelectorAll("[data-t]").forEach(b=>b.onclick=()=>{curT=b.dataset.t;buildTabs();render();});
 }
 function filtered(){
+  const q = curQ ? curQ.toLowerCase() : "";
   return CATALOG.filter(s =>
     (curP==="all" || s.platform===curP) &&
     (curT==="all" || s.type===curT) &&
-    (!curQ || (s.name+" "+s.category).toLowerCase().includes(curQ)));
+    (!q || (s.name+" "+s.category).toLowerCase().includes(q) || String(s.stt)===q || String(s.id)===q));
 }
 function render(){
   const items = filtered();
