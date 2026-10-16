@@ -41,6 +41,20 @@ button:disabled{opacity:.5;cursor:default}
     <h2 style="margin:18px 0 0">Tiền vào không khớp mã nạp</h2>
     <p class="muted">Các khoản tiền vào không gắn với mã nạp nào (khách ghi sai nội dung...). Đối chiếu thêm tại SePay → Giao dịch nếu cần.</p>
     <div id="unmatched"><p class="muted">Đang tải...</p></div>
+    <h2 style="margin:18px 0 0">🎟️ Mã giảm giá</h2>
+    <p class="muted">Tạo mã giảm % cho khách (ví dụ mã bù đơn tụt like). Khách nhập mã ở bước đặt đơn, hệ thống tự trừ theo %.</p>
+    <div class="card" style="margin:12px 0">
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px">
+        <input id="pCode" placeholder="Mã (vd TUTLIKE30)" style="text-transform:uppercase" autocomplete="off">
+        <input id="pPct" type="number" placeholder="Giảm % (1-90)" min="1" max="90">
+        <input id="pMax" type="number" placeholder="Lượt dùng tối đa (0=k.hạn)" min="0">
+        <input id="pExp" type="date">
+        <input id="pNote" placeholder="Ghi chú nội bộ" style="grid-column:1/-1">
+      </div>
+      <div style="margin-top:10px"><button id="pCreate">Tạo mã</button></div>
+      <div class="err" id="pErr"></div>
+    </div>
+    <div id="pList"><p class="muted">Đang tải...</p></div>
   </div>
 </div>
 <script>
@@ -78,8 +92,44 @@ async function load(){
       <div class="row">
         <div><b>${fmt(e.amount_vnd)}</b> · <span class="muted">${e.content || "(không có nội dung)"}</span><br><span class="muted">${new Date(e.created_at).toLocaleString("vi-VN")}</span></div>
       </div>`).join("") : `<p class="muted">Không có khoản nào.</p>`;
+    loadPromos();
   }catch(e){ box.innerHTML = `<p class="err">Không kết nối được.</p>`; ubox.innerHTML = ""; }
 }
+async function loadPromos(){
+  const box = document.getElementById("pList");
+  box.innerHTML = `<p class="muted">Đang tải...</p>`;
+  try{
+    const r = await fetch(API_BASE + "/api/admin/promos?pass=" + encodeURIComponent(pw()));
+    const d = await r.json();
+    if(d.error){ box.innerHTML = `<p class="err">${d.error}</p>`; return; }
+    const rows = d.promos || [];
+    box.innerHTML = rows.length ? rows.map(p=>`
+      <div class="row">
+        <div><b>${p.code}</b> · giảm ${p.percent_off}% · đã dùng ${p.used_count}${p.max_uses > 0 ? "/" + p.max_uses : ""} · ${p.expires_at ? "hết hạn " + new Date(p.expires_at).toLocaleDateString("vi-VN") : "không hết hạn"} · <span class="${p.active ? "ok" : "muted"}">${p.active ? "đang bật" : "đã tắt"}</span>${p.note ? `<br><span class="muted">${p.note}</span>` : ""}</div>
+        <div><button class="ghost" data-p="${p.code}" data-a="${p.active ? 0 : 1}">${p.active ? "Tắt" : "Bật"}</button></div>
+      </div>`).join("") : `<p class="muted">Chưa có mã nào.</p>`;
+    box.querySelectorAll("button[data-p]").forEach(b=>b.onclick=()=>ptoggle(b.dataset.p, b.dataset.a, b));
+  }catch(e){ box.innerHTML = `<p class="err">Không kết nối được.</p>`; }
+}
+async function ptoggle(code, active, btn){
+  btn.disabled = true;
+  try{
+    const r = await fetch(API_BASE + "/api/admin/promo/toggle", {method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({code, active: active == 1, pass: pw()})});
+    const d = await r.json();
+    if(d.ok) loadPromos(); else { alert(d.error || "Thất bại"); btn.disabled = false; }
+  }catch(e){ alert("Không kết nối được."); btn.disabled = false; }
+}
+document.getElementById("pCreate").onclick = async ()=>{
+  const err = document.getElementById("pErr"); err.textContent = "";
+  const body = {code: document.getElementById("pCode").value, percent_off: document.getElementById("pPct").value, max_uses: document.getElementById("pMax").value, expires_at: document.getElementById("pExp").value, note: document.getElementById("pNote").value, pass: pw()};
+  if(!body.code.trim()){ err.textContent = "Bạn nhập mã."; return; }
+  try{
+    const r = await fetch(API_BASE + "/api/admin/promo/create", {method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify(body)});
+    const d = await r.json();
+    if(d.ok){ ["pCode","pPct","pMax","pExp","pNote"].forEach(id=>document.getElementById(id).value=""); loadPromos(); }
+    else err.textContent = d.error || "Tạo mã thất bại.";
+  }catch(e){ err.textContent = "Không kết nối được."; }
+};
 async function act(code, a, btn){
   if(a === "ok" && !confirm(`Xác nhận đã nhận ${code}? Tiền sẽ cộng vào ví khách ngay.`)) return;
   btn.disabled = true;

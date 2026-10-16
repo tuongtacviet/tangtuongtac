@@ -208,6 +208,14 @@ footer h4{color:var(--text);margin:12px 0 6px;font-size:15px}
     <input id="mQty" type="number" inputmode="numeric">
     <div class="err" id="mErr"></div>
     <div class="total"><span>Tổng thanh toán</span><b id="mTotal">0đ</b></div>
+    <div class="promobox" style="margin-top:10px">
+      <div style="display:flex;gap:8px">
+        <input id="mPromo" placeholder="Mã giảm giá (nếu có)" style="flex:1;text-transform:uppercase" autocomplete="off">
+        <button class="btn ghost" id="mPromoBtn" type="button" style="flex:none">Áp dụng</button>
+      </div>
+      <div class="err" id="mPromoErr" style="margin-top:6px"></div>
+      <div id="mPromoOk" style="margin-top:6px;font-size:14px"></div>
+    </div>
     <div class="paybox" id="mPay"></div>
     <div id="mGuestActions" style="display:flex;gap:10px;margin-top:16px;flex-wrap:wrap">
       <button class="btn" id="mSubmit" style="flex:1">Đặt đơn</button>
@@ -354,19 +362,42 @@ function toggleGroup(btn){
 }
 
 let curSvc = null;
+let promoState = {code:null, pct:0};
 function openOrder(id){
   curSvc = CATALOG.find(s=>String(s.id)===String(id)); if(!curSvc) return;
+  promoState = {code:null, pct:0};
   $("#mSvc").textContent = curSvc.name + ` — ${fmt(curSvc.price_vnd_1000)}/1.000 lượt · tối thiểu ${fmt0(curSvc.min)}, tối đa ${fmt0(curSvc.max)}`;
   $("#mLink").value = ""; $("#mQty").value = curSvc.min || 100; $("#mErr").textContent = ""; $("#mDone").innerHTML = "";
+  $("#mPromo").value = ""; $("#mPromoErr").textContent = ""; $("#mPromoOk").textContent = "";
   $("#mPay").innerHTML = `Thông tin chuyển khoản (mã QR + số tài khoản) sẽ hiện ra ngay sau khi bạn bấm <b>Đặt đơn</b>.`;
   updTotal(); $("#modal").classList.add("open");
 }
 function orderTotal(){ if(!curSvc) return 0; const q = Number($("#mQty").value||0); return Math.round(curSvc.price_vnd_1000 * q / 1000); }
+function discountedTotal(){ const t = orderTotal(); return promoState.pct ? Math.round(t * (100 - promoState.pct) / 100) : t; }
 function updTotal(){
   if(!curSvc) return;
-  $("#mTotal").textContent = fmt(orderTotal());
+  const full = orderTotal(), disc = discountedTotal();
+  $("#mTotal").innerHTML = promoState.pct
+    ? `<s style="color:var(--muted);font-weight:400">${fmt(full)}</s> ${fmt(disc)} <span style="font-size:13px;color:var(--green)">mã ${promoState.code} −${promoState.pct}%</span>`
+    : fmt(full);
   refreshOrderActions();
 }
+// Áp dụng mã giảm giá
+$("#mPromoBtn").onclick = async ()=>{
+  const inp = $("#mPromo"), err = $("#mPromoErr"), ok = $("#mPromoOk");
+  const code = inp.value.trim().toUpperCase();
+  err.textContent = ""; ok.innerHTML = "";
+  if(!code){ err.textContent = "Bạn nhập mã giảm giá nhé."; return; }
+  if(!CONFIG.API_BASE){ err.textContent = "Chức năng mã giảm giá đang được kích hoạt."; return; }
+  const btn = $("#mPromoBtn"); btn.disabled = true;
+  try{
+    const r = await fetch(CONFIG.API_BASE + "/api/promo/validate", {method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({code})});
+    const d = await r.json();
+    if(d.ok){ promoState = {code: d.code, pct: d.percent_off}; ok.innerHTML = `<span style="color:var(--green)">✓ Đã áp dụng mã <b>${d.code}</b>: giảm <b>${d.percent_off}%</b>.</span>`; }
+    else { promoState = {code:null, pct:0}; err.textContent = d.error || "Mã không hợp lệ."; }
+  }catch(e){ err.textContent = "Không kiểm tra được mã, bạn thử lại nhé."; }
+  btn.disabled = false; updTotal();
+};
 // Chọn luồng đặt đơn theo trạng thái đăng nhập + tổng tiền:
 // - chưa đăng nhập & >=10k: đặt khách vãng lai (chuyển khoản sau)
 // - chưa đăng nhập & <10k: gợi ý nạp ví (không cho đặt khách vãng lai)
@@ -388,9 +419,10 @@ function refreshOrderActions(){
     wall.style.display = "block";
     $("#mBal").textContent = fmt(ME.balance_vnd);
     const btn = $("#mWalletSubmit"), we = $("#mWErr");
+    const pay = discountedTotal();
     we.textContent = "";
-    if(ME.balance_vnd >= amt){ btn.disabled = false; btn.textContent = `Đặt đơn — trừ ${fmt(amt)} từ ví`; }
-    else { btn.disabled = false; btn.textContent = `Đặt đơn`; we.textContent = `Ví của bạn còn ${fmt(ME.balance_vnd)}, chưa đủ ${fmt(amt)} — bấm Nạp tiền ở trên để nạp thêm nhé.`; }
+    if(ME.balance_vnd >= pay){ btn.disabled = false; btn.textContent = `Đặt đơn — trừ ${fmt(pay)} từ ví`; }
+    else { btn.disabled = false; btn.textContent = `Đặt đơn`; we.textContent = `Ví của bạn còn ${fmt(ME.balance_vnd)}, chưa đủ ${fmt(pay)} — bấm Nạp tiền ở trên để nạp thêm nhé.`; }
   }
 }
 $("#mQty")?.addEventListener("input", updTotal);
@@ -411,9 +443,9 @@ $("#mSubmit").onclick = async ()=>{
   }
   const btn = $("#mSubmit"); btn.disabled = true; btn.textContent = "Đang gửi đơn...";
   try{
-    const r = await fetch(CONFIG.API_BASE + "/api/order", {method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({service: curSvc.id, link, quantity: q, total: amt0})});
+    const r = await fetch(CONFIG.API_BASE + "/api/order", {method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({service: curSvc.id, link, quantity: q, total: amt0, promo_code: promoState.code})});
     const d = await r.json();
-    if(d.order){ const amt = Math.round(curSvc.price_vnd_1000 * q / 1000); const qrDyn = `https://img.vietqr.io/image/ICB-0868895144-compact.png?amount=${amt}&addInfo=${encodeURIComponent(d.order)}&accountName=DINH%20CONG%20HUY`; $("#mDone").innerHTML = `<p class="ok">Đặt đơn thành công! Mã đơn của bạn: <b>${d.order}</b>.</p><p style="margin-top:8px">Quét mã QR dưới đây để thanh toán đúng số tiền <b>${amt.toLocaleString("vi-VN")}đ</b> (nội dung chuyển khoản đã điền sẵn mã đơn):</p><img src="${qrDyn}" alt="Mã QR thanh toán kèm mã đơn" style="width:200px;max-width:75%;border-radius:10px;margin-top:8px;background:#fff;padding:6px"><p style="margin-top:8px">Hoặc chuyển khoản thủ công: <b>${CONFIG.BANK_INFO}</b> — nội dung chuyển khoản: <b>${d.order}</b>.</p><p style="margin-top:8px">Đơn sẽ chạy ngay khi thanh toán được xác nhận. Lưu mã đơn <b>${d.order}</b> để tra trạng thái.</p>`; }
+    if(d.order){ const amt = (d.promo && d.promo.charged_vnd) || Math.round(curSvc.price_vnd_1000 * q / 1000); const qrDyn = `https://img.vietqr.io/image/ICB-0868895144-compact.png?amount=${amt}&addInfo=${encodeURIComponent(d.order)}&accountName=DINH%20CONG%20HUY`; $("#mDone").innerHTML = `<p class="ok">Đặt đơn thành công! Mã đơn của bạn: <b>${d.order}</b>.${d.promo ? ` Đã áp dụng mã <b>${d.promo.code}</b> giảm <b>${d.promo.percent_off}%</b>.` : ""}</p><p style="margin-top:8px">Quét mã QR dưới đây để thanh toán đúng số tiền <b>${amt.toLocaleString("vi-VN")}đ</b> (nội dung chuyển khoản đã điền sẵn mã đơn):</p><img src="${qrDyn}" alt="Mã QR thanh toán kèm mã đơn" style="width:200px;max-width:75%;border-radius:10px;margin-top:8px;background:#fff;padding:6px"><p style="margin-top:8px">Hoặc chuyển khoản thủ công: <b>${CONFIG.BANK_INFO}</b> — nội dung chuyển khoản: <b>${d.order}</b>.</p><p style="margin-top:8px">Đơn sẽ chạy ngay khi thanh toán được xác nhận. Lưu mã đơn <b>${d.order}</b> để tra trạng thái.</p>`; }
     else { err.textContent = d.error || "Gửi đơn chưa thành công, bạn thử lại giúp cửa hàng nhé."; }
   }catch(e){ err.textContent = "Không kết nối được hệ thống đặt đơn, bạn thử lại sau ít phút nhé."; }
   btn.disabled = false; btn.textContent = "Đặt đơn";
@@ -423,19 +455,20 @@ $("#mTopupBtn").onclick = ()=>{ $("#modal").classList.remove("open"); openTopup(
 
 // Đặt đơn trừ ví (khách đã đăng nhập)
 $("#mWalletSubmit").onclick = async ()=>{
-  const link = $("#mLink").value.trim(), q = Number($("#mQty").value||0), amt = orderTotal(), err = $("#mWErr");
+  const link = $("#mLink").value.trim(), q = Number($("#mQty").value||0), amt = orderTotal(), payAmt = discountedTotal(), err = $("#mWErr");
   if(!/^https?:\/\/.+/i.test(link)){ err.textContent = "Bạn dán link cần tăng vào nhé (link phải bắt đầu bằng https://)."; return; }
   if(!q || q < Number(curSvc.min||1)){ err.textContent = `Số lượng tối thiểu của gói này là ${fmt0(curSvc.min)}.`; return; }
   if(curSvc.max && Number(curSvc.max) < 2147483647 && q > Number(curSvc.max)){ err.textContent = `Số lượng tối đa của gói này là ${fmt0(curSvc.max)}.`; return; }
-  if(ME.balance_vnd < amt){ err.textContent = `Ví của bạn còn ${fmt(ME.balance_vnd)}, chưa đủ ${fmt(amt)} — bấm Nạp tiền ở trên để nạp thêm nhé.`; return; }
+  if(ME.balance_vnd < payAmt){ err.textContent = `Ví của bạn còn ${fmt(ME.balance_vnd)}, chưa đủ ${fmt(payAmt)} — bấm Nạp tiền ở trên để nạp thêm nhé.`; return; }
   err.textContent = "";
   const btn = $("#mWalletSubmit"); btn.disabled = true; btn.textContent = "Đang gửi đơn...";
   try{
-    const r = await api("/api/order/wallet", {method:"POST", body:{service: curSvc.id, link, quantity: q, total: amt}});
+    const r = await api("/api/order/wallet", {method:"POST", body:{service: curSvc.id, link, quantity: q, total: amt, promo_code: promoState.code}});
     const d = await r.json();
     if(d.order){
       ME.balance_vnd = d.balance_vnd; renderAcct(); refreshOrderActions();
-      $("#mDone").innerHTML = `<p class="ok">Đặt đơn thành công! Mã đơn của bạn: <b>${d.order}</b>.</p><p style="margin-top:8px">Đã trừ <b>${fmt(amt)}</b> từ ví. Số dư còn lại: <b>${fmt(d.balance_vnd)}</b>.</p><p style="margin-top:8px">Lưu mã đơn <b>${d.order}</b> để tra trạng thái.</p>`;
+      const charged = d.charged_vnd || payAmt;
+      $("#mDone").innerHTML = `<p class="ok">Đặt đơn thành công! Mã đơn của bạn: <b>${d.order}</b>.${d.promo ? ` Đã áp dụng mã <b>${d.promo.code}</b> giảm <b>${d.promo.percent_off}%</b>.` : ""}</p><p style="margin-top:8px">Đã trừ <b>${fmt(charged)}</b> từ ví. Số dư còn lại: <b>${fmt(d.balance_vnd)}</b>.</p><p style="margin-top:8px">Lưu mã đơn <b>${d.order}</b> để tra trạng thái.</p>`;
     } else if(r.status === 402 || d.need_topup){
       err.innerHTML = `${d.error || "Ví chưa đủ số dư."} <a href="#" id="mGoTopup" style="color:var(--green)">Nạp tiền ngay</a>`;
       const g = $("#mGoTopup"); if(g) g.onclick = (e)=>{ e.preventDefault(); $("#modal").classList.remove("open"); openTopup(); };
