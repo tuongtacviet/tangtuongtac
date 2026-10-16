@@ -55,6 +55,9 @@ button:disabled{opacity:.5;cursor:default}
       <div class="err" id="pErr"></div>
     </div>
     <div id="pList"><p class="muted">Đang tải...</p></div>
+    <h2 style="margin:18px 0 0">👥 Khách hàng</h2>
+    <p class="muted">Danh sách tài khoản đã đăng ký / đăng nhập trên web (Google, Facebook hoặc tên đăng nhập).</p>
+    <div id="uList"><p class="muted">Đang tải...</p></div>
   </div>
 </div>
 <script>
@@ -93,6 +96,7 @@ async function load(){
         <div><b>${fmt(e.amount_vnd)}</b> · <span class="muted">${e.content || "(không có nội dung)"}</span><br><span class="muted">${new Date(e.created_at).toLocaleString("vi-VN")}</span></div>
       </div>`).join("") : `<p class="muted">Không có khoản nào.</p>`;
     loadPromos();
+    loadUsers();
   }catch(e){ box.innerHTML = `<p class="err">Không kết nối được.</p>`; ubox.innerHTML = ""; }
 }
 async function loadPromos(){
@@ -110,6 +114,51 @@ async function loadPromos(){
       </div>`).join("") : `<p class="muted">Chưa có mã nào.</p>`;
     box.querySelectorAll("button[data-p]").forEach(b=>b.onclick=()=>ptoggle(b.dataset.p, b.dataset.a, b));
   }catch(e){ box.innerHTML = `<p class="err">Không kết nối được.</p>`; }
+}
+async function loadUsers(){
+  const box = document.getElementById("uList");
+  box.innerHTML = `<p class="muted">Đang tải...</p>`;
+  try{
+    const r = await fetch(API_BASE + "/api/admin/users?pass=" + encodeURIComponent(pw()));
+    const d = await r.json();
+    if(d.error){ box.innerHTML = `<p class="err">${d.error}</p>`; return; }
+    const rows = d.users || [];
+    const provVi = p => p === "google" ? "Google" : p === "facebook" ? "Facebook" : "Tên đăng nhập";
+    box.innerHTML = rows.length ? rows.map(u=>`
+      <div class="row">
+        <div><b>${u.display_name || u.username || ("khách #" + u.id)}</b>${u.username && u.display_name ? ` <span class="muted">(${u.username})</span>` : ""}${u.banned ? ` <span style="color:#f87171">· ĐÃ KHÓA</span>` : ""}<br><span class="muted">${provVi(u.provider)} · ví ${fmt(u.balance_vnd)} · ${u.order_count} đơn · tạo ${new Date(u.created_at).toLocaleString("vi-VN")}</span></div>
+        <div style="display:flex;gap:8px;align-items:center">
+          ${u.active_sessions > 0 && !u.banned ? `<span class="ok">● đang đăng nhập</span>` : `<span class="muted">đã thoát</span>`}
+          <button class="ghost" data-u="${u.id}" data-act="bal">+/− tiền</button>
+          <button class="${u.banned ? "" : "danger"}" data-u="${u.id}" data-act="ban">${u.banned ? "Mở khóa" : "Khóa"}</button>
+        </div>
+      </div>`).join("") : `<p class="muted">Chưa có khách hàng nào.</p>`;
+    box.querySelectorAll("button[data-u]").forEach(b=>b.onclick=()=>uact(b.dataset.u, b.dataset.act, b));
+  }catch(e){ box.innerHTML = `<p class="err">Không kết nối được.</p>`; }
+}
+async function uact(uid, act, btn){
+  if(act === "bal"){
+    const v = prompt("Nhập số tiền điều chỉnh ví (dương = cộng, âm = trừ). Ví dụ: 50000 hoặc -20000");
+    if(v === null) return;
+    const delta = Math.round(Number(v) || 0);
+    if(!delta){ alert("Số tiền chưa hợp lệ."); return; }
+    const note = prompt("Ghi chú (tùy chọn, vd: khách chuyển khoản tay)") || "";
+    btn.disabled = true;
+    try{
+      const r = await fetch(API_BASE + "/api/admin/user/balance", {method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({user_id: uid, delta_vnd: delta, note, pass: pw()})});
+      const d = await r.json();
+      if(d.ok){ alert(`Xong. Số dư mới: ${fmt(d.balance_vnd)}`); loadUsers(); } else { alert(d.error || "Thất bại"); btn.disabled = false; }
+    }catch(e){ alert("Không kết nối được."); btn.disabled = false; }
+  } else if(act === "ban"){
+    const willBan = btn.textContent.trim() === "Khóa";
+    if(!confirm(willBan ? "Khóa tài khoản này? Khách sẽ bị đăng xuất ngay và không đăng nhập lại được." : "Mở khóa tài khoản này?")) return;
+    btn.disabled = true;
+    try{
+      const r = await fetch(API_BASE + "/api/admin/user/ban", {method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({user_id: uid, banned: willBan, pass: pw()})});
+      const d = await r.json();
+      if(d.ok) loadUsers(); else { alert(d.error || "Thất bại"); btn.disabled = false; }
+    }catch(e){ alert("Không kết nối được."); btn.disabled = false; }
+  }
 }
 async function ptoggle(code, active, btn){
   btn.disabled = true;
