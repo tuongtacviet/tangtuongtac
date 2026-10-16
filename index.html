@@ -743,7 +743,8 @@ $("#wSubmit").onclick = async ()=>{
     const r = await fetch(CONFIG.API_BASE + "/api/service-order", {method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify(body)});
     const d = await r.json();
     if(d.ok){
-      done.innerHTML = `<p class="ok">✅ Gửi yêu cầu thành công! Mã đơn dịch vụ của bạn: <b>${d.code}</b>.</p><p style="margin-top:8px">Cửa hàng sẽ liên hệ lại trong 24 giờ để tư vấn chi tiết. Bạn nhớ cọc <b>150.000đ</b> sau khi thống nhất yêu cầu để cửa hàng bắt đầu làm nhé.</p>`;
+      const qrDep = `https://img.vietqr.io/image/ICB-0868895144-compact.png?amount=150000&addInfo=${encodeURIComponent(d.code)}&accountName=DINH%20CONG%20HUY`;
+      done.innerHTML = `<p class="ok">✅ Gửi yêu cầu thành công! Mã đơn dịch vụ của bạn: <b>${d.code}</b>.</p><p style="margin-top:8px">Để cửa hàng bắt đầu làm ngay, bạn <b>cọc 150.000đ</b> — quét mã QR dưới đây (nội dung chuyển khoản đã điền sẵn mã đơn):</p><img src="${qrDep}" alt="QR cọc làm website" style="width:200px;max-width:75%;border-radius:10px;margin-top:8px;background:#fff;padding:6px"><p style="margin-top:8px">Hoặc chuyển khoản thủ công: <b>VietinBank · 0868895144 · DINH CONG HUY</b> — nội dung: <b>${d.code}</b>.</p><p style="color:var(--muted);font-size:14px">Cửa hàng tự nhận biết tiền cọc qua mã đơn, xác nhận và liên hệ lại trong 24 giờ để tư vấn chi tiết. 150.000đ còn lại thanh toán khi bàn giao.</p>`;
       $("#wName").value = ""; $("#wPhone").value = ""; $("#wDesc").value = "";
     } else err.textContent = d.error || "Gửi yêu cầu chưa thành công, bạn thử lại nhé.";
   }catch(e){ err.textContent = "Không kết nối được, bạn thử lại sau ít phút nhé."; }
