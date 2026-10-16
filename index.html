@@ -51,6 +51,9 @@ header{position:sticky;top:0;z-index:40;background:rgba(11,18,32,.94);backdrop-f
 .group .pico{width:30px;height:30px;border-radius:10px}
 .group{display:flex;align-items:center;gap:10px}
 .tab.active{background:var(--green);border-color:var(--green);color:#05240f;font-weight:700}
+.tab.websvc{border-color:var(--green-d);background:rgba(34,197,94,.13);font-weight:800}
+.tab.websvc b{color:var(--green)}
+.tab.websvc:hover{border-color:var(--green)}
 .ttabs{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0 14px}
 .ttab{border:1px solid var(--line);background:transparent;color:var(--muted);border-radius:999px;padding:8px 13px;min-height:40px;cursor:pointer;font-size:14px}
 .ttab.active{color:var(--text);border-color:var(--green);background:var(--panel)}
@@ -185,7 +188,7 @@ footer h4{color:var(--text);margin:12px 0 6px;font-size:15px}
   <p class="count" id="count"></p>
   <main id="list"></main>
 
-  <section class="webservice" aria-label="Dịch vụ làm website">
+  <section class="webservice" id="webservice" aria-label="Dịch vụ làm website">
     <div class="ws-card">
       <div class="ws-badge">DỊCH VỤ MỚI</div>
       <h2>🌐 Dịch vụ làm website trọn gói — <span class="ws-price">300.000đ</span></h2>
@@ -401,7 +404,10 @@ const fmt = n => n.toLocaleString("vi-VN") + "đ";
 const $ = s => document.querySelector(s);
 
 function buildTabs(){
-  $("#ptabs").innerHTML = PLATFORMS.map(([k,v])=>`<button class="tab${k===curP?" active":""}" data-p="${k}">${pico(k)}${v}</button>`).join("");
+  $("#ptabs").innerHTML = PLATFORMS.map(([k,v])=>`<button class="tab${k===curP?" active":""}" data-p="${k}">${pico(k)}${v}</button>`).join("")
+    + `<button class="tab websvc" id="webSvcTab">🌐 Làm website trọn gói · <b>300k</b></button>`;
+  const wsb = document.getElementById("webSvcTab");
+  if(wsb) wsb.onclick = ()=>{ const el = document.getElementById("webservice"); if(el) el.scrollIntoView({behavior:"smooth", block:"start"}); };
   $("#ttabs").innerHTML = TYPES.map(([k,v])=>`<button class="ttab${k===curT?" active":""}" data-t="${k}">${v}</button>`).join("");
   document.querySelectorAll("[data-p]").forEach(b=>b.onclick=()=>{curP=b.dataset.p;buildTabs();render();});
   document.querySelectorAll("[data-t]").forEach(b=>b.onclick=()=>{curT=b.dataset.t;buildTabs();render();});
