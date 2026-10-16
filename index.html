@@ -87,6 +87,24 @@ footer h4{color:var(--text);margin:12px 0 6px;font-size:15px}
 .modal.open{display:flex}
 .sheet{background:var(--panel);border:1px solid var(--line);border-radius:18px 18px 0 0;width:100%;max-width:560px;max-height:92vh;overflow:auto;padding:22px}
 @media(min-width:640px){.modal{align-items:center}.sheet{border-radius:18px}}
+/* Gọn header trên điện thoại: logo, ô tìm kiếm, nút tài khoản nhỏ lại để mặt tiền thoáng */
+@media(max-width:640px){
+  .hbar{gap:8px;padding:8px 0}
+  .logo{font-size:17px}
+  .search{min-width:140px}
+  .search input{padding:9px 12px;font-size:15px}
+  .acctbar{gap:6px;margin-left:0}
+  .abtn{padding:7px 11px;font-size:13px;min-height:38px;border-radius:8px}
+  .abal{font-size:13.5px}
+  .hero{padding:20px 0 6px}
+  .hero h1{font-size:23px}
+  .hero p{font-size:14.5px}
+  .steps{margin:14px 0 2px}
+}
+/* Nút cuộn lên đầu trang: nhỏ, mờ, nằm trên bong bóng chat */
+#toTop{position:fixed;right:14px;bottom:86px;width:38px;height:38px;border-radius:50%;background:var(--panel);border:1px solid var(--line);color:var(--muted);font-size:17px;cursor:pointer;z-index:55;display:none;opacity:.8;padding:0;line-height:1}
+#toTop.show{display:block}
+#toTop:hover{color:var(--green);border-color:var(--green);opacity:1}
 .sheet h2{font-size:19px;margin-bottom:4px}
 .sheet .svc{color:var(--muted);font-size:14px;margin-bottom:14px}
 .sheet label{display:block;font-size:14px;margin:12px 0 6px;color:var(--text)}
@@ -208,7 +226,7 @@ footer h4{color:var(--text);margin:12px 0 6px;font-size:15px}
         <div class="ws-col">
           <h4>❌ Chưa bao gồm</h4>
           <ul>
-            <li>Tên miền (~250.000đ/năm — khách tự mua hoặc nhờ mua hộ)</li>
+            <li>Tên miền (20.000đ ~ 250.000đ/năm tùy đuôi — khách tự mua hoặc nhờ mua hộ)</li>
             <li>Web bán hàng có giỏ hàng/thanh toán, web cần tài khoản đăng nhập</li>
             <li>Viết bài, chụp ảnh, thiết kế logo</li>
           </ul>
@@ -346,7 +364,7 @@ footer h4{color:var(--text);margin:12px 0 6px;font-size:15px}
 <div class="modal" id="webModal" role="dialog" aria-modal="true" aria-labelledby="wTitle">
   <div class="sheet amodal">
     <h2 id="wTitle">Đặt làm website — 300.000đ trọn gói</h2>
-    <p style="color:var(--muted);font-size:14px;margin-top:0">Cọc 150.000đ trước khi làm, 150.000đ còn lại khi bàn giao. Tên miền (~250.000đ/năm) chưa bao gồm trong giá.</p>
+    <p style="color:var(--muted);font-size:14px;margin-top:0">Cọc 150.000đ trước khi làm, 150.000đ còn lại khi bàn giao. Tên miền (20.000đ ~ 250.000đ/năm tùy đuôi) chưa bao gồm trong giá.</p>
     <label for="wName">Tên của bạn</label>
     <input id="wName" placeholder="vd: Nguyễn Văn A" autocomplete="name">
     <label for="wPhone">Số điện thoại / Zalo</label>
@@ -702,6 +720,14 @@ $("#statusForm").addEventListener("submit", async e=>{
 
 $("#q").addEventListener("input", e=>{ curQ = e.target.value.trim().toLowerCase(); render(); });
 
+/* Nút cuộn lên đầu trang: chỉ hiện khi đã cuộn xuống */
+(function(){
+  const tt = document.getElementById("toTop");
+  if(!tt) return;
+  addEventListener("scroll", ()=>{ tt.classList.toggle("show", scrollY > 600); }, {passive:true});
+  tt.onclick = ()=>scrollTo({top:0, behavior:"smooth"});
+})();
+
 /* ====== ĐẶT LÀM WEBSITE (dịch vụ riêng, không qua đơn SMM) ====== */
 const WEB_TYPES = {"gioi-thieu":"Web giới thiệu doanh nghiệp / cửa hàng","ca-nhan":"Web cá nhân / portfolio","landing":"Landing page bán hàng / quảng cáo","nha-hang":"Web nhà hàng / quán ăn / cafe","bat-dong-san":"Web bất động sản","khac":"Loại khác"};
 $("#webOrderBtn").onclick = ()=>{ $("#wErr").textContent = ""; $("#wDone").innerHTML = ""; $("#webModal").classList.add("open"); };
@@ -741,5 +767,6 @@ s0.parentNode.insertBefore(s1,s0);
 })();
 </script>
 <!--End of Tawk.to Script-->
+<button id="toTop" aria-label="Cuộn lên đầu trang" title="Lên đầu trang">↑</button>
 </body>
 </html>
