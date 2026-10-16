@@ -362,27 +362,44 @@ footer h4{color:var(--text);margin:12px 0 6px;font-size:15px}
 <div class="modal" id="webModal" role="dialog" aria-modal="true" aria-labelledby="wTitle">
   <div class="sheet amodal">
     <h2 id="wTitle">Đặt làm website — 300.000đ trọn gói</h2>
-    <p style="color:var(--muted);font-size:14px;margin-top:0">Cọc 150.000đ trước khi làm, 150.000đ còn lại khi bàn giao. Tên miền (20.000đ ~ 250.000đ/năm tùy đuôi) chưa bao gồm trong giá.</p>
-    <label for="wName">Tên của bạn</label>
-    <input id="wName" placeholder="vd: Nguyễn Văn A" autocomplete="name">
-    <label for="wPhone">Số điện thoại / Zalo</label>
-    <input id="wPhone" inputmode="tel" placeholder="vd: 0912345678" autocomplete="tel">
-    <label for="wType">Loại website cần làm</label>
-    <select id="wType">
-      <option value="gioi-thieu">Web giới thiệu doanh nghiệp / cửa hàng</option>
-      <option value="ca-nhan">Web cá nhân / portfolio</option>
-      <option value="landing">Landing page bán hàng / quảng cáo</option>
-      <option value="nha-hang">Web nhà hàng / quán ăn / cafe</option>
-      <option value="bat-dong-san">Web bất động sản</option>
-      <option value="khac">Loại khác (ghi rõ bên dưới)</option>
-    </select>
-    <label for="wDesc">Mô tả nhu cầu</label>
-    <textarea id="wDesc" placeholder="vd: Web giới thiệu quán cà phê, 4 trang: trang chủ, menu, hình ảnh, liên hệ. Muốn tông màu nâu ấm, có bản đồ chỉ đường..."></textarea>
-    <div class="err" id="wErr"></div>
-    <div id="wDone" style="margin-top:10px"></div>
-    <div style="display:flex;gap:10px;margin-top:14px;flex-wrap:wrap">
-      <button class="btn" id="wSubmit" style="flex:1">Gửi yêu cầu</button>
-      <button class="btn ghost" id="wClose">Đóng</button>
+    <p style="color:var(--muted);font-size:14px;margin-top:0">Bạn điền thông tin, <b style="color:var(--text)">đặt cọc 150.000đ</b> rồi đơn mới được gửi đi. 150.000đ còn lại thanh toán khi bàn giao. Tên miền (20.000đ ~ 250.000đ/năm tùy đuôi) chưa bao gồm trong giá.</p>
+    <div id="wStep1">
+      <label for="wName">Tên của bạn</label>
+      <input id="wName" placeholder="vd: Nguyễn Văn A" autocomplete="name">
+      <label for="wPhone">Số điện thoại / Zalo</label>
+      <input id="wPhone" inputmode="tel" placeholder="vd: 0912345678" autocomplete="tel">
+      <label for="wType">Loại website cần làm</label>
+      <select id="wType">
+        <option value="gioi-thieu">Web giới thiệu doanh nghiệp / cửa hàng</option>
+        <option value="ca-nhan">Web cá nhân / portfolio</option>
+        <option value="landing">Landing page bán hàng / quảng cáo</option>
+        <option value="nha-hang">Web nhà hàng / quán ăn / cafe</option>
+        <option value="bat-dong-san">Web bất động sản</option>
+        <option value="khac">Loại khác (ghi rõ bên dưới)</option>
+      </select>
+      <label for="wDesc">Mô tả nhu cầu</label>
+      <textarea id="wDesc" placeholder="vd: Web giới thiệu quán cà phê, 4 trang: trang chủ, menu, hình ảnh, liên hệ. Muốn tông màu nâu ấm, có bản đồ chỉ đường..."></textarea>
+      <div class="err" id="wErr"></div>
+      <div style="display:flex;gap:10px;margin-top:14px;flex-wrap:wrap">
+        <button class="btn" id="wSubmit" style="flex:1">Tiếp tục — đặt cọc 150.000đ</button>
+        <button class="btn ghost" id="wClose">Đóng</button>
+      </div>
+    </div>
+    <div id="wStep2" style="display:none">
+      <p class="ok">Đơn <b id="wCode"></b> đã được tạo. Quét mã QR để <b>cọc 150.000đ</b> (nội dung chuyển khoản đã điền sẵn mã đơn):</p>
+      <div class="qrbox"><img id="wQr" alt="QR cọc làm website" style="width:200px;max-width:75%;border-radius:10px;margin-top:8px;background:#fff;padding:6px"></div>
+      <p style="margin-top:8px">Hoặc chuyển khoản thủ công: <b>VietinBank · 0868895144 · DINH CONG HUY</b> — nội dung: <b id="wCode2"></b>.</p>
+      <div style="border:1px solid var(--green-d);border-radius:10px;padding:10px 12px;margin-top:12px;font-size:14px;background:rgba(34,197,94,.06)">
+        🔒 <b>Cọc an toàn:</b> tiền cọc chỉ dùng để triển khai website cho bạn.<br>
+        ✅ <b>Cam kết hoàn cọc 100%</b> nếu cửa hàng không thực hiện đúng như tư vấn.<br>
+        📞 Cửa hàng gọi lại trong <b>24 giờ</b> để thống nhất yêu cầu trước khi làm.
+      </div>
+      <div class="err" id="wErr2"></div>
+      <div id="wPoll" style="margin-top:10px"></div>
+      <div style="display:flex;gap:10px;margin-top:14px;flex-wrap:wrap">
+        <button class="btn" id="wPaid" style="flex:1">Tôi đã chuyển khoản</button>
+        <button class="btn ghost" id="wBack">Sửa thông tin</button>
+      </div>
     </div>
   </div>
 </div>
@@ -728,27 +745,58 @@ $("#q").addEventListener("input", e=>{ curQ = e.target.value.trim().toLowerCase(
 
 /* ====== ĐẶT LÀM WEBSITE (dịch vụ riêng, không qua đơn SMM) ====== */
 const WEB_TYPES = {"gioi-thieu":"Web giới thiệu doanh nghiệp / cửa hàng","ca-nhan":"Web cá nhân / portfolio","landing":"Landing page bán hàng / quảng cáo","nha-hang":"Web nhà hàng / quán ăn / cafe","bat-dong-san":"Web bất động sản","khac":"Loại khác"};
-$("#webOrderBtn").onclick = ()=>{ $("#wErr").textContent = ""; $("#wDone").innerHTML = ""; $("#webModal").classList.add("open"); };
-$("#wClose").onclick = ()=>$("#webModal").classList.remove("open");
-$("#webModal").addEventListener("click", e=>{ if(e.target.id==="webModal") $("#webModal").classList.remove("open"); });
+let wOrderCode = null, wPollTimer = null;
+function wStopPoll(){ if(wPollTimer){ clearInterval(wPollTimer); wPollTimer = null; } }
+function wShowStep1(){
+  wStopPoll(); wOrderCode = null;
+  $("#wStep2").style.display = "none"; $("#wStep1").style.display = "";
+  const btn = $("#wSubmit"); btn.disabled = false; btn.textContent = "Tiếp tục — đặt cọc 150.000đ";
+}
+function wStartPoll(){
+  wStopPoll();
+  wPollTimer = setInterval(async ()=>{
+    if(!wOrderCode) return;
+    try{
+      const r = await fetch(CONFIG.API_BASE + "/api/service-order/status?code=" + encodeURIComponent(wOrderCode));
+      const d = await r.json();
+      if(d.ok && d.status === "deposit_paid"){
+        wStopPoll();
+        $("#wStep2").innerHTML = `<p class="ok" style="font-size:17px">🎉 <b>Đã nhận được cọc 150.000đ!</b></p><p style="margin-top:8px">Cảm ơn bạn đã tin tưởng. Cửa hàng sẽ liên hệ lại trong 24 giờ để thống nhất yêu cầu và bắt đầu làm website cho bạn.</p><div style="margin-top:14px"><button class="btn" id="wDoneClose" style="width:100%">Đóng</button></div>`;
+        $("#wDoneClose").onclick = ()=>{ $("#webModal").classList.remove("open"); wShowStep1(); };
+      }
+    }catch(e){}
+  }, 8000);
+}
+$("#webOrderBtn").onclick = ()=>{ $("#wErr").textContent = ""; wShowStep1(); $("#webModal").classList.add("open"); };
+$("#wClose").onclick = ()=>{ $("#webModal").classList.remove("open"); wShowStep1(); };
+$("#webModal").addEventListener("click", e=>{ if(e.target.id==="webModal"){ $("#webModal").classList.remove("open"); wShowStep1(); } });
+$("#wBack").onclick = ()=>{ wShowStep1(); };
+$("#wPaid").onclick = ()=>{
+  $("#wPoll").innerHTML = `<p style="color:var(--muted);font-size:14.5px">✅ Đã ghi nhận! Hệ thống đang chờ tiền về (thường 1–5 phút) — tiền về là đơn của bạn tự chuyển "Đã cọc" và cửa hàng bắt đầu làm ngay. Bạn có thể đóng cửa sổ này, không cần chờ.</p>`;
+  const btn = $("#wPaid"); btn.disabled = true; btn.textContent = "Đang chờ tiền về...";
+};
 $("#wSubmit").onclick = async ()=>{
-  const err = $("#wErr"), done = $("#wDone");
-  err.textContent = ""; done.innerHTML = "";
+  const err = $("#wErr");
+  err.textContent = "";
   const body = {name: $("#wName").value.trim(), phone: $("#wPhone").value.trim(), web_type: $("#wType").value, description: $("#wDesc").value.trim()};
   if(body.name.length < 2){ err.textContent = "Bạn cho cửa hàng xin tên nhé."; return; }
   if(!/^(0|\+84)(\d{9,10})$/.test(body.phone.replace(/[\s.]/g,""))){ err.textContent = "Số điện thoại/Zalo chưa đúng, bạn kiểm tra lại nhé."; return; }
   if(body.description.length < 10){ err.textContent = "Bạn mô tả thêm về website cần làm để cửa hàng tư vấn chính xác nhé."; return; }
-  const btn = $("#wSubmit"); btn.disabled = true; btn.textContent = "Đang gửi...";
+  const btn = $("#wSubmit"); btn.disabled = true; btn.textContent = "Đang tạo đơn...";
   try{
     const r = await fetch(CONFIG.API_BASE + "/api/service-order", {method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify(body)});
     const d = await r.json();
     if(d.ok){
-      const qrDep = `https://img.vietqr.io/image/ICB-0868895144-compact.png?amount=150000&addInfo=${encodeURIComponent(d.code)}&accountName=DINH%20CONG%20HUY`;
-      done.innerHTML = `<p class="ok">✅ Gửi yêu cầu thành công! Mã đơn dịch vụ của bạn: <b>${d.code}</b>.</p><p style="margin-top:8px">Để cửa hàng bắt đầu làm ngay, bạn <b>cọc 150.000đ</b> — quét mã QR dưới đây (nội dung chuyển khoản đã điền sẵn mã đơn):</p><img src="${qrDep}" alt="QR cọc làm website" style="width:200px;max-width:75%;border-radius:10px;margin-top:8px;background:#fff;padding:6px"><p style="margin-top:8px">Hoặc chuyển khoản thủ công: <b>VietinBank · 0868895144 · DINH CONG HUY</b> — nội dung: <b>${d.code}</b>.</p><p style="color:var(--muted);font-size:14px">Cửa hàng tự nhận biết tiền cọc qua mã đơn, xác nhận và liên hệ lại trong 24 giờ để tư vấn chi tiết. 150.000đ còn lại thanh toán khi bàn giao.</p>`;
-      $("#wName").value = ""; $("#wPhone").value = ""; $("#wDesc").value = "";
-    } else err.textContent = d.error || "Gửi yêu cầu chưa thành công, bạn thử lại nhé.";
+      wOrderCode = d.code;
+      $("#wCode").textContent = d.code; $("#wCode2").textContent = d.code;
+      $("#wQr").src = `https://img.vietqr.io/image/ICB-0868895144-compact.png?amount=150000&addInfo=${encodeURIComponent(d.code)}&accountName=DINH%20CONG%20HUY`;
+      $("#wErr2").textContent = ""; $("#wPoll").innerHTML = "";
+      const pb = $("#wPaid"); pb.disabled = false; pb.textContent = "Tôi đã chuyển khoản";
+      $("#wStep1").style.display = "none"; $("#wStep2").style.display = "";
+      wStartPoll();
+    } else err.textContent = d.error || "Tạo đơn chưa thành công, bạn thử lại nhé.";
   }catch(e){ err.textContent = "Không kết nối được, bạn thử lại sau ít phút nhé."; }
-  btn.disabled = false; btn.textContent = "Gửi yêu cầu";
+  btn.disabled = false; btn.textContent = "Tiếp tục — đặt cọc 150.000đ";
 };
 
 buildTabs(); render(); refreshMe();
