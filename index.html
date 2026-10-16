@@ -124,6 +124,22 @@ footer h4{color:var(--text);margin:12px 0 6px;font-size:15px}
 .tlist{margin-top:10px;font-size:14px}
 .tlist .tr{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--line)}
 .st-pending{color:#fbbf24}.st-confirmed{color:var(--green)}.st-rejected{color:#f87171}
+.webservice{margin:30px 0}
+.ws-card{background:linear-gradient(135deg,#0f2a1a,#111a2e);border:1px solid var(--green-d);border-radius:var(--radius);padding:24px;position:relative;overflow:hidden}
+.ws-badge{display:inline-block;background:var(--green);color:#05240f;font-weight:800;font-size:12.5px;border-radius:999px;padding:4px 12px;margin-bottom:10px}
+.ws-card h2{font-size:clamp(20px,3.5vw,28px);margin-bottom:8px}
+.ws-price{color:var(--green)}
+.ws-sub{color:var(--muted);font-size:15px;max-width:760px}
+.ws-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;margin-top:16px}
+.ws-col{background:rgba(3,7,15,.45);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+.ws-col h4{font-size:15px;margin-bottom:8px}
+.ws-col ul{list-style:none}
+.ws-col li{font-size:14.5px;color:var(--muted);padding:3px 0}
+.ws-col li::before{content:"• ";color:var(--green)}
+.ws-note{color:var(--muted);font-size:13.5px;margin-top:10px}
+.sheet select,.sheet textarea{width:100%;padding:12px 14px;border-radius:10px;border:1px solid var(--line);background:var(--panel2);color:var(--text);font-size:16px;font-family:inherit}
+.sheet textarea{resize:vertical;min-height:96px}
+.ws-status{font-size:13.5px;margin-top:8px}
 </style>
 </head>
 <body>
@@ -168,6 +184,41 @@ footer h4{color:var(--text);margin:12px 0 6px;font-size:15px}
   <nav class="ttabs" id="ttabs" aria-label="Loại dịch vụ"></nav>
   <p class="count" id="count"></p>
   <main id="list"></main>
+
+  <section class="webservice" aria-label="Dịch vụ làm website">
+    <div class="ws-card">
+      <div class="ws-badge">DỊCH VỤ MỚI</div>
+      <h2>🌐 Dịch vụ làm website trọn gói — <span class="ws-price">300.000đ</span></h2>
+      <p class="ws-sub">Website giới thiệu doanh nghiệp, cửa hàng, cá nhân — bàn giao trong 3–5 ngày. Tên miền (~250.000đ/năm) do khách hàng chi trả: tự mua hoặc nhờ cửa hàng mua hộ đúng giá.</p>
+      <div class="ws-grid">
+        <div class="ws-col">
+          <h4>✅ Gói 300.000đ bao gồm</h4>
+          <ul>
+            <li>Website 1–5 trang: trang chủ, giới thiệu, dịch vụ/sản phẩm, liên hệ</li>
+            <li>Giao diện thiết kế theo yêu cầu, hiển thị đẹp trên điện thoại</li>
+            <li>Nút gọi, Zalo, form liên hệ, bản đồ Google Maps</li>
+            <li>Hosting miễn phí — không tốn phí duy trì hàng tháng</li>
+            <li>Chỉnh sửa miễn phí 2 lần trong 7 ngày đầu</li>
+            <li>Hướng dẫn trỏ tên miền về website</li>
+          </ul>
+        </div>
+        <div class="ws-col">
+          <h4>❌ Chưa bao gồm</h4>
+          <ul>
+            <li>Tên miền (~250.000đ/năm — khách tự mua hoặc nhờ mua hộ)</li>
+            <li>Web bán hàng có giỏ hàng/thanh toán, web cần tài khoản đăng nhập</li>
+            <li>Viết bài, chụp ảnh, thiết kế logo</li>
+          </ul>
+          <h4 style="margin-top:12px">💰 Thanh toán</h4>
+          <ul>
+            <li>Cọc <b style="color:var(--text)">150.000đ</b> trước khi làm, <b style="color:var(--text)">150.000đ</b> còn lại khi bàn giao</li>
+          </ul>
+        </div>
+      </div>
+      <button class="btn" id="webOrderBtn" style="margin-top:16px">Đặt làm website — 300.000đ</button>
+      <p class="ws-note">Sau khi gửi yêu cầu, cửa hàng sẽ liên hệ lại trong 24 giờ để tư vấn chi tiết.</p>
+    </div>
+  </section>
 
   <section class="statusbox">
     <h2>Tra trạng thái đơn hàng</h2>
@@ -286,6 +337,34 @@ footer h4{color:var(--text);margin:12px 0 6px;font-size:15px}
     <h3 style="margin-top:16px">Lịch sử nạp</h3>
     <div class="tlist" id="tHist"><p style="color:var(--muted)">Bạn đăng nhập để xem lịch sử nạp.</p></div>
     <div style="margin-top:12px"><button class="btn ghost" id="tClose" style="width:100%">Đóng</button></div>
+  </div>
+</div>
+
+<div class="modal" id="webModal" role="dialog" aria-modal="true" aria-labelledby="wTitle">
+  <div class="sheet amodal">
+    <h2 id="wTitle">Đặt làm website — 300.000đ trọn gói</h2>
+    <p style="color:var(--muted);font-size:14px;margin-top:0">Cọc 150.000đ trước khi làm, 150.000đ còn lại khi bàn giao. Tên miền (~250.000đ/năm) chưa bao gồm trong giá.</p>
+    <label for="wName">Tên của bạn</label>
+    <input id="wName" placeholder="vd: Nguyễn Văn A" autocomplete="name">
+    <label for="wPhone">Số điện thoại / Zalo</label>
+    <input id="wPhone" inputmode="tel" placeholder="vd: 0912345678" autocomplete="tel">
+    <label for="wType">Loại website cần làm</label>
+    <select id="wType">
+      <option value="gioi-thieu">Web giới thiệu doanh nghiệp / cửa hàng</option>
+      <option value="ca-nhan">Web cá nhân / portfolio</option>
+      <option value="landing">Landing page bán hàng / quảng cáo</option>
+      <option value="nha-hang">Web nhà hàng / quán ăn / cafe</option>
+      <option value="bat-dong-san">Web bất động sản</option>
+      <option value="khac">Loại khác (ghi rõ bên dưới)</option>
+    </select>
+    <label for="wDesc">Mô tả nhu cầu</label>
+    <textarea id="wDesc" placeholder="vd: Web giới thiệu quán cà phê, 4 trang: trang chủ, menu, hình ảnh, liên hệ. Muốn tông màu nâu ấm, có bản đồ chỉ đường..."></textarea>
+    <div class="err" id="wErr"></div>
+    <div id="wDone" style="margin-top:10px"></div>
+    <div style="display:flex;gap:10px;margin-top:14px;flex-wrap:wrap">
+      <button class="btn" id="wSubmit" style="flex:1">Gửi yêu cầu</button>
+      <button class="btn ghost" id="wClose">Đóng</button>
+    </div>
   </div>
 </div>
 
@@ -616,6 +695,31 @@ $("#statusForm").addEventListener("submit", async e=>{
 });
 
 $("#q").addEventListener("input", e=>{ curQ = e.target.value.trim().toLowerCase(); render(); });
+
+/* ====== ĐẶT LÀM WEBSITE (dịch vụ riêng, không qua đơn SMM) ====== */
+const WEB_TYPES = {"gioi-thieu":"Web giới thiệu doanh nghiệp / cửa hàng","ca-nhan":"Web cá nhân / portfolio","landing":"Landing page bán hàng / quảng cáo","nha-hang":"Web nhà hàng / quán ăn / cafe","bat-dong-san":"Web bất động sản","khac":"Loại khác"};
+$("#webOrderBtn").onclick = ()=>{ $("#wErr").textContent = ""; $("#wDone").innerHTML = ""; $("#webModal").classList.add("open"); };
+$("#wClose").onclick = ()=>$("#webModal").classList.remove("open");
+$("#webModal").addEventListener("click", e=>{ if(e.target.id==="webModal") $("#webModal").classList.remove("open"); });
+$("#wSubmit").onclick = async ()=>{
+  const err = $("#wErr"), done = $("#wDone");
+  err.textContent = ""; done.innerHTML = "";
+  const body = {name: $("#wName").value.trim(), phone: $("#wPhone").value.trim(), web_type: $("#wType").value, description: $("#wDesc").value.trim()};
+  if(body.name.length < 2){ err.textContent = "Bạn cho cửa hàng xin tên nhé."; return; }
+  if(!/^(0|\+84)(\d{9,10})$/.test(body.phone.replace(/[\s.]/g,""))){ err.textContent = "Số điện thoại/Zalo chưa đúng, bạn kiểm tra lại nhé."; return; }
+  if(body.description.length < 10){ err.textContent = "Bạn mô tả thêm về website cần làm để cửa hàng tư vấn chính xác nhé."; return; }
+  const btn = $("#wSubmit"); btn.disabled = true; btn.textContent = "Đang gửi...";
+  try{
+    const r = await fetch(CONFIG.API_BASE + "/api/service-order", {method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify(body)});
+    const d = await r.json();
+    if(d.ok){
+      done.innerHTML = `<p class="ok">✅ Gửi yêu cầu thành công! Mã đơn dịch vụ của bạn: <b>${d.code}</b>.</p><p style="margin-top:8px">Cửa hàng sẽ liên hệ lại trong 24 giờ để tư vấn chi tiết. Bạn nhớ cọc <b>150.000đ</b> sau khi thống nhất yêu cầu để cửa hàng bắt đầu làm nhé.</p>`;
+      $("#wName").value = ""; $("#wPhone").value = ""; $("#wDesc").value = "";
+    } else err.textContent = d.error || "Gửi yêu cầu chưa thành công, bạn thử lại nhé.";
+  }catch(e){ err.textContent = "Không kết nối được, bạn thử lại sau ít phút nhé."; }
+  btn.disabled = false; btn.textContent = "Gửi yêu cầu";
+};
+
 buildTabs(); render(); refreshMe();
 </script>
 <!--Start of Tawk.to Script-->

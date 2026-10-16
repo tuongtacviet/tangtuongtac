@@ -12,6 +12,7 @@ body{background:#0b1120;color:#e2e8f0;font-family:system-ui,-apple-system,sans-s
 h1{font-size:22px}
 .card{background:#0f172a;border:1px solid var(--line);border-radius:14px;padding:16px;margin:12px 0}
 input{background:#0b1120;border:1px solid var(--line);color:#e2e8f0;border-radius:10px;padding:10px 12px;font-size:15px;width:100%}
+select{background:#0b1120;border:1px solid var(--line);color:#e2e8f0;border-radius:10px;padding:10px 12px;font-size:15px}
 button{background:var(--green);border:none;color:#052e16;font-weight:800;border-radius:10px;padding:10px 16px;cursor:pointer;font-size:15px}
 button.ghost{background:transparent;border:1px solid var(--line);color:#e2e8f0}
 button.danger{background:#ef4444;color:#fff}
@@ -58,6 +59,9 @@ button:disabled{opacity:.5;cursor:default}
     <h2 style="margin:18px 0 0">👥 Khách hàng</h2>
     <p class="muted">Danh sách tài khoản đã đăng ký / đăng nhập trên web (Google, Facebook hoặc tên đăng nhập).</p>
     <div id="uList"><p class="muted">Đang tải...</p></div>
+    <h2 style="margin:18px 0 0">🌐 Đơn làm website</h2>
+    <p class="muted">Yêu cầu làm website 300k từ form trên trang chủ. Liên hệ khách trong 24h — cọc 150.000đ trước khi làm, 150.000đ còn lại khi bàn giao.</p>
+    <div id="wList"><p class="muted">Đang tải...</p></div>
   </div>
 </div>
 <script>
@@ -97,7 +101,60 @@ async function load(){
       </div>`).join("") : `<p class="muted">Không có khoản nào.</p>`;
     loadPromos();
     loadUsers();
+    loadSvcOrders();
   }catch(e){ box.innerHTML = `<p class="err">Không kết nối được.</p>`; ubox.innerHTML = ""; }
+}
+const SVC_STATUS = {new:"Mới", contacted:"Đã liên hệ", deposit_paid:"Đã cọc 150k", in_progress:"Đang làm", done:"Hoàn thành", cancelled:"Đã hủy"};
+const SVC_COLOR = {new:"#fbbf24", contacted:"#7dd3fc", deposit_paid:"#f0abfc", in_progress:"#fbbf24", done:"#22c55e", cancelled:"#f87171"};
+const WEB_TYPES = {"gioi-thieu":"Web giới thiệu doanh nghiệp / cửa hàng","ca-nhan":"Web cá nhân / portfolio","landing":"Landing page bán hàng / quảng cáo","nha-hang":"Web nhà hàng / quán ăn / cafe","bat-dong-san":"Web bất động sản","khac":"Loại khác"};
+async function loadSvcOrders(){
+  const box = document.getElementById("wList");
+  box.innerHTML = `<p class="muted">Đang tải...</p>`;
+  try{
+    const r = await fetch(API_BASE + "/api/admin/service-orders?pass=" + encodeURIComponent(pw()));
+    const d = await r.json();
+    if(d.error){ box.innerHTML = `<p class="err">${d.error}</p>`; return; }
+    const rows = d.orders || [];
+    box.innerHTML = rows.length ? rows.map(o=>`
+      <div class="row">
+        <div style="flex:1;min-width:220px">
+          <b>${o.code}</b> · <span style="color:${SVC_COLOR[o.status]||"#e2e8f0"};font-weight:700">${SVC_STATUS[o.status]||o.status}</span><br>
+          <span>${o.name} · <a href="tel:${o.phone}" style="color:var(--green)">${o.phone}</a></span><br>
+          <span class="muted">${WEB_TYPES[o.web_type]||o.web_type} · ${new Date(o.created_at).toLocaleString("vi-VN")}</span><br>
+          <span class="muted">📝 ${o.description}</span>
+          ${o.note ? `<br><span class="muted" style="color:#fbbf24">Ghi chú: ${o.note}</span>` : ""}
+        </div>
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+          <select data-s="${o.code}">
+            ${Object.keys(SVC_STATUS).map(s=>`<option value="${s}"${s===o.status?" selected":""}>${SVC_STATUS[s]}</option>`).join("")}
+          </select>
+          <button class="ghost" data-wn="${o.code}">📝</button>
+          <button data-w="${o.code}">Lưu</button>
+        </div>
+      </div>`).join("") : `<p class="muted">Chưa có đơn làm website nào.</p>`;
+    box.querySelectorAll("button[data-w]").forEach(b=>b.onclick=()=>svcSave(b.dataset.w, b));
+    box.querySelectorAll("button[data-wn]").forEach(b=>b.onclick=()=>svcNote(b.dataset.wn));
+  }catch(e){ box.innerHTML = `<p class="err">Không kết nối được.</p>`; }
+}
+async function svcNote(code){
+  const note = prompt("Ghi chú nội bộ cho đơn " + code + " (để trống = xóa ghi chú):", "");
+  if(note === null) return;
+  const sel = document.querySelector(`select[data-s="${code}"]`);
+  await svcPush(code, sel ? sel.value : "new", note, null);
+}
+async function svcSave(code, btn){
+  const sel = document.querySelector(`select[data-s="${code}"]`);
+  btn.disabled = true;
+  await svcPush(code, sel.value, null, btn);
+}
+async function svcPush(code, status, note, btn){
+  try{
+    const body = {code, status, pass: pw()};
+    if(note !== null && note !== undefined) body.note = note; // không gửi note = giữ ghi chú cũ
+    const r = await fetch(API_BASE + "/api/admin/service-order/status", {method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify(body)});
+    const d = await r.json();
+    if(d.ok) loadSvcOrders(); else { alert(d.error || "Thất bại"); if(btn) btn.disabled = false; }
+  }catch(e){ alert("Không kết nối được."); if(btn) btn.disabled = false; }
 }
 async function loadPromos(){
   const box = document.getElementById("pList");
