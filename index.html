@@ -116,14 +116,17 @@ footer h4{color:var(--text);margin:12px 0 6px;font-size:15px}
 .ok{color:var(--green)}
 .hidden{display:none}
 .count{color:var(--muted);font-size:14px;margin:4px 0 0}
-.notice{background:#241a05;border:1px solid var(--amber);border-radius:var(--radius);padding:16px 18px;margin:18px 0 4px}
-.notice h3{font-size:16.5px;margin-bottom:8px;color:#fbbf24}
-.notice ul{list-style:none}
-.notice li{padding:3.5px 0;color:#fde9c0;font-size:14.8px}
+.notice{background:#241a05;border:1px solid var(--amber);border-radius:var(--radius);padding:10px 14px;margin:14px 0 4px}
+.notice summary{font-size:14px;font-weight:700;color:#fbbf24;cursor:pointer;list-style:none;display:flex;align-items:center;gap:6px}
+.notice summary::-webkit-details-marker{display:none}
+.notice summary::before{content:"▸";font-size:12px;transition:transform .15s}
+.notice[open] summary::before{transform:rotate(90deg)}
+.notice ul{list-style:none;margin-top:8px}
+.notice li{padding:3px 0;color:#fde9c0;font-size:13.2px}
 .notice li::before{content:"⚠️ ";}
-.sheet .notice{margin:12px 0 2px;padding:12px 14px}
-.sheet .notice h3{font-size:15px}
-.sheet .notice li{font-size:13.8px;padding:2.5px 0}
+.sheet .notice{margin:12px 0 2px;padding:8px 12px}
+.sheet .notice summary{font-size:13.5px}
+.sheet .notice li{font-size:13px;padding:2px 0}
 .acctbar{display:flex;align-items:center;gap:8px;margin-left:auto;flex-wrap:wrap}
 .abtn{border:1px solid var(--line);background:#0f172a;color:#e2e8f0;border-radius:10px;padding:8px 14px;font-weight:700;cursor:pointer;font-size:14px}
 .abtn:hover{border-color:var(--green)}
@@ -173,7 +176,7 @@ footer h4{color:var(--text);margin:12px 0 6px;font-size:15px}
 <div class="wrap">
   <section class="hero">
     <h1>Tăng follow, like, view cho mạng xã hội — <em>đặt là chạy</em></h1>
-    <p>Hơn 300 gói dịch vụ cho Facebook, TikTok, Instagram, YouTube, Telegram và Shopee. Giá niêm yết rõ ràng theo từng 1.000 lượt, đơn được xử lý tự động 24/7 ngay sau khi xác nhận thanh toán, tra trạng thái đơn ngay trên trang này.</p>
+    <p>781 gói dịch vụ cho Facebook, TikTok, Instagram, YouTube, Telegram và Shopee. Giá niêm yết rõ ràng theo từng 1.000 lượt, đơn được xử lý tự động 24/7 ngay sau khi xác nhận thanh toán, tra trạng thái đơn ngay trên trang này.</p>
     <div class="chips">
       <div class="chip">Giá chỉ từ <b>vài trăm đồng</b>/1.000 lượt xem</div>
       <div class="chip">Xử lý tự động <b>24/7</b></div>
@@ -187,8 +190,8 @@ footer h4{color:var(--text);margin:12px 0 6px;font-size:15px}
     </div>
   </section>
 
-  <section class="notice" aria-label="Lưu ý quan trọng trước khi đặt đơn">
-    <h3>📌 Ghi chú — đọc kỹ trước khi đặt đơn để tránh lỗi</h3>
+  <details class="notice">
+    <summary>📌 Ghi chú — bấm để xem trước khi đặt đơn</summary>
     <ul>
       <li>Định dạng link: dán link bài post hoặc ID bài viết.</li>
       <li>Bài viết phải để ở chế độ công khai và bật nút Like. Nếu bài viết không công khai hoặc không mở nút Like, đơn sẽ tự động hoàn thành (không chạy được).</li>
@@ -199,7 +202,7 @@ footer h4{color:var(--text);margin:12px 0 6px;font-size:15px}
       <li>Số lượng phải là bội số của 10, 100, 200, 500, 1000, v.v.</li>
       <li>Nghiêm cấm đặt hàng đối với các nội dung bạo lực, cờ bạc, lừa đảo, chính trị, vi phạm pháp luật.</li>
     </ul>
-  </section>
+  </details>
 
   <nav class="tabs" id="ptabs" aria-label="Nền tảng"></nav>
   <nav class="ttabs" id="ttabs" aria-label="Loại dịch vụ"></nav>
@@ -262,8 +265,8 @@ footer h4{color:var(--text);margin:12px 0 6px;font-size:15px}
   <div class="sheet">
     <h2 id="mTitle">Đặt dịch vụ</h2>
     <div class="svc" id="mSvc"></div>
-    <div class="notice">
-      <h3>📌 Ghi chú trước khi đặt</h3>
+    <details class="notice">
+      <summary>📌 Ghi chú trước khi đặt</summary>
       <ul>
         <li>Link phải là link bài post/ID bài viết, bài viết để công khai và bật nút Like — nếu không, đơn sẽ tự động hoàn thành.</li>
         <li>Đơn đã gửi không hủy được; kiểm tra kỹ định dạng link, sai link không được hỗ trợ.</li>
@@ -271,7 +274,7 @@ footer h4{color:var(--text);margin:12px 0 6px;font-size:15px}
         <li>Số lượng là bội số của 10, 100, 200, 500, 1000...</li>
         <li>Nghiêm cấm nội dung bạo lực, cờ bạc, lừa đảo, chính trị, vi phạm pháp luật.</li>
       </ul>
-    </div>
+    </details>
     <label for="mLink">Link cần tăng (bài viết, video, trang cá nhân...)</label>
     <input id="mLink" type="url" placeholder="https://...">
     <label for="mQty">Số lượng</label>
