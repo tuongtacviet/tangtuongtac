@@ -204,6 +204,16 @@ footer h4{color:var(--text);margin:12px 0 6px;font-size:15px}
     </ul>
   </details>
 
+  <section class="statusbox">
+    <h2>Tra trạng thái đơn hàng</h2>
+    <p>Nhập mã đơn bạn nhận được sau khi đặt hàng để xem tiến độ: đang chờ, đang chạy, hoàn thành hay đã hoàn một phần.</p>
+    <form class="statusform" id="statusForm">
+      <input id="orderId" inputmode="numeric" placeholder="Ví dụ: 123456" aria-label="Mã đơn hàng">
+      <button class="btn" type="submit">Tra trạng thái</button>
+    </form>
+    <div id="statusResult" role="status"></div>
+  </section>
+
   <nav class="tabs" id="ptabs" aria-label="Nền tảng"></nav>
   <nav class="ttabs" id="ttabs" aria-label="Loại dịch vụ"></nav>
   <p class="count" id="count"></p>
@@ -240,16 +250,6 @@ footer h4{color:var(--text);margin:12px 0 6px;font-size:15px}
       <button class="btn" id="webOrderBtn" style="margin-top:16px">Đặt làm website — 300.000đ</button>
       <p class="ws-note">Sau khi gửi yêu cầu, cửa hàng sẽ liên hệ lại trong 24 giờ để tư vấn chi tiết.</p>
     </div>
-  </section>
-
-  <section class="statusbox">
-    <h2>Tra trạng thái đơn hàng</h2>
-    <p>Nhập mã đơn bạn nhận được sau khi đặt hàng để xem tiến độ: đang chờ, đang chạy, hoàn thành hay đã hoàn một phần.</p>
-    <form class="statusform" id="statusForm">
-      <input id="orderId" inputmode="numeric" placeholder="Ví dụ: 123456" aria-label="Mã đơn hàng">
-      <button class="btn" type="submit">Tra trạng thái</button>
-    </form>
-    <div id="statusResult" role="status"></div>
   </section>
 
   <footer>
@@ -456,6 +456,13 @@ function pico(pk, extra){
 let curP = "all", curT = "all", curQ = "";
 const fmt = n => n.toLocaleString("vi-VN") + "đ";
 const $ = s => document.querySelector(s);
+/* Copy mã đơn vào clipboard (có fallback cho trình duyệt cũ) */
+function copyOrderCode(code, btn){
+  const done = ()=>{ if(btn){ const old = btn.innerHTML; btn.innerHTML = "✓ Đã copy"; setTimeout(()=>{ btn.innerHTML = old; }, 2000); } };
+  const fb = ()=>{ const ta = document.createElement("textarea"); ta.value = code; ta.style.position = "fixed"; ta.style.opacity = "0"; document.body.appendChild(ta); ta.select(); try{ document.execCommand("copy"); }catch(e){} document.body.removeChild(ta); done(); };
+  if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(code).then(done).catch(fb); }
+  else fb();
+}
 
 function buildTabs(){
   $("#ptabs").innerHTML = PLATFORMS.map(([k,v])=>`<button class="tab${k===curP?" active":""}" data-p="${k}">${pico(k)}${v}</button>`).join("")
@@ -584,7 +591,7 @@ $("#mSubmit").onclick = async ()=>{
   try{
     const r = await fetch(CONFIG.API_BASE + "/api/order", {method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({service: curSvc.id, link, quantity: q, total: amt0, promo_code: promoState.code})});
     const d = await r.json();
-    if(d.order){ const amt = (d.promo && d.promo.charged_vnd) || d.amount_vnd || Math.round(curSvc.price_vnd_1000 * q / 1000); const qrDyn = `https://img.vietqr.io/image/ICB-0868895144-compact.png?amount=${amt}&addInfo=${encodeURIComponent(d.order)}&accountName=DINH%20CONG%20HUY`; $("#mDone").innerHTML = `<p class="ok">Đặt đơn thành công! Mã đơn của bạn: <b>${d.order}</b>.${d.promo ? ` Đã áp dụng mã <b>${d.promo.code}</b> giảm <b>${d.promo.percent_off}%</b>.` : ""}</p><p style="margin-top:8px">Quét mã QR dưới đây để thanh toán đúng số tiền <b>${amt.toLocaleString("vi-VN")}đ</b> (nội dung chuyển khoản đã điền sẵn mã đơn):</p><img src="${qrDyn}" alt="Mã QR thanh toán kèm mã đơn" style="width:200px;max-width:75%;border-radius:10px;margin-top:8px;background:#fff;padding:6px"><p style="margin-top:8px">Hoặc chuyển khoản thủ công: <b>${CONFIG.BANK_INFO}</b> — nội dung chuyển khoản: <b>${d.order}</b>.</p><p style="margin-top:8px">Đơn sẽ chạy ngay khi thanh toán được xác nhận. Lưu mã đơn <b>${d.order}</b> để tra trạng thái.</p>`; }
+    if(d.order){ const amt = (d.promo && d.promo.charged_vnd) || d.amount_vnd || Math.round(curSvc.price_vnd_1000 * q / 1000); const qrDyn = `https://img.vietqr.io/image/ICB-0868895144-compact.png?amount=${amt}&addInfo=${encodeURIComponent(d.order)}&accountName=DINH%20CONG%20HUY`; $("#mDone").innerHTML = `<p class="ok">Đặt đơn thành công! Mã đơn của bạn: <b>${d.order}</b> <button class="btn ghost" type="button" style="padding:4px 10px;font-size:13px;vertical-align:middle" onclick="copyOrderCode('${d.order}',this)">📋 Copy</button>.${d.promo ? ` Đã áp dụng mã <b>${d.promo.code}</b> giảm <b>${d.promo.percent_off}%</b>.` : ""}</p><p style="margin-top:8px">Quét mã QR dưới đây để thanh toán đúng số tiền <b>${amt.toLocaleString("vi-VN")}đ</b> (nội dung chuyển khoản đã điền sẵn mã đơn):</p><img src="${qrDyn}" alt="Mã QR thanh toán kèm mã đơn" style="width:200px;max-width:75%;border-radius:10px;margin-top:8px;background:#fff;padding:6px"><p style="margin-top:8px">Hoặc chuyển khoản thủ công: <b>${CONFIG.BANK_INFO}</b> — nội dung chuyển khoản: <b>${d.order}</b>.</p><p style="margin-top:8px">Đơn sẽ chạy ngay khi thanh toán được xác nhận. Lưu mã đơn <b>${d.order}</b> để tra trạng thái.</p>`; }
     else { err.textContent = d.error || "Gửi đơn chưa thành công, bạn thử lại giúp cửa hàng nhé."; }
   }catch(e){ err.textContent = "Không kết nối được hệ thống đặt đơn, bạn thử lại sau ít phút nhé."; }
   btn.disabled = false; btn.textContent = "Đặt đơn";
@@ -607,7 +614,7 @@ $("#mWalletSubmit").onclick = async ()=>{
     if(d.order){
       ME.balance_vnd = d.balance_vnd; renderAcct(); refreshOrderActions();
       const charged = d.charged_vnd || payAmt;
-      $("#mDone").innerHTML = `<p class="ok">Đặt đơn thành công! Mã đơn của bạn: <b>${d.order}</b>.${d.promo ? ` Đã áp dụng mã <b>${d.promo.code}</b> giảm <b>${d.promo.percent_off}%</b>.` : ""}</p><p style="margin-top:8px">Đã trừ <b>${fmt(charged)}</b> từ ví. Số dư còn lại: <b>${fmt(d.balance_vnd)}</b>.</p><p style="margin-top:8px">Lưu mã đơn <b>${d.order}</b> để tra trạng thái.</p>`;
+      $("#mDone").innerHTML = `<p class="ok">Đặt đơn thành công! Mã đơn của bạn: <b>${d.order}</b>.${d.promo ? ` Đã áp dụng mã <b>${d.promo.code}</b> giảm <b>${d.promo.percent_off}%</b>.` : ""}</p><p style="margin-top:8px">Đã trừ <b>${fmt(charged)}</b> từ ví. Số dư còn lại: <b>${fmt(d.balance_vnd)}</b>.</p><p style="margin-top:8px">Lưu mã đơn <b>${d.order}</b> <button class="btn ghost" type="button" style="padding:4px 10px;font-size:13px;vertical-align:middle" onclick="copyOrderCode('${d.order}',this)">📋 Copy</button> để tra trạng thái.</p>`;
     } else if(r.status === 402 || d.need_topup){
       err.innerHTML = `${d.error || "Ví chưa đủ số dư."} <a href="#" id="mGoTopup" style="color:var(--green)">Nạp tiền ngay</a>`;
       const g = $("#mGoTopup"); if(g) g.onclick = (e)=>{ e.preventDefault(); $("#modal").classList.remove("open"); openTopup(); };
@@ -754,7 +761,12 @@ $("#statusForm").addEventListener("submit", async e=>{
   }catch(e){ box.textContent = "Chưa kết nối được hệ thống, bạn thử lại sau ít phút nhé."; }
 });
 
-$("#q").addEventListener("input", e=>{ curQ = e.target.value.trim().toLowerCase(); render(); });
+$("#q").addEventListener("input", e=>{
+  const v = e.target.value.trim();
+  // Gõ tìm kiếm -> tự reset tab nền tảng/loại về "Tất cả" để tìm trên toàn bộ (tránh giữ tab cũ làm mất kết quả)
+  if(v && (curP !== "all" || curT !== "all")){ curP = "all"; curT = "all"; buildTabs(); }
+  curQ = v.toLowerCase(); render();
+});
 
 /* Nút cuộn lên đầu trang: chỉ hiện khi đã cuộn xuống */
 (function(){
