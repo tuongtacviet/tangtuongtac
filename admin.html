@@ -56,6 +56,13 @@ button:disabled{opacity:.5;cursor:default}
       <div class="err" id="pErr"></div>
     </div>
     <div id="pList"><p class="muted">Đang tải...</p></div>
+    <h2 style="margin:18px 0 0">💰 Giá bán</h2>
+    <p class="muted">Sửa giá bán trên web — bấm Lưu là lên ngay, không cần up file. Giá gốc tự làm mới theo nguồn smm.fan khi lưu.</p>
+    <div style="display:flex;gap:8px;margin:8px 0">
+      <input id="prSearch" placeholder="Tìm theo tên gói hoặc mã gói (vd: 203)" autocomplete="off">
+      <button class="ghost" id="prFind">Tìm</button>
+    </div>
+    <div id="prList"><p class="muted">Đang tải...</p></div>
     <h2 style="margin:18px 0 0">👥 Khách hàng</h2>
     <p class="muted">Danh sách tài khoản đã đăng ký / đăng nhập trên web (Google, Facebook hoặc tên đăng nhập).</p>
     <div id="uList"><p class="muted">Đang tải...</p></div>
@@ -102,6 +109,7 @@ async function load(){
     loadPromos();
     loadUsers();
     loadSvcOrders();
+    loadPrices();
   }catch(e){ box.innerHTML = `<p class="err">Không kết nối được.</p>`; ubox.innerHTML = ""; }
 }
 const SVC_STATUS = {new:"Mới", contacted:"Đã liên hệ", deposit_paid:"Đã cọc 150k", in_progress:"Đang làm", done:"Hoàn thành", cancelled:"Đã hủy"};
@@ -173,6 +181,55 @@ async function loadPromos(){
   }catch(e){ box.innerHTML = `<p class="err">Không kết nối được.</p>`; }
 }
 async function loadUsers(){
+let PRICES = [];
+async function loadPrices(){
+  const box = document.getElementById("prList");
+  box.innerHTML = `<p class="muted">Đang tải...</p>`;
+  try{
+    const r = await fetch(API_BASE + "/api/admin/prices?pass=" + encodeURIComponent(pw()));
+    const d = await r.json();
+    if(d.error){ box.innerHTML = `<p class="err">${d.error}</p>`; return; }
+    PRICES = d.prices || [];
+    renderPrices("");
+  }catch(e){ box.innerHTML = `<p class="err">Không kết nối được.</p>`; }
+}
+function renderPrices(q){
+  const box = document.getElementById("prList");
+  q = (q || "").trim().toLowerCase();
+  const rows = PRICES.filter(p => !q || String(p.service_id) === q || (p.name || "").toLowerCase().includes(q));
+  const show = rows.slice(0, 30);
+  box.innerHTML = (q && rows.length > 30 ? `<p class="muted">Tìm thấy ${rows.length} gói — đang hiện 30 gói đầu, gõ thêm để thu hẹp.</p>` : "") +
+    (show.length ? show.map(p=>`
+      <div class="row">
+        <div style="flex:1;min-width:220px"><b>#${p.service_id}</b> · ${p.name || ""}<br>
+        <span class="muted">Giá gốc: ${p.cost_usd != null ? "$" + p.cost_usd : "?"} · Cập nhật: ${p.updated_at ? new Date(p.updated_at).toLocaleString("vi-VN") : "—"}</span></div>
+        <div style="display:flex;gap:8px;align-items:center">
+          <input type="number" min="1" value="${p.price_vnd}" data-pv="${p.service_id}" style="width:140px">
+          <span class="muted">đ/1k</span>
+          <button data-ps="${p.service_id}">Lưu</button>
+        </div>
+      </div>`).join("") : `<p class="muted">Không tìm thấy gói nào.</p>`);
+  box.querySelectorAll("button[data-ps]").forEach(b=>b.onclick=()=>priceSave(b.dataset.ps, b));
+}
+async function priceSave(sid, btn){
+  const inp = document.querySelector(`input[data-pv="${sid}"]`);
+  const v = Math.round(Number(inp.value) || 0);
+  if(!(v > 0)){ alert("Giá phải lớn hơn 0."); return; }
+  btn.disabled = true;
+  try{
+    const r = await fetch(API_BASE + "/api/admin/price", {method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({service_id: sid, price_vnd: v, pass: pw()})});
+    const d = await r.json();
+    if(d.ok){
+      const p = PRICES.find(x => String(x.service_id) === String(sid));
+      if(p){ p.price_vnd = d.price_vnd; if(d.cost_usd != null) p.cost_usd = d.cost_usd; }
+      alert(`Đã lưu giá mới #${sid}: ${d.price_vnd.toLocaleString("vi-VN")}đ/1.000 — web cập nhật ngay.`);
+      renderPrices(document.getElementById("prSearch").value);
+    } else alert(d.error || "Thất bại");
+  }catch(e){ alert("Không kết nối được."); }
+  btn.disabled = false;
+}
+document.getElementById("prFind").onclick = ()=>renderPrices(document.getElementById("prSearch").value);
+document.getElementById("prSearch").addEventListener("keydown", e=>{ if(e.key === "Enter") renderPrices(e.target.value); });
   const box = document.getElementById("uList");
   box.innerHTML = `<p class="muted">Đang tải...</p>`;
   try{
