@@ -290,7 +290,7 @@ footer h4{color:var(--text);margin:12px 0 6px;font-size:15px}
         </div>
       </div>
       <button class="btn" id="webOrderBtn" style="margin-top:16px">Đặt làm website — 300.000đ</button>
-      <p class="ws-note">Sau khi gửi yêu cầu, cửa hàng sẽ liên hệ lại trong 24 giờ để tư vấn chi tiết.</p>
+      <p class="ws-note">Sau khi gửi yêu cầu, cửa hàng sẽ liên hệ lại trong thời gian sớm nhất để tư vấn chi tiết.</p>
     </div>
   </section>
 
@@ -851,7 +851,7 @@ function wStartPoll(){
       const d = await r.json();
       if(d.ok && d.status === "deposit_paid"){
         wStopPoll();
-        $("#wStep2").innerHTML = `<p class="ok" style="font-size:17px">🎉 <b>Đã nhận được cọc 150.000đ!</b></p><p style="margin-top:8px">Cảm ơn bạn đã tin tưởng. Cửa hàng sẽ liên hệ lại trong 24 giờ để thống nhất yêu cầu và bắt đầu làm website cho bạn.</p><div style="margin-top:14px"><button class="btn" id="wDoneClose" style="width:100%">Đóng</button></div>`;
+        $("#wStep2").innerHTML = `<p class="ok" style="font-size:17px">🎉 <b>Đã nhận được cọc 150.000đ!</b></p><p style="margin-top:8px">Cảm ơn bạn đã tin tưởng. Cửa hàng sẽ liên hệ lại trong thời gian sớm nhất để thống nhất yêu cầu và bắt đầu làm website cho bạn.</p><div style="margin-top:14px"><button class="btn" id="wDoneClose" style="width:100%">Đóng</button></div>`;
         $("#wDoneClose").onclick = ()=>{ $("#webModal").classList.remove("open"); wShowStep1(); };
       }
     }catch(e){}
