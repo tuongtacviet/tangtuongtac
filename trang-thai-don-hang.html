@@ -29,8 +29,8 @@ h1{font-size:26px;margin:6px 0 10px}
 h2{font-size:19px;margin-top:30px}
 .card{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:20px;margin-top:16px}
 .muted{color:#64748b;font-size:14px}
-input[type=text]{width:100%;padding:13px 14px;border:1px solid #cbd5e1;border-radius:10px;font-size:16px;margin:10px 0}
-.btn{display:inline-block;background:#03A84E;color:#fff;border:none;border-radius:10px;padding:13px 22px;font-size:16px;font-weight:700;cursor:pointer;width:100%}
+input[type=text]{width:100%;padding:10px 12px;border:1px solid #cbd5e1;border-radius:10px;font-size:15px;margin:8px 0}
+.btn{display:inline-block;background:#03A84E;color:#fff;border:none;border-radius:10px;padding:11px 22px;font-size:15px;font-weight:700;cursor:pointer;width:100%}
 .btn:hover{background:#029a46}
 #kq{display:none}
 .kq-row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #f1f5f9}
@@ -74,7 +74,7 @@ footer{border-top:1px solid #e2e8f0;background:#fff}
 </header>
 <main>
 <h1>📦 Trạng thái đơn hàng</h1>
-<p>Nhập <b>mã đơn</b> bạn nhận được sau khi đặt đơn thành công để xem đơn đang ở trạng thái nào. Khách có tài khoản ví có thể xem lại toàn bộ lịch sử đơn ngay trong mục tài khoản trên <a href="index.html">trang chủ</a>.</p>
+<p>Nhập <b>mã đơn</b> bạn nhận được sau khi đặt đơn thành công để xem đơn đang ở trạng thái nào. Khách có tài khoản ví xem lại toàn bộ lịch sử đơn ngay tại mục <b>Đơn hàng đã đặt bằng ví</b> ở ngay dưới đây.</p>
 
 <div class="card">
   <label for="maDon"><b>Mã đơn hàng</b></label>
@@ -82,6 +82,11 @@ footer{border-top:1px solid #e2e8f0;background:#fff}
   <button class="btn" id="btnTra">Tra cứu trạng thái</button>
   <div id="kq"></div>
 </div>
+
+
+<h2 style="margin-top:28px">Đơn hàng đã đặt bằng ví</h2>
+<div id="histWrap"><p>Đang kiểm tra đăng nhập…</p></div>
+<p class="muted">Mục này hiện các đơn bạn đã đặt khi đăng nhập (thanh toán bằng ví) — bấm "Tra trạng thái" ở từng đơn để xem tiến độ mới nhất. Khách đặt vãng lai (không đăng nhập): hệ thống không lưu lịch sử, bạn tra bằng mã đơn đã nhận lúc đặt hàng; nếu lỡ mất mã, nhắn hỗ trợ qua nút chat ở góc trang để được tra giúp.</p>
 
 <h2>Ý nghĩa các trạng thái</h2>
 <table>
@@ -94,10 +99,6 @@ footer{border-top:1px solid #e2e8f0;background:#fff}
 <tr><td>❌ Đã hủy</td><td>Đơn đã hủy (thường do link sai hoặc nội dung không còn tồn tại).</td></tr>
 <tr><td>↩️ Đã hoàn tiền</td><td>Đơn lỗi và tiền đã được hoàn theo chính sách.</td></tr>
 </table>
-
-<h2 style="margin-top:28px">Đơn hàng đã đặt bằng ví</h2>
-<div id="histWrap"><p>Đang kiểm tra đăng nhập…</p></div>
-<p class="muted">Mục này hiện các đơn bạn đã đặt khi đăng nhập (thanh toán bằng ví) — bấm "Tra trạng thái" ở từng đơn để xem tiến độ mới nhất. Khách đặt vãng lai (không đăng nhập): hệ thống không lưu lịch sử, bạn tra bằng mã đơn đã nhận lúc đặt hàng; nếu lỡ mất mã, nhắn hỗ trợ qua nút chat ở góc trang để được tra giúp.</p>
 
 <h2>Không tra được đơn?</h2>
 <ul>
