@@ -35,6 +35,14 @@ h2{font-size:19px;margin-top:30px}
 footer{border-top:1px solid #e2e8f0;background:#fff}
 .fwrap{max-width:1080px;margin:0 auto;padding:22px 16px;color:#64748b;font-size:14px;line-height:1.9}
 .fwrap a{color:#475569;font-weight:600;margin-right:14px}
+.ref-link-box{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}
+.ref-link-box input{flex:1;min-width:220px;padding:11px 12px;border:1px solid #cbd5e1;border-radius:10px;font-size:15px;background:#f8fafc;color:#0f172a}
+.btn-copy{background:#03A84E;color:#fff;border:none;border-radius:10px;padding:11px 18px;font-weight:700;cursor:pointer;font-size:15px}
+.ref-stats{display:flex;gap:22px;flex-wrap:wrap;margin:12px 0 4px}
+.ref-stats b{font-size:19px;color:#03A84E}
+.hist-table{width:100%;border-collapse:collapse;font-size:14px;margin-top:10px}
+.hist-table th,.hist-table td{border-bottom:1px solid #e2e8f0;padding:8px 6px;text-align:left}
+.hist-table th{color:#64748b;font-size:12.5px;text-transform:uppercase}
 </style>
 </head>
 <body>
@@ -69,10 +77,14 @@ footer{border-top:1px solid #e2e8f0;background:#fff}
 <p style="margin:6px 0 0"><b>Hoa hồng trên tổng giá trị đơn hàng</b> của khách do bạn giới thiệu.<br>Ví dụ: khách bạn giới thiệu đặt đơn tổng 1.000.000đ → bạn nhận <b>20.000đ</b> vào ví.</p>
 </div>
 
+
+<h2>Link giới thiệu của bạn</h2>
+<div id="refWrap"><p>Đang kiểm tra đăng nhập…</p></div>
+
 <h2>Cách tham gia — 3 bước</h2>
 <ul>
 <li><b>Bước 1:</b> Đăng ký tài khoản miễn phí trên <a href="index.html">trang chủ</a> (đăng nhập bằng Google hoặc tạo tài khoản).</li>
-<li><b>Bước 2:</b> Nhắn qua <b>live chat trên trang chủ</b> với nội dung "Kích hoạt link giới thiệu" kèm tên tài khoản của bạn — đội ngũ cấp cho bạn <b>link giới thiệu cá nhân</b> dạng <i>viettuongtac.com/?ref=tentkcuaban</i>.</li>
+<li><b>Bước 2:</b> Đăng nhập vào tài khoản của bạn — <b>link giới thiệu cá nhân</b> của bạn hiện ngay tại mục "Link giới thiệu của bạn" ở trang này (dạng <i>viettuongtac.com/?ref=tentkcuaban</i>), bấm sao chép là dùng được ngay, không cần kích hoạt thủ công.</li>
 <li><b>Bước 3:</b> Chia sẻ link ở bất cứ đâu: Facebook, TikTok, Zalo, nhóm cộng đồng, blog... Khách bấm link, đăng ký và đặt đơn — hệ thống ghi nhận đó là khách của bạn.</li>
 </ul>
 
@@ -105,6 +117,46 @@ footer{border-top:1px solid #e2e8f0;background:#fff}
 </footer>
 <script>
 document.getElementById('burgerBtn').addEventListener('click',function(){document.getElementById('mobileNav').classList.toggle('open');});
+</script>
+
+<script>
+(function(){
+  var wrap = document.getElementById("refWrap");
+  var token = localStorage.getItem("ttt_token");
+  if(!token){
+    wrap.innerHTML = '<p>Bạn chưa đăng nhập. <a href="index.html"><b>Về trang chủ đăng nhập</b></a> rồi quay lại đây — link giới thiệu cá nhân và hoa hồng của bạn sẽ hiện tại mục này.</p>';
+    return;
+  }
+  fetch("https://smm-proxy.hungcuonghnhm.workers.dev/api/me/referral", { headers: { "Authorization": "Bearer " + token } }).then(function(r){
+    return r.json().then(function(d){ return { status: r.status, d: d }; });
+  }).then(function(res){
+    if(res.status === 401){
+      wrap.innerHTML = '<p>Phiên đăng nhập đã hết hạn. <a href="index.html"><b>Đăng nhập lại tại trang chủ</b></a> rồi quay lại trang này nhé.</p>';
+      return;
+    }
+    var d = res.d || {};
+    var h = '<div class="ref-link-box"><input type="text" id="refLinkInput" readonly value="' + (d.ref_link || "") + '"><button class="btn-copy" id="refCopyBtn">Sao chép link</button></div>';
+    h += '<div class="ref-stats"><div>Người đã giới thiệu<br><b>' + Number(d.referred_count || 0).toLocaleString("vi-VN") + '</b></div><div>Tổng hoa hồng đã nhận<br><b>' + Number(d.total_commission_vnd || 0).toLocaleString("vi-VN") + 'đ</b></div></div>';
+    if(d.commissions && d.commissions.length){
+      h += '<table class="hist-table"><tr><th>Thời gian</th><th>Hoa hồng gần đây</th></tr>';
+      d.commissions.forEach(function(c){
+        var t = ""; try{ t = new Date(c.created_at).toLocaleString("vi-VN"); }catch(e){ t = c.created_at || ""; }
+        h += '<tr><td>' + t + '</td><td><b>+' + Number(c.amount_vnd || 0).toLocaleString("vi-VN") + 'đ</b></td></tr>';
+      });
+      h += '</table>';
+    }
+    wrap.innerHTML = h;
+    document.getElementById("refCopyBtn").addEventListener("click", function(){
+      var inp = document.getElementById("refLinkInput");
+      inp.select();
+      function done(){ document.getElementById("refCopyBtn").textContent = "Đã sao chép ✓"; }
+      if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(inp.value).then(done).catch(function(){ document.execCommand("copy"); done(); }); }
+      else { document.execCommand("copy"); done(); }
+    });
+  }).catch(function(){
+    wrap.innerHTML = '<p>Chưa tải được thông tin lúc này — bạn thử tải lại trang sau ít phút nhé.</p>';
+  });
+})();
 </script>
 </body>
 </html>
