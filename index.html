@@ -168,14 +168,15 @@ footer h4{color:var(--text);margin:12px 0 6px;font-size:15px}
 
 <style>
 /* TTV-NAV: menu trang phu (chen 21/10/2026) */
-.ttvnav{background:var(--panel2);border-bottom:1px solid var(--line)}
+.ttvnav{background:var(--panel2);border-bottom:1px solid var(--line);box-shadow:0 6px 16px rgba(0,0,0,.25)}
+@media(min-width:821px){.ttvnav{position:sticky;top:70px;z-index:39}}
 .ttvnav-in{display:flex;align-items:center;justify-content:space-between;gap:10px}
 .ttvnav-links{display:flex;gap:4px;flex-wrap:wrap}
-.ttvnav-links a{color:var(--text);font-size:14.5px;font-weight:600;padding:11px 10px;border-radius:8px}
+.ttvnav-links a{color:#ffc400;font-size:16.5px;font-weight:600;padding:11px 10px;border-radius:8px;text-decoration:none}
 .ttvnav-links a:hover{color:var(--green);text-decoration:none;background:rgba(34,197,94,.08)}
 .ttvnav-burger{display:none;background:none;border:1px solid var(--line);border-radius:8px;font-size:20px;line-height:1;padding:7px 13px;cursor:pointer;color:var(--text);margin:6px 0}
 .ttvnav-mob{display:none;border-top:1px solid var(--line);padding:6px 0 10px}
-.ttvnav-mob a{display:block;color:var(--text);font-weight:600;padding:11px 4px;border-bottom:1px solid var(--line)}
+.ttvnav-mob a{display:block;color:#ffc400;font-size:16.5px;font-weight:600;padding:11px 4px;border-bottom:1px solid var(--line);text-decoration:none}
 .ttvnav-mob a:last-child{border-bottom:none}
 .ttvnav-mob.open{display:block}
 .ttvfoot-links{margin-top:14px;line-height:2}
