@@ -322,6 +322,10 @@ footer h4{color:var(--text);margin:12px 0 6px;font-size:15px}
     <input id="mLink" type="url" placeholder="https://...">
     <label for="mQty">Số lượng</label>
     <input id="mQty" type="number" inputmode="numeric">
+    <div id="mCommentsBox" style="display:none">
+      <label for="mComments">Nội dung bình luận — mỗi dòng 1 bình luận (số lượng = số dòng)</label>
+      <textarea id="mComments" rows="5" placeholder="Mỗi dòng một bình luận..."></textarea>
+    </div>
     <div class="err" id="mErr"></div>
     <div class="total"><span>Tổng thanh toán</span><b id="mTotal">0đ</b></div>
     <div class="promobox" style="margin-top:10px">
@@ -552,16 +556,20 @@ function toggleGroup(btn){
 
 let curSvc = null;
 let promoState = {code:null, pct:0};
+const isCC = ()=> !!(curSvc && curSvc.api_type === "Custom Comments");
+const ccLines = ()=>{ const v = ($("#mComments") && $("#mComments").value) || ""; return v.split(/\n+/).map(s=>s.trim()).filter(Boolean); };
+const effQty = ()=> isCC() ? ccLines().length : Number(($("#mQty") && $("#mQty").value) || 0);
 function openOrder(id){
   curSvc = CATALOG.find(s=>String(s.id)===String(id)); if(!curSvc) return;
   promoState = {code:null, pct:0};
   $("#mSvc").textContent = curSvc.name + ` — ${fmt(curSvc.price_vnd_1000)}/1.000 lượt · tối thiểu ${fmt0(curSvc.min)}, tối đa ${fmt0(curSvc.max)}`;
   $("#mLink").value = ""; $("#mQty").value = curSvc.min || 100; $("#mErr").textContent = ""; $("#mDone").innerHTML = "";
+  const ccB = $("#mCommentsBox"); if(ccB){ ccB.style.display = isCC() ? "block" : "none"; $("#mComments").value = ""; $("#mQty").disabled = isCC(); }
   $("#mPromo").value = ""; $("#mPromoErr").textContent = ""; $("#mPromoOk").textContent = "";
   $("#mPay").innerHTML = `Thông tin chuyển khoản (mã QR + số tài khoản) sẽ hiện ra ngay sau khi bạn bấm <b>Đặt đơn</b>.`;
   updTotal(); $("#modal").classList.add("open");
 }
-function orderTotal(){ if(!curSvc) return 0; const q = Number($("#mQty").value||0); return Math.round(curSvc.price_vnd_1000 * q / 1000); }
+function orderTotal(){ if(!curSvc) return 0; const q = effQty(); return Math.round(curSvc.price_vnd_1000 * q / 1000); }
 function discountedTotal(){ const t = orderTotal(); return promoState.pct ? Math.round(t * (100 - promoState.pct) / 100) : t; }
 function updTotal(){
   if(!curSvc) return;
@@ -615,12 +623,13 @@ function refreshOrderActions(){
   }
 }
 $("#mQty")?.addEventListener("input", updTotal);
-document.addEventListener("input", e=>{ if(e.target.id==="mQty") updTotal(); });
+document.addEventListener("input", e=>{ if(e.target.id==="mQty" || e.target.id==="mComments") updTotal(); });
 $("#mClose").onclick = ()=>$("#modal").classList.remove("open");
 $("#modal").addEventListener("click", e=>{ if(e.target.id==="modal") $("#modal").classList.remove("open"); });
 
 $("#mSubmit").onclick = async ()=>{
-  const link = $("#mLink").value.trim(), q = Number($("#mQty").value||0), err = $("#mErr");
+  const link = $("#mLink").value.trim(), q = effQty(), err = $("#mErr");
+  if(isCC() && !q){ err.textContent = "Gói này cần bạn nhập nội dung bình luận — mỗi dòng 1 bình luận nhé."; return; }
   if(!/^https?:\/\/.+/i.test(link)){ err.textContent = "Bạn dán link cần tăng vào nhé (link phải bắt đầu bằng https://)."; return; }
   if(!q || q < Number(curSvc.min||1)){ err.textContent = `Số lượng tối thiểu của gói này là ${fmt0(curSvc.min)}.`; return; }
   if(curSvc.max && Number(curSvc.max) < 2147483647 && q > Number(curSvc.max)){ err.textContent = `Số lượng tối đa của gói này là ${fmt0(curSvc.max)}.`; return; }
@@ -632,9 +641,10 @@ $("#mSubmit").onclick = async ()=>{
   }
   const btn = $("#mSubmit"); btn.disabled = true; btn.textContent = "Đang gửi đơn...";
   try{
-    const r = await fetch(CONFIG.API_BASE + "/api/order", {method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({service: curSvc.id, link, quantity: q, total: amt0, promo_code: promoState.code})});
+    const r = await fetch(CONFIG.API_BASE + "/api/order", {method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({service: curSvc.id, link, quantity: q, total: amt0, promo_code: promoState.code, comments: isCC() ? ccLines().join("\n") : undefined})});
     const d = await r.json();
-    if(d.order){ const amt = (d.promo && d.promo.charged_vnd) || d.amount_vnd || Math.round(curSvc.price_vnd_1000 * q / 1000); const qrDyn = `https://img.vietqr.io/image/ICB-0868895144-compact.png?amount=${amt}&addInfo=${encodeURIComponent(d.order)}&accountName=DINH%20CONG%20HUY`; $("#mDone").innerHTML = `<p class="ok">Đặt đơn thành công! Mã đơn của bạn: <b>${d.order}</b> <button class="btn ghost" type="button" style="padding:4px 10px;font-size:13px;vertical-align:middle" onclick="copyOrderCode('${d.order}',this)">📋 Copy</button>.${d.promo ? ` Đã áp dụng mã <b>${d.promo.code}</b> giảm <b>${d.promo.percent_off}%</b>.` : ""}</p><p style="margin-top:8px">Quét mã QR dưới đây để thanh toán đúng số tiền <b>${amt.toLocaleString("vi-VN")}đ</b> (nội dung chuyển khoản đã điền sẵn mã đơn):</p><img src="${qrDyn}" alt="Mã QR thanh toán kèm mã đơn" style="width:200px;max-width:75%;border-radius:10px;margin-top:8px;background:#fff;padding:6px"><p style="margin-top:8px">Hoặc chuyển khoản thủ công: <b>${CONFIG.BANK_INFO}</b> — nội dung chuyển khoản: <b>${d.order}</b>.</p><p style="margin-top:8px">Đơn sẽ chạy ngay khi thanh toán được xác nhận. Lưu mã đơn <b>${d.order}</b> để tra trạng thái.</p>`; }
+    if(d.verified){ $("#modal").classList.remove("open"); alert("Đơn của bạn đã được nguồn tiếp nhận nhưng hệ thống chưa lấy được mã đơn. Bạn đừng đặt lại để tránh trùng đơn — cửa hàng sẽ kiểm tra và liên hệ lại với bạn ngay."); }
+    else if(d.order){ const amt = (d.promo && d.promo.charged_vnd) || d.amount_vnd || Math.round(curSvc.price_vnd_1000 * q / 1000); const qrDyn = `https://img.vietqr.io/image/ICB-0868895144-compact.png?amount=${amt}&addInfo=${encodeURIComponent(d.order)}&accountName=DINH%20CONG%20HUY`; $("#mDone").innerHTML = `<p class="ok">Đặt đơn thành công! Mã đơn của bạn: <b>${d.order}</b> <button class="btn ghost" type="button" style="padding:4px 10px;font-size:13px;vertical-align:middle" onclick="copyOrderCode('${d.order}',this)">📋 Copy</button>.${d.promo ? ` Đã áp dụng mã <b>${d.promo.code}</b> giảm <b>${d.promo.percent_off}%</b>.` : ""}</p><p style="margin-top:8px">Quét mã QR dưới đây để thanh toán đúng số tiền <b>${amt.toLocaleString("vi-VN")}đ</b> (nội dung chuyển khoản đã điền sẵn mã đơn):</p><img src="${qrDyn}" alt="Mã QR thanh toán kèm mã đơn" style="width:200px;max-width:75%;border-radius:10px;margin-top:8px;background:#fff;padding:6px"><p style="margin-top:8px">Hoặc chuyển khoản thủ công: <b>${CONFIG.BANK_INFO}</b> — nội dung chuyển khoản: <b>${d.order}</b>.</p><p style="margin-top:8px">Đơn sẽ chạy ngay khi thanh toán được xác nhận. Lưu mã đơn <b>${d.order}</b> để tra trạng thái.</p>`; }
     else { err.textContent = d.error || "Gửi đơn chưa thành công, bạn thử lại giúp cửa hàng nhé."; }
   }catch(e){ err.textContent = "Không kết nối được hệ thống đặt đơn, bạn thử lại sau ít phút nhé."; }
   btn.disabled = false; btn.textContent = "Đặt đơn";
@@ -644,7 +654,8 @@ $("#mTopupBtn").onclick = ()=>{ $("#modal").classList.remove("open"); openTopup(
 
 // Đặt đơn trừ ví (khách đã đăng nhập)
 $("#mWalletSubmit").onclick = async ()=>{
-  const link = $("#mLink").value.trim(), q = Number($("#mQty").value||0), amt = orderTotal(), payAmt = discountedTotal(), err = $("#mWErr");
+  const link = $("#mLink").value.trim(), q = effQty(), amt = orderTotal(), payAmt = discountedTotal(), err = $("#mWErr");
+  if(isCC() && !q){ err.textContent = "Gói này cần bạn nhập nội dung bình luận — mỗi dòng 1 bình luận nhé."; return; }
   if(!/^https?:\/\/.+/i.test(link)){ err.textContent = "Bạn dán link cần tăng vào nhé (link phải bắt đầu bằng https://)."; return; }
   if(!q || q < Number(curSvc.min||1)){ err.textContent = `Số lượng tối thiểu của gói này là ${fmt0(curSvc.min)}.`; return; }
   if(curSvc.max && Number(curSvc.max) < 2147483647 && q > Number(curSvc.max)){ err.textContent = `Số lượng tối đa của gói này là ${fmt0(curSvc.max)}.`; return; }
@@ -652,12 +663,15 @@ $("#mWalletSubmit").onclick = async ()=>{
   err.textContent = "";
   const btn = $("#mWalletSubmit"); btn.disabled = true; btn.textContent = "Đang gửi đơn...";
   try{
-    const r = await api("/api/order/wallet", {method:"POST", body:{service: curSvc.id, link, quantity: q, total: amt, promo_code: promoState.code}});
+    const r = await api("/api/order/wallet", {method:"POST", body:{service: curSvc.id, link, quantity: q, total: amt, promo_code: promoState.code, comments: isCC() ? ccLines().join("\n") : undefined}});
     const d = await r.json();
     if(d.order){
       ME.balance_vnd = d.balance_vnd; renderAcct(); refreshOrderActions();
       const charged = d.charged_vnd || payAmt;
       $("#mDone").innerHTML = `<p class="ok">Đặt đơn thành công! Mã đơn của bạn: <b>${d.order}</b>.${d.promo ? ` Đã áp dụng mã <b>${d.promo.code}</b> giảm <b>${d.promo.percent_off}%</b>.` : ""}</p><p style="margin-top:8px">Đã trừ <b>${fmt(charged)}</b> từ ví. Số dư còn lại: <b>${fmt(d.balance_vnd)}</b>.</p><p style="margin-top:8px">Lưu mã đơn <b>${d.order}</b> <button class="btn ghost" type="button" style="padding:4px 10px;font-size:13px;vertical-align:middle" onclick="copyOrderCode('${d.order}',this)">📋 Copy</button> để tra trạng thái.</p>`;
+    } else if(d.verified){
+      ME.balance_vnd = d.balance_vnd; renderAcct(); refreshOrderActions();
+      $("#mDone").innerHTML = `<p class="ok">Đơn của bạn đã được nguồn tiếp nhận (đã trừ <b>${fmt(d.charged_vnd || payAmt)}</b> từ ví) nhưng hệ thống chưa lấy được mã đơn. Bạn đừng đặt lại để tránh trùng đơn — cửa hàng sẽ kiểm tra và gửi mã đơn cho bạn ngay.</p>`;
     } else if(r.status === 402 || d.need_topup){
       err.innerHTML = `${d.error || "Ví chưa đủ số dư."} <a href="#" id="mGoTopup" style="color:var(--green)">Nạp tiền ngay</a>`;
       const g = $("#mGoTopup"); if(g) g.onclick = (e)=>{ e.preventDefault(); $("#modal").classList.remove("open"); openTopup(); };
@@ -880,6 +894,7 @@ buildTabs(); render(); refreshMe();
 <!--Start of Tawk.to Script-->
 <script type="text/javascript">
 var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+Tawk_API.customStyle = { visibility: { mobile: { position: "br", xOffset: 12, yOffset: 92 } } };
 (function(){
 var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
 s1.async=true;
