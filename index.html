@@ -165,6 +165,23 @@ footer h4{color:var(--text);margin:12px 0 6px;font-size:15px}
 .sheet textarea{resize:vertical;min-height:96px}
 .ws-status{font-size:13.5px;margin-top:8px}
 </style>
+
+<style>
+/* TTV-NAV: menu trang phu (chen 21/10/2026) */
+.ttvnav{background:var(--panel2);border-bottom:1px solid var(--line)}
+.ttvnav-in{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.ttvnav-links{display:flex;gap:4px;flex-wrap:wrap}
+.ttvnav-links a{color:var(--text);font-size:14.5px;font-weight:600;padding:11px 10px;border-radius:8px}
+.ttvnav-links a:hover{color:var(--green);text-decoration:none;background:rgba(34,197,94,.08)}
+.ttvnav-burger{display:none;background:none;border:1px solid var(--line);border-radius:8px;font-size:20px;line-height:1;padding:7px 13px;cursor:pointer;color:var(--text);margin:6px 0}
+.ttvnav-mob{display:none;border-top:1px solid var(--line);padding:6px 0 10px}
+.ttvnav-mob a{display:block;color:var(--text);font-weight:600;padding:11px 4px;border-bottom:1px solid var(--line)}
+.ttvnav-mob a:last-child{border-bottom:none}
+.ttvnav-mob.open{display:block}
+.ttvfoot-links{margin-top:14px;line-height:2}
+.ttvfoot-links a{font-weight:600;margin-right:14px}
+@media(max-width:820px){.ttvnav-links{display:none}.ttvnav-burger{display:block}.ttvnav-in{justify-content:flex-end}}
+</style>
 </head>
 <body>
 <header><div class="wrap hbar">
@@ -172,6 +189,29 @@ footer h4{color:var(--text);margin:12px 0 6px;font-size:15px}
   <div class="search"><input id="q" type="search" autocomplete="off" placeholder="Tìm dịch vụ: follow TikTok, like Facebook... hoặc gõ số thứ tự (vd: 25)" aria-label="Tìm dịch vụ"></div>
   <div id="acctBar" class="acctbar"></div>
 </div></header>
+
+<div class="ttvnav"><div class="wrap">
+  <div class="ttvnav-in">
+    <nav class="ttvnav-links">
+      <a href="trang-thai-don-hang.html">Trạng thái đơn hàng</a>
+      <a href="don-hang-bao-hanh.html">Đơn hàng &amp; bảo hành</a>
+      <a href="hoan-tien.html">Hoàn tiền</a>
+      <a href="kiem-tien.html">Kiếm tiền</a>
+      <a href="dieu-kien-chinh-sach.html">Điều kiện &amp; chính sách</a>
+      <a href="chinh-sach-bao-mat.html">Bảo mật</a>
+    </nav>
+    <button class="ttvnav-burger" id="ttvBurger" aria-label="Mở menu">☰</button>
+  </div>
+  <nav class="ttvnav-mob" id="ttvMob">
+    <a href="trang-thai-don-hang.html">Trạng thái đơn hàng</a>
+    <a href="don-hang-bao-hanh.html">Đơn hàng &amp; bảo hành</a>
+    <a href="hoan-tien.html">Hoàn tiền</a>
+    <a href="kiem-tien.html">Kiếm tiền</a>
+    <a href="dieu-kien-chinh-sach.html">Điều kiện &amp; chính sách</a>
+    <a href="chinh-sach-bao-mat.html">Chính sách bảo mật</a>
+  </nav>
+</div></div>
+
 
 <div class="wrap">
   <section class="hero">
@@ -257,7 +297,8 @@ footer h4{color:var(--text);margin:12px 0 6px;font-size:15px}
     <p>Link đặt đơn phải ở chế độ công khai trong suốt quá trình chạy. Không đặt trùng cùng một link ở nhiều nơi cùng lúc để tránh lệch số lượng. Các gói ghi "bảo hành" sẽ được bù tự động khi tụt trong thời hạn bảo hành của gói.</p>
     <h4>Cam kết</h4>
     <p>Không yêu cầu mật khẩu tài khoản của bạn dưới bất kỳ hình thức nào. Đơn chỉ chạy sau khi thanh toán được xác nhận. Nếu hệ thống không thể thực hiện đơn, bạn được hoàn tiền vào tài khoản gốc hoặc đổi gói tương đương.</p>
-    <p style="margin-top:14px">© Tăng Tương Tác Việt — Dịch vụ tăng tương tác mạng xã hội tự động.</p>
+        <p class="ttvfoot-links"><a href="trang-thai-don-hang.html">Trạng thái đơn hàng</a><a href="don-hang-bao-hanh.html">Đơn hàng &amp; bảo hành</a><a href="hoan-tien.html">Hoàn tiền</a><a href="kiem-tien.html">Kiếm tiền</a><a href="dieu-kien-chinh-sach.html">Điều kiện &amp; chính sách</a><a href="chinh-sach-bao-mat.html">Chính sách bảo mật</a></p>
+<p style="margin-top:14px">© Tăng Tương Tác Việt — Dịch vụ tăng tương tác mạng xã hội tự động.</p>
   </footer>
 </div>
 
@@ -848,5 +889,9 @@ s0.parentNode.insertBefore(s1,s0);
 </script>
 <!--End of Tawk.to Script-->
 <button id="toTop" aria-label="Cuộn lên đầu trang" title="Lên đầu trang">↑</button>
+
+<script>
+document.getElementById('ttvBurger').addEventListener('click',function(){document.getElementById('ttvMob').classList.toggle('open');});
+</script>
 </body>
 </html>
