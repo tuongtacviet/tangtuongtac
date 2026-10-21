@@ -42,6 +42,11 @@ th{background:#f8fafc}
 footer{border-top:1px solid #e2e8f0;background:#fff}
 .fwrap{max-width:1080px;margin:0 auto;padding:22px 16px;color:#64748b;font-size:14px;line-height:1.9}
 .fwrap a{color:#475569;font-weight:600;margin-right:14px}
+.hist-table{width:100%;border-collapse:collapse;font-size:14px;margin:14px 0 6px}
+.hist-table th,.hist-table td{border-bottom:1px solid #e2e8f0;padding:8px 6px;text-align:left;vertical-align:top}
+.hist-table th{color:#64748b;font-size:12.5px;text-transform:uppercase;letter-spacing:.02em}
+.st-ok{color:#15803d;font-weight:700}.st-failed{color:#b91c1c;font-weight:700}
+.btn-mini{background:#eefbf3;color:#15803d;border:1px solid #bbf7d0;border-radius:8px;padding:5px 10px;font-weight:700;cursor:pointer;font-size:13px}
 </style>
 </head>
 <body>
@@ -90,6 +95,10 @@ footer{border-top:1px solid #e2e8f0;background:#fff}
 <tr><td>↩️ Đã hoàn tiền</td><td>Đơn lỗi và tiền đã được hoàn theo chính sách.</td></tr>
 </table>
 
+<h2 style="margin-top:28px">Đơn hàng đã đặt bằng ví</h2>
+<div id="histWrap"><p>Đang kiểm tra đăng nhập…</p></div>
+<p class="muted">Mục này hiện các đơn bạn đã đặt khi đăng nhập (thanh toán bằng ví) — bấm "Tra trạng thái" ở từng đơn để xem tiến độ mới nhất. Khách đặt vãng lai (không đăng nhập): hệ thống không lưu lịch sử, bạn tra bằng mã đơn đã nhận lúc đặt hàng; nếu lỡ mất mã, nhắn hỗ trợ qua nút chat ở góc trang để được tra giúp.</p>
+
 <h2>Không tra được đơn?</h2>
 <ul>
 <li>Kiểm tra lại mã đơn: mã là dãy số hiển thị ngay sau khi bạn đặt đơn thành công (và trong lịch sử tài khoản nếu bạn đặt bằng ví).</li>
@@ -129,6 +138,48 @@ document.getElementById('btnTra').addEventListener('click',function(){
   }).catch(function(){kq.innerHTML='<p class="err">Không kết nối được hệ thống tra cứu. Bạn thử lại sau ít phút nhé.</p>';});
 });
 document.getElementById('maDon').addEventListener('keydown',function(e){if(e.key==='Enter')document.getElementById('btnTra').click();});
+</script>
+
+<script>
+function fmtDateHist(iso){ try{ return new Date(iso).toLocaleString("vi-VN"); }catch(e){ return iso || ""; } }
+function fillAndCheck(code){
+  document.getElementById("maDon").value = code;
+  document.getElementById("btnTra").click();
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+(function(){
+  var wrap = document.getElementById("histWrap");
+  var token = localStorage.getItem("ttt_token");
+  if(!token){
+    wrap.innerHTML = '<p>Bạn chưa đăng nhập. <a href="index.html"><b>Về trang chủ đăng nhập</b></a> rồi quay lại đây — lịch sử các đơn đã đặt bằng ví sẽ hiện tại mục này.</p>';
+    return;
+  }
+  fetch(API + "/api/me/orders", { headers: { "Authorization": "Bearer " + token } }).then(function(r){
+    return r.json().then(function(d){ return { status: r.status, d: d }; });
+  }).then(function(res){
+    if(res.status === 401){
+      wrap.innerHTML = '<p>Phiên đăng nhập đã hết hạn. <a href="index.html"><b>Đăng nhập lại tại trang chủ</b></a> rồi quay lại trang này nhé.</p>';
+      return;
+    }
+    var orders = (res.d && res.d.orders) || [];
+    if(!orders.length){
+      wrap.innerHTML = '<p>Bạn chưa có đơn nào đặt bằng ví. Đơn bạn đặt sau khi đăng nhập sẽ hiện tại đây.</p>';
+      return;
+    }
+    var h = '<div style="overflow-x:auto"><table class="hist-table"><tr><th>Thời gian</th><th>Mã đơn</th><th>Link</th><th>SL</th><th>Tiền</th><th>Trạng thái</th><th></th></tr>';
+    orders.forEach(function(o){
+      var st = o.status === "failed" ? '<span class="st-failed">Lỗi — đã hoàn ví</span>' : '<span class="st-ok">Đã đặt</span>';
+      var code = o.smm_order_id || "—";
+      var link = (o.link || "").length > 42 ? (o.link || "").slice(0,42) + "…" : (o.link || "");
+      var btn = o.smm_order_id ? '<button class="btn-mini" onclick="fillAndCheck(\'' + o.smm_order_id + '\')">Tra trạng thái</button>' : "";
+      h += "<tr><td>" + fmtDateHist(o.created_at) + "</td><td><b>" + code + "</b></td><td>" + link + "</td><td>" + Number(o.quantity || 0).toLocaleString("vi-VN") + "</td><td>" + Number(o.total_vnd || 0).toLocaleString("vi-VN") + "đ</td><td>" + st + "</td><td>" + btn + "</td></tr>";
+    });
+    h += "</table></div>";
+    wrap.innerHTML = h;
+  }).catch(function(){
+    wrap.innerHTML = '<p>Chưa tải được lịch sử lúc này — bạn thử tải lại trang sau ít phút nhé.</p>';
+  });
+})();
 </script>
 </body>
 </html>
