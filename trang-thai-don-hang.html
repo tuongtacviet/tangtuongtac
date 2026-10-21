@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Trạng thái đơn hàng — Tăng Tương Tác Việt</title>
+<meta name="description" content="Tra cứu trạng thái đơn hàng tại Tăng Tương Tác Việt (viettuongtac.com) bằng mã đơn — xem đơn đang chờ, đang chạy, đã hoàn thành hay đã hoàn tiền.">
+<style>
+*{box-sizing:border-box}
+body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;margin:0;background:#f6f8f7;color:#1e293b;line-height:1.65}
+a{color:#03A84E;text-decoration:none}
+a:hover{text-decoration:underline}
+header.site{position:sticky;top:0;background:#fff;border-bottom:1px solid #e2e8f0;z-index:50}
+.hwrap{max-width:1080px;margin:0 auto;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px;position:relative}
+.logo{font-weight:800;font-size:19px;color:#0f172a}
+.logo span{color:#03A84E}
+nav.main{display:flex;gap:18px;flex-wrap:wrap}
+nav.main a{color:#334155;font-size:15px;font-weight:600}
+nav.main a:hover{color:#03A84E;text-decoration:none}
+nav.main a.act{color:#03A84E}
+.burger{display:none;background:none;border:1px solid #e2e8f0;border-radius:8px;font-size:22px;line-height:1;padding:6px 12px;cursor:pointer;color:#0f172a}
+nav.mobile{display:none;background:#fff;border-top:1px solid #e2e8f0;padding:8px 16px 14px}
+nav.mobile a{display:block;padding:10px 4px;color:#334155;font-weight:600;border-bottom:1px solid #f1f5f9}
+nav.mobile a.act{color:#03A84E}
+nav.mobile.open{display:block}
+@media(max-width:820px){nav.main{display:none}.burger{display:block}}
+main{max-width:860px;margin:0 auto;padding:26px 16px 52px}
+h1{font-size:26px;margin:6px 0 10px}
+h2{font-size:19px;margin-top:30px}
+.card{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:20px;margin-top:16px}
+.muted{color:#64748b;font-size:14px}
+input[type=text]{width:100%;padding:13px 14px;border:1px solid #cbd5e1;border-radius:10px;font-size:16px;margin:10px 0}
+.btn{display:inline-block;background:#03A84E;color:#fff;border:none;border-radius:10px;padding:13px 22px;font-size:16px;font-weight:700;cursor:pointer;width:100%}
+.btn:hover{background:#029a46}
+#kq{display:none}
+.kq-row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #f1f5f9}
+.kq-row b{text-align:right}
+.err{color:#dc2626;font-weight:600}
+table{width:100%;border-collapse:collapse;margin-top:10px;font-size:15px}
+td,th{border:1px solid #e2e8f0;padding:9px 10px;text-align:left;vertical-align:top}
+th{background:#f8fafc}
+footer{border-top:1px solid #e2e8f0;background:#fff}
+.fwrap{max-width:1080px;margin:0 auto;padding:22px 16px;color:#64748b;font-size:14px;line-height:1.9}
+.fwrap a{color:#475569;font-weight:600;margin-right:14px}
+</style>
+</head>
+<body>
+<header class="site">
+  <div class="hwrap">
+    <a class="logo" href="index.html">🚀 Tăng Tương Tác <span>Việt</span></a>
+    <nav class="main">
+      <a href="index.html">Trang chủ</a>
+      <a href="trang-thai-don-hang.html" class="act">Trạng thái đơn hàng</a>
+      <a href="don-hang-bao-hanh.html">Đơn hàng &amp; bảo hành</a>
+      <a href="hoan-tien.html">Hoàn tiền</a>
+      <a href="kiem-tien.html">Kiếm tiền</a>
+      <a href="dieu-kien-chinh-sach.html">Điều kiện &amp; chính sách</a>
+    </nav>
+    <button class="burger" id="burgerBtn" aria-label="Mở menu">☰</button>
+  </div>
+  <nav class="mobile" id="mobileNav">
+    <a href="index.html">Trang chủ</a>
+    <a href="trang-thai-don-hang.html" class="act">Trạng thái đơn hàng</a>
+    <a href="don-hang-bao-hanh.html">Đơn hàng &amp; bảo hành</a>
+    <a href="hoan-tien.html">Hoàn tiền</a>
+    <a href="kiem-tien.html">Kiếm tiền</a>
+    <a href="dieu-kien-chinh-sach.html">Điều kiện &amp; chính sách</a>
+  </nav>
+</header>
+<main>
+<h1>📦 Trạng thái đơn hàng</h1>
+<p>Nhập <b>mã đơn</b> bạn nhận được sau khi đặt đơn thành công để xem đơn đang ở trạng thái nào. Khách có tài khoản ví có thể xem lại toàn bộ lịch sử đơn ngay trong mục tài khoản trên <a href="index.html">trang chủ</a>.</p>
+
+<div class="card">
+  <label for="maDon"><b>Mã đơn hàng</b></label>
+  <input type="text" id="maDon" placeholder="Ví dụ: 31364784" autocomplete="off" inputmode="numeric">
+  <button class="btn" id="btnTra">Tra cứu trạng thái</button>
+  <div id="kq"></div>
+</div>
+
+<h2>Ý nghĩa các trạng thái</h2>
+<table>
+<tr><th>Trạng thái</th><th>Ý nghĩa</th></tr>
+<tr><td>⏳ Đang chờ xử lý</td><td>Đơn đã ghi nhận, đang xếp hàng chờ hệ thống chuyển chạy.</td></tr>
+<tr><td>🔄 Đang xử lý</td><td>Hệ thống đang chuẩn bị chạy đơn của bạn.</td></tr>
+<tr><td>🚀 Đang chạy</td><td>Đơn đang được thực hiện, số lượng tăng dần theo tốc độ của gói.</td></tr>
+<tr><td>✅ Hoàn thành</td><td>Đơn đã chạy đủ số lượng.</td></tr>
+<tr><td>⚠️ Hoàn thành một phần</td><td>Đơn chỉ chạy được một phần; phần chưa chạy được đối soát theo <a href="hoan-tien.html">chính sách hoàn tiền</a>.</td></tr>
+<tr><td>❌ Đã hủy</td><td>Đơn đã hủy (thường do link sai hoặc nội dung không còn tồn tại).</td></tr>
+<tr><td>↩️ Đã hoàn tiền</td><td>Đơn lỗi và tiền đã được hoàn theo chính sách.</td></tr>
+</table>
+
+<h2>Không tra được đơn?</h2>
+<ul>
+<li>Kiểm tra lại mã đơn: mã là dãy số hiển thị ngay sau khi bạn đặt đơn thành công (và trong lịch sử tài khoản nếu bạn đặt bằng ví).</li>
+<li>Đơn mới đặt có thể cần vài phút để hệ thống đồng bộ trạng thái.</li>
+<li>Vẫn không được — nhắn qua <b>live chat trên trang chủ</b> kèm mã đơn, đội ngũ sẽ tra giúp bạn ngay.</li>
+</ul>
+<p class="muted">Xem thêm: <a href="don-hang-bao-hanh.html">Đơn hàng &amp; bảo hành</a> · <a href="hoan-tien.html">Chính sách hoàn tiền</a></p>
+</main>
+<footer>
+  <div class="fwrap">
+    <div>
+      <a href="index.html">Trang chủ</a><a href="trang-thai-don-hang.html">Trạng thái đơn hàng</a><a href="don-hang-bao-hanh.html">Đơn hàng &amp; bảo hành</a><a href="hoan-tien.html">Hoàn tiền</a><a href="kiem-tien.html">Kiếm tiền</a><a href="dieu-kien-chinh-sach.html">Điều kiện &amp; chính sách</a><a href="chinh-sach-bao-mat.html">Chính sách bảo mật</a>
+    </div>
+    <div>© 2026 Tăng Tương Tác Việt — viettuongtac.com · Hỗ trợ: live chat trực tiếp trên trang chủ.</div>
+  </div>
+</footer>
+<script>
+document.getElementById('burgerBtn').addEventListener('click',function(){document.getElementById('mobileNav').classList.toggle('open');});
+var API="https://smm-proxy.hungcuonghnhm.workers.dev";
+var MAP={"Pending":"⏳ Đang chờ xử lý","Processing":"🔄 Đang xử lý","In progress":"🚀 Đang chạy","Completed":"✅ Hoàn thành","Partial":"⚠️ Hoàn thành một phần","Canceled":"❌ Đã hủy","Refunded":"↩️ Đã hoàn tiền"};
+function fmt(n){var x=Number(n);return isNaN(x)?n:x.toLocaleString("vi-VN");}
+document.getElementById('btnTra').addEventListener('click',function(){
+  var code=document.getElementById('maDon').value.trim();
+  var kq=document.getElementById('kq');
+  kq.style.display='block';
+  if(!code){kq.innerHTML='<p class="err">Bạn chưa nhập mã đơn.</p>';return;}
+  kq.innerHTML='<p class="muted">Đang tra cứu…</p>';
+  fetch(API+"/api/status?order="+encodeURIComponent(code)).then(function(r){return r.json();}).then(function(d){
+    if(d.error){kq.innerHTML='<p class="err">'+d.error+' Bạn kiểm tra lại mã đơn hoặc nhắn live chat ở trang chủ để được tra giúp nhé.</p>';return;}
+    var st=MAP[d.status]||d.status;
+    var html='<div class="kq-row"><span>Trạng thái</span><b>'+st+'</b></div>';
+    if(d.start_count!==undefined&&d.start_count!==null&&d.start_count!=="") html+='<div class="kq-row"><span>Số lượng tại thời điểm bắt đầu (start count)</span><b>'+fmt(d.start_count)+'</b></div>';
+    if(d.remains!==undefined&&d.remains!==null&&d.remains!==""){html+='<div class="kq-row"><span>Số lượng còn lại chưa chạy</span><b>'+fmt(d.remains)+'</b></div>';
+      var sc=Number(d.start_count), rm=Number(d.remains);
+      if(!isNaN(sc)&&!isNaN(rm)) html+='<div class="kq-row"><span>Đã tăng thêm khoảng</span><b>'+fmt(Math.max(sc-rm,0))+'</b></div>';}
+    kq.innerHTML=html;
+  }).catch(function(){kq.innerHTML='<p class="err">Không kết nối được hệ thống tra cứu. Bạn thử lại sau ít phút nhé.</p>';});
+});
+document.getElementById('maDon').addEventListener('keydown',function(e){if(e.key==='Enter')document.getElementById('btnTra').click();});
+</script>
+</body>
+</html>
