@@ -338,7 +338,7 @@ footer h4{color:var(--text);margin:12px 0 6px;font-size:15px}
     </div>
     <div class="paybox" id="mPay"></div>
     <div id="mGuestActions" style="display:flex;gap:10px;margin-top:16px;flex-wrap:wrap">
-      <button class="btn" id="mSubmit" style="flex:1">Đặt đơn</button>
+      <button class="btn" id="mSubmit">Đặt đơn</button>
       <button class="btn ghost" id="mClose">Đóng</button>
     </div>
     <div id="mNudge" class="nudge" style="display:none"></div>
@@ -349,7 +349,7 @@ footer h4{color:var(--text);margin:12px 0 6px;font-size:15px}
       </div>
       <div class="err" id="mWErr"></div>
       <div style="display:flex;gap:10px;flex-wrap:wrap">
-        <button class="btn" id="mWalletSubmit" style="flex:1">Đặt đơn</button>
+        <button class="btn" id="mWalletSubmit">Đặt đơn</button>
         <button class="btn ghost" id="mClose2">Đóng</button>
       </div>
     </div>
@@ -894,7 +894,6 @@ buildTabs(); render(); refreshMe();
 <!--Start of Tawk.to Script-->
 <script type="text/javascript">
 var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
-Tawk_API.customStyle = { visibility: { mobile: { position: "br", xOffset: 12, yOffset: 92 } } };
 (function(){
 var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
 s1.async=true;
