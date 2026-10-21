@@ -246,16 +246,6 @@ footer h4{color:var(--text);margin:12px 0 6px;font-size:15px}
     </ul>
   </details>
 
-  <section class="statusbox">
-    <h2>Tra trạng thái đơn hàng</h2>
-    <p>Nhập mã đơn bạn nhận được sau khi đặt hàng để xem tiến độ: đang chờ, đang chạy, hoàn thành hay đã hoàn một phần.</p>
-    <form class="statusform" id="statusForm">
-      <input id="orderId" inputmode="numeric" placeholder="Ví dụ: 123456" aria-label="Mã đơn hàng">
-      <button class="btn" type="submit">Tra trạng thái</button>
-    </form>
-    <div id="statusResult" role="status"></div>
-  </section>
-
   <nav class="tabs" id="ptabs" aria-label="Nền tảng"></nav>
   <nav class="ttabs" id="ttabs" aria-label="Loại dịch vụ"></nav>
   <p class="count" id="count"></p>
@@ -803,20 +793,6 @@ async function loadTopupHist(){
   const m = location.search.match(/[?&]token=([A-Za-z0-9]+)/);
   if(m){ localStorage.setItem("ttt_token", m[1]); history.replaceState(null, "", location.pathname); }
 })();
-
-$("#statusForm").addEventListener("submit", async e=>{
-  e.preventDefault();
-  const id = $("#orderId").value.trim(), box = $("#statusResult");
-  if(!id){ box.textContent = "Bạn nhập mã đơn cần tra nhé."; return; }
-  if(!CONFIG.API_BASE){ box.textContent = "Tính năng tra trạng thái tự động sẽ mở cùng lúc với hệ thống đặt đơn."; return; }
-  box.textContent = "Đang tra...";
-  try{
-    const r = await fetch(CONFIG.API_BASE + "/api/status?order=" + encodeURIComponent(id));
-    const d = await r.json();
-    if(d.status){ box.innerHTML = `Trạng thái đơn <b>${id}</b>: <b>${d.status}</b>` + (d.remains!=null ? ` · còn lại ${Number(d.remains).toLocaleString("vi-VN")} lượt` : "") + (d.start_count!=null ? ` · bắt đầu từ ${Number(d.start_count).toLocaleString("vi-VN")}` : ""); }
-    else box.textContent = d.error || "Không tìm thấy đơn này.";
-  }catch(e){ box.textContent = "Chưa kết nối được hệ thống, bạn thử lại sau ít phút nhé."; }
-});
 
 $("#q").addEventListener("input", e=>{
   const v = e.target.value.trim();
