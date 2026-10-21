@@ -721,7 +721,7 @@ $("#aRegister").onclick = async ()=>{
   err.textContent = "";
   const btn = $("#aRegister"); btn.disabled = true;
   try{
-    const r = await api("/api/auth/register", {method:"POST", body:{username:u, password:p}});
+    const r = await api("/api/auth/register", {method:"POST", body:{username:u, password:p, ref:(localStorage.getItem("ttt_ref")||"")}});
     const d = await r.json();
     if(!(await afterAuth(d))) err.textContent = d.error || "Tạo tài khoản chưa thành công.";
   }catch(e){ err.textContent = "Không kết nối được, bạn thử lại nhé."; }
@@ -739,7 +739,7 @@ $("#aLogin").onclick = async ()=>{
   btn.disabled = false;
 };
 // Đăng nhập mạng xã hội (cần cửa hàng cấu hình OAuth trên Worker)
-const goSocial = (p)=>{ location.href = CONFIG.API_BASE + "/api/auth/" + p; };
+const goSocial = (p)=>{ const rf = localStorage.getItem("ttt_ref"); location.href = CONFIG.API_BASE + "/api/auth/" + p + (rf ? "?ref=" + encodeURIComponent(rf) : ""); };
 ["aFb","lFb"].forEach(id=>{ const el = document.getElementById(id); if(el) el.onclick = ()=>goSocial("facebook"); });
 ["aGg","lGg"].forEach(id=>{ const el = document.getElementById(id); if(el) el.onclick = ()=>goSocial("google"); });
 
@@ -892,6 +892,10 @@ s0.parentNode.insertBefore(s1,s0);
 
 <script>
 document.getElementById('ttvBurger').addEventListener('click',function(){document.getElementById('ttvMob').classList.toggle('open');});
+</script>
+
+<script>
+(function(){ try{ var m = new URLSearchParams(location.search).get("ref"); if(m){ m = m.trim().toLowerCase(); if(/^[a-z0-9_.]{2,32}$/.test(m)) localStorage.setItem("ttt_ref", m); } }catch(e){} })();
 </script>
 </body>
 </html>
