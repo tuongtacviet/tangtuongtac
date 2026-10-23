@@ -45,7 +45,7 @@ footer{border-top:1px solid #e2e8f0;background:#fff}
 .hist-table{width:100%;border-collapse:collapse;font-size:14px;margin:14px 0 6px}
 .hist-table th,.hist-table td{border-bottom:1px solid #e2e8f0;padding:8px 6px;text-align:left;vertical-align:top}
 .hist-table th{color:#64748b;font-size:12.5px;text-transform:uppercase;letter-spacing:.02em}
-.st-ok{color:#15803d;font-weight:700}.st-failed{color:#b91c1c;font-weight:700}
+.st-ok{color:#15803d;font-weight:700}.st-failed{color:#b91c1c;font-weight:700}.st-refund{color:#0369a1;font-weight:700}
 .btn-mini{background:#eefbf3;color:#15803d;border:1px solid #bbf7d0;border-radius:8px;padding:5px 10px;font-weight:700;cursor:pointer;font-size:13px}
 </style>
 </head>
@@ -171,7 +171,7 @@ function fillAndCheck(code){
     }
     var h = '<div style="overflow-x:auto"><table class="hist-table"><tr><th>Thời gian</th><th>Mã đơn</th><th>Link</th><th>SL</th><th>Tiền</th><th>Trạng thái</th><th></th></tr>';
     orders.forEach(function(o){
-      var st = o.status === "failed" ? '<span class="st-failed">Lỗi — đã hoàn ví</span>' : '<span class="st-ok">Đã đặt</span>';
+      var st = (o.refunded_vnd > 0) ? '<span class="st-refund">↩️ Đã hoàn ' + Number(o.refunded_vnd).toLocaleString("vi-VN") + 'đ vào ví</span>' : (o.status === "failed" ? '<span class="st-failed">Lỗi — đã hoàn ví</span>' : '<span class="st-ok">Đã đặt</span>');
       var code = o.smm_order_id || "—";
       var link = (o.link || "").length > 42 ? (o.link || "").slice(0,42) + "…" : (o.link || "");
       var btn = o.smm_order_id ? '<button class="btn-mini" onclick="fillAndCheck(\'' + o.smm_order_id + '\')">Tra trạng thái</button>' : "";
