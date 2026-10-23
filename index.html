@@ -700,7 +700,7 @@ function renderAcct(){
     $("#hReg").onclick = ()=>openAccount("reg");
   } else {
     const nm = ME.display_name || ME.username || "Khách";
-    bar.innerHTML = `<span title="${nm}"><b class="abal">${fmt(ME.balance_vnd)}</b></span><button class="abtn primary" id="hTopup">Nạp tiền</button><button class="abtn" id="hLogout">Thoát</button>`;
+    bar.innerHTML = `<span title="${nm}"><b class="abal">${fmt(ME.balance_vnd)}</b></span><button class="abtn primary" id="hTopup">Nạp tiền</button><a class="abtn" href="tai-khoan.html" style="text-decoration:none;display:inline-flex;align-items:center">Tài khoản</a><button class="abtn" id="hLogout">Thoát</button>`;
     $("#hTopup").onclick = openTopup;
     $("#hLogout").onclick = async ()=>{ try{ await api("/api/auth/logout",{method:"POST"}); }catch(e){} localStorage.removeItem("ttt_token"); ME = null; renderAcct(); refreshOrderActions(); };
   }
