@@ -8,7 +8,7 @@
 :root{--green:#22c55e;--line:#1e293b;--muted:#94a3b8}
 *{box-sizing:border-box}
 body{background:#0b1120;color:#e2e8f0;font-family:system-ui,-apple-system,sans-serif;margin:0;padding:20px}
-.wrap{max-width:860px;margin:0 auto}
+.wrap{max-width:none;margin:0}
 h1{font-size:22px}
 .card{background:#0f172a;border:1px solid var(--line);border-radius:14px;padding:16px;margin:12px 0}
 input{background:#0b1120;border:1px solid var(--line);color:#e2e8f0;border-radius:10px;padding:10px 12px;font-size:15px;width:100%}
@@ -21,6 +21,15 @@ button:disabled{opacity:.5;cursor:default}
 .muted{color:var(--muted);font-size:13px}
 .err{color:#f87171;margin-top:8px}
 .ok{color:var(--green)}
+.layout{display:flex;gap:18px;align-items:flex-start;margin-top:14px}
+.side{width:228px;flex:none;position:sticky;top:16px;background:#0b1120;border:1px solid var(--line);border-radius:12px;padding:10px;display:flex;flex-direction:column;gap:6px}
+.side button{background:transparent;border:1px solid transparent;color:#e2e8f0;text-align:left;font-weight:600;padding:11px 12px;border-radius:10px;font-size:14.5px;cursor:pointer}
+.side button:hover{border-color:var(--line)}
+.side button.act{background:#14532d;border-color:#22c55e;color:#fff}
+.content{flex:1;min-width:0}
+.pane{display:none}
+.pane.act{display:block}
+@media(max-width:900px){.layout{flex-direction:column}.side{width:100%;position:static;flex-direction:row;overflow-x:auto}.side button{white-space:nowrap}}
 </style>
 </head>
 <body>
@@ -34,14 +43,29 @@ button:disabled{opacity:.5;cursor:default}
   </div>
   <div class="card" id="panel" style="display:none">
     <div style="display:flex;justify-content:space-between;align-items:center">
-      <h2 style="margin:0">Cần xử lý tay</h2>
+      <h2 style="margin:0">Bảng điều khiển</h2>
       <div><button class="ghost" id="reload">Tải lại</button> <button class="ghost" id="logout">Thoát</button></div>
     </div>
+    <div class="layout">
+      <aside class="side">
+        <button data-sec="topups" class="act">🧾 Duyệt nạp tiền</button>
+        <button data-sec="promos">🎟️ Mã giảm giá</button>
+        <button data-sec="prices">💰 Giá bán</button>
+        <button data-sec="users">👥 Khách hàng</button>
+        <button data-sec="web">🌐 Đơn làm website</button>
+        <button data-sec="push">🔔 Thông báo đẩy</button>
+        <button data-sec="tickets">🎫 Hỗ trợ ticket</button>
+      </aside>
+      <div class="content">
+    <section class="pane act" id="sec-topups">
+      <h2 style="margin:0 0 6px">Cần xử lý tay</h2>
     <p class="muted" id="summary"></p>
     <div id="list"><p class="muted">Đang tải...</p></div>
     <h2 style="margin:18px 0 0">Tiền vào không khớp mã nạp</h2>
     <p class="muted">Các khoản tiền vào không gắn với mã nạp nào (khách ghi sai nội dung...). Đối chiếu thêm tại SePay → Giao dịch nếu cần.</p>
     <div id="unmatched"><p class="muted">Đang tải...</p></div>
+    </section>
+    <section class="pane" id="sec-promos">
     <h2 style="margin:18px 0 0">🎟️ Mã giảm giá</h2>
     <p class="muted">Tạo mã giảm % cho khách (ví dụ mã bù đơn tụt like). Khách nhập mã ở bước đặt đơn, hệ thống tự trừ theo %.</p>
     <div class="card" style="margin:12px 0">
@@ -56,6 +80,8 @@ button:disabled{opacity:.5;cursor:default}
       <div class="err" id="pErr"></div>
     </div>
     <div id="pList"><p class="muted">Đang tải...</p></div>
+    </section>
+    <section class="pane" id="sec-prices">
     <h2 style="margin:18px 0 0">💰 Giá bán</h2>
     <p class="muted">Sửa giá bán trên web — bấm Lưu là lên ngay, không cần up file. Giá gốc tự làm mới theo nguồn smm.fan khi lưu.</p>
     <div style="display:flex;gap:8px;margin:8px 0">
@@ -63,12 +89,18 @@ button:disabled{opacity:.5;cursor:default}
       <button class="ghost" id="prFind">Tìm</button>
     </div>
     <div id="prList"><p class="muted">Đang tải...</p></div>
+    </section>
+    <section class="pane" id="sec-users">
     <h2 style="margin:18px 0 0">👥 Khách hàng</h2>
     <p class="muted">Danh sách tài khoản đã đăng ký / đăng nhập trên web (Google, Facebook hoặc tên đăng nhập).</p>
     <div id="uList"><p class="muted">Đang tải...</p></div>
+    </section>
+    <section class="pane" id="sec-web">
     <h2 style="margin:18px 0 0">🌐 Đơn làm website</h2>
     <p class="muted">Yêu cầu làm website 300k từ form trên trang chủ. Liên hệ khách trong 24h — cọc 150.000đ trước khi làm, 150.000đ còn lại khi bàn giao.</p>
     <div id="wList"><p class="muted">Đang tải...</p></div>
+    </section>
+    <section class="pane" id="sec-push">
     <h2 style="margin:18px 0 0">🔔 Thông báo đẩy</h2>
     <p class="muted" id="pushStats">Đang tải số khách đã bật thông báo...</p>
     <div style="display:grid;gap:8px;margin:8px 0">
@@ -78,10 +110,15 @@ button:disabled{opacity:.5;cursor:default}
     </div>
     <div style="margin-top:4px"><button id="pushSend">Gửi cho tất cả khách đã bật thông báo</button></div>
     <div class="err" id="pushMsg"></div>
+    </section>
+    <section class="pane" id="sec-tickets">
     <h2 style="margin:18px 0 0">🎫 Hỗ trợ khách hàng (ticket)</h2>
     <p class="muted">Khách gửi yêu cầu tại trang Hỗ trợ trên web. Bấm vào một yêu cầu để xem và trả lời — khách nhận thông báo đẩy ngay khi bạn trả lời.</p>
     <div id="tkList"><p class="muted">Đang tải...</p></div>
     <div id="tkDetail"></div>
+    </section>
+      </div>
+    </div>
   </div>
 </div>
 <script>
@@ -416,6 +453,12 @@ async function setTicketStatus(tid, st){
   }catch(e){ alert("Không kết nối được."); }
 }
 
+
+document.querySelectorAll(".side button[data-sec]").forEach(b=>b.addEventListener("click", ()=>{
+  document.querySelectorAll(".side button[data-sec]").forEach(x=>x.classList.toggle("act", x===b));
+  document.querySelectorAll(".pane").forEach(pn=>pn.classList.toggle("act", pn.id === "sec-" + b.dataset.sec));
+  window.scrollTo({top:0, behavior:"smooth"});
+}));
 document.getElementById("go").onclick = ()=>{
   const v = document.getElementById("pw").value;
   if(!v){ document.getElementById("gerr").textContent = "Bạn nhập mật khẩu."; return; }
