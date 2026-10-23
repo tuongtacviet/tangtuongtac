@@ -56,6 +56,11 @@ footer{border-top:1px solid #e2e8f0;background:#fff}
 .hist-table th,.hist-table td{border-bottom:1px solid #e2e8f0;padding:8px 6px;text-align:left;vertical-align:top}
 .hist-table th{color:#64748b;font-size:12.5px;text-transform:uppercase;letter-spacing:.02em}
 .st-ok{color:#15803d;font-weight:700}.st-failed{color:#b91c1c;font-weight:700}
+.inp{width:100%;padding:11px 12px;border:1px solid #cbd5e1;border-radius:10px;font-size:15px;margin:6px 0;background:#fff;color:#0f172a}
+.form-row{margin-top:10px}
+.ok-msg{color:#15803d;font-weight:700}
+.linklike{background:none;border:none;color:#03A84E;font-weight:700;cursor:pointer;font-size:14px;padding:0}
+.linklike:hover{text-decoration:underline}
 </style>
 </head>
 <body>
@@ -104,13 +109,30 @@ footer{border-top:1px solid #e2e8f0;background:#fff}
       </div>
     </div>
     <div class="info-rows">
+      <div class="info-row"><span class="k">Tên đăng nhập</span><span class="v" id="userNameRow">—</span></div>
+      <div class="info-row"><span class="k">Email</span><span class="v" id="emailVal">—</span></div>
       <div class="info-row"><span class="k">Số dư ví</span><span class="v balance-big" id="balanceVnd">—</span></div>
       <div class="info-row"><span class="k">Mã giới thiệu của bạn</span><span class="v" id="refCode">—</span></div>
+    </div>
+    <div class="form-row">
+      <button class="linklike" id="toggleEmailForm" type="button">✉️ Cập nhật email</button>
+      <div id="emailForm" style="display:none">
+        <input class="inp" type="email" id="emailInput" placeholder="Nhập email của bạn" autocomplete="email">
+        <div class="btn-row" style="margin-top:6px">
+          <button class="btn" id="btnSaveEmail" type="button">Lưu email</button>
+        </div>
+        <p id="emailMsg" style="margin:8px 0 0"></p>
+      </div>
     </div>
     <div class="btn-row">
       <a class="btn" href="index.html">Nạp tiền / Đặt đơn</a>
       <button class="btn ghost" id="btnLogout" type="button">Đăng xuất</button>
     </div>
+  </div>
+
+  <div class="card">
+    <h2 style="margin-top:0">🔒 Đổi mật khẩu</h2>
+    <div id="pwWrap"><p class="muted">Đang tải…</p></div>
   </div>
 
   <div class="card">
@@ -162,8 +184,12 @@ if (!token) {
     var name = me.display_name || me.username || "";
     document.getElementById('dispName').textContent = name;
     document.getElementById('userName').textContent = "@" + (me.username || "");
+    document.getElementById('userNameRow').textContent = me.username || "—";
     document.getElementById('avatarInit').textContent = (name.trim().charAt(0) || "?").toUpperCase();
     document.getElementById('balanceVnd').textContent = fmt(me.balance_vnd) + "đ";
+    document.getElementById('emailVal').textContent = me.email || "Chưa cập nhật";
+    document.getElementById('emailInput').value = me.email || "";
+    renderPwCard(me);
   }).catch(function(e){
     if (String(e.message) === "unauth") showNeedLogin();
     else document.getElementById('loadingWrap').innerHTML = '<p class="err">Không tải được thông tin tài khoản. Bạn thử tải lại trang nhé.</p>';
@@ -197,6 +223,62 @@ if (!token) {
     document.getElementById('ordersWrap').innerHTML = h;
   }).catch(function(){ document.getElementById('ordersWrap').innerHTML = '<p class="muted">Chưa tải được danh sách đơn hàng.</p>'; });
 }
+function renderPwCard(me){
+  var w = document.getElementById('pwWrap');
+  if (!me.has_password) {
+    w.innerHTML = '<p class="muted">Tài khoản của bạn đăng nhập bằng <b>' + (me.provider === 'facebook' ? 'Facebook' : 'Google') + '</b> nên không dùng mật khẩu của Việt Tương Tác. Bạn cứ đăng nhập lại bằng ' + (me.provider === 'facebook' ? 'Facebook' : 'Google') + ' như thường lệ — muốn đổi mật khẩu thì đổi bên ' + (me.provider === 'facebook' ? 'Facebook' : 'Google') + ' nhé.</p>';
+    return;
+  }
+  w.innerHTML =
+    '<label><b>Mật khẩu hiện tại</b></label><input class="inp" type="password" id="pwCur" autocomplete="current-password">' +
+    '<label><b>Mật khẩu mới</b> <span class="muted">(tối thiểu 6 ký tự)</span></label><input class="inp" type="password" id="pwNew" autocomplete="new-password">' +
+    '<label><b>Nhập lại mật khẩu mới</b></label><input class="inp" type="password" id="pwNew2" autocomplete="new-password">' +
+    '<div class="btn-row"><button class="btn" id="btnChangePw" type="button">Đổi mật khẩu</button></div>' +
+    '<p id="pwMsg" style="margin:10px 0 0"></p>' +
+    '<p class="muted">Sau khi đổi, các thiết bị khác đang đăng nhập tài khoản này sẽ bị đăng xuất — bạn chỉ cần đăng nhập lại bằng mật khẩu mới.</p>';
+  document.getElementById('btnChangePw').addEventListener('click', function(){
+    var cur = document.getElementById('pwCur').value;
+    var nw = document.getElementById('pwNew').value;
+    var nw2 = document.getElementById('pwNew2').value;
+    var msg = document.getElementById('pwMsg');
+    msg.className = ''; msg.textContent = '';
+    if (!cur) { msg.className = 'err'; msg.textContent = 'Bạn nhập mật khẩu hiện tại nhé.'; return; }
+    if (nw.length < 6) { msg.className = 'err'; msg.textContent = 'Mật khẩu mới tối thiểu 6 ký tự.'; return; }
+    if (nw !== nw2) { msg.className = 'err'; msg.textContent = 'Hai ô mật khẩu mới chưa khớp nhau.'; return; }
+    var btn = document.getElementById('btnChangePw');
+    btn.disabled = true; btn.textContent = 'Đang xử lý…';
+    fetch(API + "/api/me/password", { method: "POST", headers: { "Content-Type": "application/json", "Authorization": "Bearer " + token }, body: JSON.stringify({ current_password: cur, new_password: nw }) })
+      .then(function(r){ return r.json(); })
+      .then(function(d){
+        btn.disabled = false; btn.textContent = 'Đổi mật khẩu';
+        if (d.ok) {
+          msg.className = 'ok-msg'; msg.textContent = '✅ Đổi mật khẩu thành công! Từ giờ bạn đăng nhập bằng mật khẩu mới nhé.';
+          document.getElementById('pwCur').value = ''; document.getElementById('pwNew').value = ''; document.getElementById('pwNew2').value = '';
+        } else { msg.className = 'err'; msg.textContent = d.error || 'Đổi mật khẩu chưa thành công.'; }
+      })
+      .catch(function(){ btn.disabled = false; btn.textContent = 'Đổi mật khẩu'; msg.className = 'err'; msg.textContent = 'Không kết nối được. Bạn thử lại nhé.'; });
+  });
+}
+var tgl = document.getElementById('toggleEmailForm');
+if (tgl) tgl.addEventListener('click', function(){
+  var f = document.getElementById('emailForm');
+  f.style.display = f.style.display === 'none' ? '' : 'none';
+});
+var sv = document.getElementById('btnSaveEmail');
+if (sv) sv.addEventListener('click', function(){
+  var em = document.getElementById('emailInput').value.trim();
+  var msg = document.getElementById('emailMsg');
+  msg.className = ''; msg.textContent = '';
+  sv.disabled = true; sv.textContent = 'Đang lưu…';
+  fetch(API + "/api/me/email", { method: "POST", headers: { "Content-Type": "application/json", "Authorization": "Bearer " + token }, body: JSON.stringify({ email: em }) })
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+      sv.disabled = false; sv.textContent = 'Lưu email';
+      if (d.ok) { document.getElementById('emailVal').textContent = d.email; msg.className = 'ok-msg'; msg.textContent = '✅ Đã lưu email.'; }
+      else { msg.className = 'err'; msg.textContent = d.error || 'Lưu email chưa thành công.'; }
+    })
+    .catch(function(){ sv.disabled = false; sv.textContent = 'Lưu email'; msg.className = 'err'; msg.textContent = 'Không kết nối được. Bạn thử lại nhé.'; });
+});
 var lo = document.getElementById('btnLogout');
 if (lo) lo.addEventListener('click', function(){
   try { localStorage.removeItem("ttt_token"); } catch (e) {}
