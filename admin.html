@@ -69,6 +69,15 @@ button:disabled{opacity:.5;cursor:default}
     <h2 style="margin:18px 0 0">🌐 Đơn làm website</h2>
     <p class="muted">Yêu cầu làm website 300k từ form trên trang chủ. Liên hệ khách trong 24h — cọc 150.000đ trước khi làm, 150.000đ còn lại khi bàn giao.</p>
     <div id="wList"><p class="muted">Đang tải...</p></div>
+    <h2 style="margin:18px 0 0">🔔 Thông báo đẩy</h2>
+    <p class="muted" id="pushStats">Đang tải số khách đã bật thông báo...</p>
+    <div style="display:grid;gap:8px;margin:8px 0">
+      <input id="pushTitle" placeholder="Tiêu đề (vd: 🎁 Khuyến mãi hôm nay)" maxlength="80" autocomplete="off">
+      <textarea id="pushBody" placeholder="Nội dung thông báo" maxlength="240" rows="3" style="font-family:inherit;padding:10px;border-radius:10px;border:1px solid #334155;background:#0b1220;color:#e2e8f0"></textarea>
+      <input id="pushUrl" placeholder="Link khi khách bấm vào (để trống = trang chủ)" autocomplete="off">
+    </div>
+    <div style="margin-top:4px"><button id="pushSend">Gửi cho tất cả khách đã bật thông báo</button></div>
+    <div class="err" id="pushMsg"></div>
   </div>
 </div>
 <script>
@@ -110,6 +119,7 @@ async function load(){
     loadUsers();
     loadSvcOrders();
     loadPrices();
+    loadPushStats();
   }catch(e){ box.innerHTML = `<p class="err">Không kết nối được.</p>`; ubox.innerHTML = ""; }
 }
 const SVC_STATUS = {new:"Mới", contacted:"Đã liên hệ", deposit_paid:"Đã cọc 150k", in_progress:"Đang làm", done:"Hoàn thành", cancelled:"Đã hủy"};
@@ -305,6 +315,36 @@ async function act(code, a, btn){
     if(d.ok){ load(); } else { alert(d.error || "Thất bại"); btn.disabled = false; }
   }catch(e){ alert("Không kết nối được."); btn.disabled = false; }
 }
+async function loadPushStats(){
+  const el = document.getElementById("pushStats");
+  if(!el) return;
+  try{
+    const r = await fetch(API_BASE + "/api/admin/push/stats?pass=" + encodeURIComponent(pw()));
+    const d = await r.json();
+    if(d.error){ el.textContent = d.error; return; }
+    el.innerHTML = `Hiện có <b>${d.subscriptions}</b> thiết bị của <b>${d.users}</b> khách đã bật thông báo đẩy. Thông báo tự động (đơn xong/lỗi, nạp ví, hoa hồng) hệ thống tự gửi — mục này chỉ để gửi tay (khuyến mãi, thông báo chung).`;
+  }catch(e){ el.textContent = "Không tải được số liệu thông báo đẩy."; }
+}
+document.getElementById("pushSend").onclick = async ()=>{
+  const title = document.getElementById("pushTitle").value.trim();
+  const body = document.getElementById("pushBody").value.trim();
+  const url = document.getElementById("pushUrl").value.trim();
+  const msg = document.getElementById("pushMsg");
+  if(!title || !body){ msg.textContent = "Bạn nhập tiêu đề và nội dung nhé."; return; }
+  if(!confirm(`Gửi thông báo này cho TẤT CẢ khách đã bật thông báo?\n\n${title}\n${body}`)) return;
+  const btn = document.getElementById("pushSend");
+  btn.disabled = true; msg.textContent = "Đang gửi...";
+  try{
+    const r = await fetch(API_BASE + "/api/admin/push/send", {method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({pass: pw(), title, body, url})});
+    const d = await r.json();
+    if(d.ok){
+      msg.style.color = "#22c55e";
+      msg.textContent = `Đã gửi xong: ${d.sent}/${d.total} thiết bị nhận thành công${d.failed ? `, ${d.failed} lỗi` : ""}${d.removed ? `, đã dọn ${d.removed} đăng ký hết hạn` : ""}.`;
+      loadPushStats();
+    } else { msg.style.color = ""; msg.textContent = d.error || "Gửi thất bại."; }
+  }catch(e){ msg.style.color = ""; msg.textContent = "Không kết nối được."; }
+  btn.disabled = false;
+};
 document.getElementById("go").onclick = ()=>{
   const v = document.getElementById("pw").value;
   if(!v){ document.getElementById("gerr").textContent = "Bạn nhập mật khẩu."; return; }
