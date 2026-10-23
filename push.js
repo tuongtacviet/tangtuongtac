@@ -25,6 +25,38 @@
     return arr;
   }
 
+  // Bảng hướng dẫn iPhone: iOS chỉ nhận đẩy khi web đã cài ra Màn hình chính.
+  // Bảng đứng yên tới khi khách tự đóng (thay toast 4 giây đọc không kịp).
+  var guide = null;
+  function ico(paths) {
+    return '<svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex:none;margin-top:3px">' + paths + '</svg>';
+  }
+  function stepRow(n, icon, html) {
+    return '<div style="display:flex;gap:11px;align-items:flex-start;margin:0 0 13px">' +
+      '<div style="flex:none;width:29px;height:29px;border-radius:50%;background:#03A84E;color:#fff;font-weight:800;display:flex;align-items:center;justify-content:center;font-size:15px;margin-top:1px">' + n + '</div>' +
+      icon +
+      '<div style="font-size:15px;line-height:1.55;color:#e2e8f0;padding-top:3px">' + html + '</div></div>';
+  }
+  function showIosGuide() {
+    if (guide) { guide.style.display = "flex"; return; }
+    guide = document.createElement("div");
+    guide.style.cssText = "position:fixed;inset:0;background:rgba(3,7,15,.78);z-index:10060;display:flex;align-items:center;justify-content:center;padding:16px";
+    guide.innerHTML =
+      '<div style="background:#0f172a;border:1px solid #1e293b;border-radius:18px;max-width:420px;width:100%;padding:24px 20px 18px;color:#e2e8f0;position:relative;box-shadow:0 24px 60px rgba(0,0,0,.5);max-height:88vh;overflow:auto">' +
+      '<button type="button" aria-label="Đóng" data-close="1" style="position:absolute;top:8px;right:10px;background:none;border:none;color:#94a3b8;font-size:24px;cursor:pointer;line-height:1;padding:4px">&times;</button>' +
+      '<h3 style="margin:0 26px 8px 0;font-size:18.5px;color:#4ade80;line-height:1.35">📲 Nhận thông báo trên iPhone</h3>' +
+      '<p style="margin:0 0 15px;font-size:14.5px;line-height:1.55;color:#cbd5e1">iPhone cần cài web ra màn hình chính 1 lần mới nhận được thông báo đẩy. <b style="color:#fff">Làm 1 lần — dùng mãi mãi:</b> đơn xong, nạp ví, khuyến mãi báo ngay về máy bạn.</p>' +
+      stepRow(1, ico('<path d="M12 15V4"/><path d="M7 8l5-5 5 5"/><path d="M5 13v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6"/>'), 'Bấm nút <b>Chia sẻ</b> ở thanh công cụ dưới cùng của Safari') +
+      stepRow(2, ico('<rect x="4" y="4" width="16" height="16" rx="3"/><path d="M12 8.5v7M8.5 12h7"/>'), 'Cuộn xuống, chọn <b>“Thêm vào Màn hình chính”</b> rồi bấm <b>Thêm</b>') +
+      stepRow(3, ico('<path d="M18 8a6 6 0 1 0-12 0c0 7-3 8-3 8h18s-3-1-3-8"/><path d="M10.3 21a2 2 0 0 0 3.4 0"/>'), 'Mở lại <b>Việt Tương Tác</b> từ biểu tượng vừa tạo ngoài màn hình chính, bấm nút chuông và chọn <b>Cho phép</b>') +
+      '<button type="button" data-close="1" style="width:100%;background:#03A84E;color:#fff;border:none;border-radius:12px;padding:13px;font-size:15.5px;font-weight:700;cursor:pointer;margin-top:4px">Đã hiểu, để tôi làm ngay</button>' +
+      '</div>';
+    guide.addEventListener("click", function (e) {
+      if (e.target === guide || e.target.getAttribute("data-close")) guide.style.display = "none";
+    });
+    document.body.appendChild(guide);
+  }
+
   function sendSub(sub) {
     return fetch(API + "/api/push/subscribe", {
       method: "POST",
@@ -63,9 +95,7 @@
     if (!pushSupported) {
       // iPhone chưa cài web vào Màn hình chính thì chưa nhận được đẩy — hướng dẫn khách.
       if (isIOS && !standalone) {
-        showBtn("🔔 Nhận thông báo đơn hàng", function () {
-          toast("Trên iPhone: bấm nút Chia sẻ (⬆️) ở Safari → 'Thêm vào Màn hình chính', rồi mở web từ biểu tượng đó và bật thông báo nhé.");
-        });
+        showBtn("🔔 Nhận thông báo đơn hàng", showIosGuide);
       } else hideBtn();
       return;
     }
