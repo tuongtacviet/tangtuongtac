@@ -259,7 +259,7 @@ footer h4{color:var(--text);margin:12px 0 6px;font-size:15px}
   <section class="webservice" id="webservice" aria-label="Dịch vụ làm website">
     <div class="ws-card">
       <div class="ws-badge">DỊCH VỤ MỚI</div>
-      <h2>🌐 Dịch vụ làm website trọn gói — <span class="ws-price">300.000đ</span></h2>
+      <h2>🌐 Dịch vụ làm website - Landingpage trọn gói — <span class="ws-price">300.000đ</span></h2>
       <p class="ws-sub">Website giới thiệu, bán hàng cho doanh nghiệp, cửa hàng, cá nhân — bàn giao trong 1–3 ngày, cửa hàng trỏ tên miền giúp bạn.</p>
       <div class="ws-grid">
         <div class="ws-col">
@@ -406,7 +406,7 @@ footer h4{color:var(--text);margin:12px 0 6px;font-size:15px}
 
 <div class="modal" id="webModal" role="dialog" aria-modal="true" aria-labelledby="wTitle">
   <div class="sheet amodal">
-    <h2 id="wTitle">Đặt làm website — 300.000đ trọn gói</h2>
+    <h2 id="wTitle">Đặt làm website - Landingpage — 300.000đ trọn gói</h2>
     <p style="color:var(--muted);font-size:14px;margin-top:0">Bạn điền thông tin, <b style="color:var(--text)">đặt cọc 150.000đ</b> rồi đơn mới được gửi đi. 150.000đ còn lại thanh toán khi bàn giao.</p>
     <div id="wStep1">
       <label for="wName">Tên của bạn</label>
@@ -508,7 +508,7 @@ function copyOrderCode(code, btn){
 
 function buildTabs(){
   $("#ptabs").innerHTML = PLATFORMS.map(([k,v])=>`<button class="tab${k===curP?" active":""}" data-p="${k}">${pico(k)}${v}</button>`).join("")
-    + `<a class="tab websvc" id="webSvcTab" href="https://webkhoinguon.com" target="_blank" rel="noopener" style="text-decoration:none">🌐 Làm website trọn gói · <b>300k</b></a>`;
+    + `<a class="tab websvc" id="webSvcTab" href="https://webkhoinguon.com" target="_blank" rel="noopener" style="text-decoration:none">🌐 Làm website - Landingpage trọn gói · <b>300k</b></a>`;
   $("#ttabs").innerHTML = TYPES.map(([k,v])=>`<button class="ttab${k===curT?" active":""}" data-t="${k}">${v}</button>`).join("");
   document.querySelectorAll("[data-p]").forEach(b=>b.onclick=()=>{curP=b.dataset.p;buildTabs();render();});
   document.querySelectorAll("[data-t]").forEach(b=>b.onclick=()=>{curT=b.dataset.t;buildTabs();render();});
