@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hỗ trợ khách hàng — Việt Tương Tác</title>
+<meta name="description" content="Trang hỗ trợ khách hàng của Việt Tương Tác (viettuongtac.com): gửi yêu cầu hỗ trợ về thanh toán, đơn hàng, tài khoản và trao đổi trực tiếp với shop ngay trên web.">
+<style>
+*{box-sizing:border-box}
+body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;margin:0;background:#f6f8f7;color:#1e293b;line-height:1.65}
+a{color:#03A84E;text-decoration:none}
+a:hover{text-decoration:underline}
+header.site{position:sticky;top:0;background:#fff;border-bottom:1px solid #e2e8f0;z-index:50}
+.hwrap{max-width:1080px;margin:0 auto;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px;position:relative}
+.logo{font-weight:800;font-size:19px;color:#0f172a}
+.logo span{color:#03A84E}
+nav.main{display:flex;gap:18px;flex-wrap:wrap}
+nav.main a{color:#334155;font-size:15px;font-weight:600}
+nav.main a:hover{color:#03A84E;text-decoration:none}
+nav.main a.act{color:#03A84E}
+.burger{display:none;background:none;border:1px solid #e2e8f0;border-radius:8px;font-size:22px;line-height:1;padding:6px 12px;cursor:pointer;color:#0f172a}
+nav.mobile{display:none;background:#fff;border-top:1px solid #e2e8f0;padding:8px 16px 14px}
+nav.mobile a{display:block;padding:10px 4px;color:#334155;font-weight:600;border-bottom:1px solid #f1f5f9}
+nav.mobile a.act{color:#03A84E}
+nav.mobile.open{display:block}
+@media(max-width:820px){nav.main{display:none}.burger{display:block}}
+main{max-width:1080px;margin:0 auto;padding:26px 16px 52px}
+h1{font-size:26px;margin:6px 0 10px}
+h2{font-size:19px;margin-top:30px}
+.card{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:20px;margin-top:16px}
+.muted{color:#64748b;font-size:14px}
+.btn{display:inline-block;background:#03A84E;color:#fff;border:none;border-radius:10px;padding:11px 22px;font-size:15px;font-weight:700;cursor:pointer;text-align:center}
+.btn:hover{background:#029a46;text-decoration:none}
+.btn.ghost{background:#eefbf3;color:#15803d;border:1px solid #bbf7d0}
+.err{color:#dc2626;font-weight:600}
+.ok-msg{color:#15803d;font-weight:700}
+footer{border-top:1px solid #e2e8f0;background:#fff}
+.fwrap{max-width:1080px;margin:0 auto;padding:22px 16px;color:#64748b;font-size:14px;line-height:1.9}
+.fwrap a{color:#475569;font-weight:600;margin-right:14px}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start}
+@media(max-width:820px){.cols{grid-template-columns:1fr}}
+.inp,select.inp,textarea.inp{width:100%;padding:11px 12px;border:1px solid #cbd5e1;border-radius:10px;font-size:15px;margin:6px 0 10px;background:#fff;color:#0f172a;font-family:inherit}
+textarea.inp{min-height:110px;resize:vertical}
+.hist-table{width:100%;border-collapse:collapse;font-size:14px;margin:10px 0 6px}
+.hist-table th,.hist-table td{border-bottom:1px solid #e2e8f0;padding:8px 6px;text-align:left;vertical-align:top}
+.hist-table th{color:#64748b;font-size:12.5px;text-transform:uppercase;letter-spacing:.02em}
+.hist-table tr.clickable{cursor:pointer}
+.hist-table tr.clickable:hover td{background:#f0fdf4}
+.st-open{color:#b45309;font-weight:700}.st-answered{color:#15803d;font-weight:700}.st-closed{color:#64748b;font-weight:700}
+.msg{border-radius:12px;padding:10px 14px;margin:10px 0;max-width:88%;white-space:pre-wrap;word-break:break-word}
+.msg .meta{font-size:12px;color:#64748b;margin-top:5px}
+.msg.me{background:#e7f9ee;margin-left:auto;border:1px solid #bbf7d0}
+.msg.shop{background:#f1f5f9;margin-right:auto;border:1px solid #e2e8f0}
+</style>
+</head>
+<body>
+<header class="site">
+  <div class="hwrap">
+    <a class="logo" href="index.html">🚀 Tăng Tương Tác <span>Việt</span></a>
+    <nav class="main">
+      <a href="index.html">Trang chủ</a>
+      <a href="tai-khoan.html">Tài khoản</a>
+      <a href="ho-tro.html" class="act">Hỗ trợ</a>
+      <a href="trang-thai-don-hang.html">Trạng thái đơn hàng</a>
+      <a href="don-hang-bao-hanh.html">Đơn hàng &amp; bảo hành</a>
+      <a href="hoan-tien.html">Hoàn tiền</a>
+      <a href="kiem-tien.html">Kiếm tiền</a>
+      <a href="dieu-kien-chinh-sach.html">Điều kiện &amp; chính sách</a>
+    </nav>
+    <button class="burger" id="burgerBtn" aria-label="Mở menu">☰</button>
+  </div>
+  <nav class="mobile" id="mobileNav">
+    <a href="index.html">Trang chủ</a>
+    <a href="tai-khoan.html">Tài khoản</a>
+    <a href="ho-tro.html" class="act">Hỗ trợ</a>
+    <a href="trang-thai-don-hang.html">Trạng thái đơn hàng</a>
+    <a href="don-hang-bao-hanh.html">Đơn hàng &amp; bảo hành</a>
+    <a href="hoan-tien.html">Hoàn tiền</a>
+    <a href="kiem-tien.html">Kiếm tiền</a>
+    <a href="dieu-kien-chinh-sach.html">Điều kiện &amp; chính sách</a>
+  </nav>
+</header>
+<main>
+<h1>🎫 Hỗ trợ khách hàng</h1>
+<p class="muted">Gửi yêu cầu hỗ trợ ngay trên web — shop trả lời trực tiếp tại đây và bạn nhận được thông báo ngay khi có câu trả lời. Nếu là việc về một đơn hàng cụ thể, bạn ghi kèm <b>mã đơn</b> trong nội dung để shop tra cứu nhanh nhé.</p>
+
+<div class="card" id="needLogin" style="display:none">
+  <p><b>Bạn chưa đăng nhập.</b></p>
+  <p class="muted">Đăng nhập (hoặc tạo tài khoản) ở trang chủ để gửi yêu cầu hỗ trợ và xem lại các trao đổi với shop.</p>
+  <div style="margin-top:12px"><a class="btn" href="index.html">Về trang chủ đăng nhập</a></div>
+</div>
+
+<div id="supportWrap" style="display:none">
+  <div class="cols">
+    <div class="card" style="margin-top:0">
+      <h2 style="margin-top:0">💬 Liên hệ ngay</h2>
+      <label><b>Chủ đề</b></label>
+      <select class="inp" id="tkCat">
+        <option value="payment">Thanh toán</option>
+        <option value="order">Đơn hàng</option>
+        <option value="account">Tài khoản</option>
+        <option value="service">Dịch vụ</option>
+        <option value="other">Khác</option>
+      </select>
+      <label><b>Nội dung</b></label>
+      <textarea class="inp" id="tkBody" maxlength="2000" placeholder="Mô tả vấn đề bạn gặp… (nhớ ghi kèm mã đơn nếu hỏi về một đơn hàng cụ thể)"></textarea>
+      <button class="btn" id="tkSend" type="button" style="width:100%">Gửi yêu cầu</button>
+      <p id="tkMsg" style="margin:10px 0 0"></p>
+    </div>
+    <div class="card" style="margin-top:0">
+      <h2 style="margin-top:0">📋 Lịch sử hỗ trợ</h2>
+      <div id="tkList"><p class="muted">Đang tải…</p></div>
+    </div>
+  </div>
+
+  <div class="card" id="threadCard" style="display:none">
+    <button class="btn ghost" id="btnBack" type="button">← Danh sách yêu cầu</button>
+    <h2 id="threadTitle" style="margin-top:14px">Yêu cầu</h2>
+    <div id="threadMsgs"></div>
+    <div id="replyBox">
+      <label><b>Trả lời thêm</b></label>
+      <textarea class="inp" id="replyBody" maxlength="2000" placeholder="Nhập nội dung…"></textarea>
+      <button class="btn" id="btnReply" type="button">Gửi trả lời</button>
+      <p id="replyMsg" style="margin:10px 0 0"></p>
+      <p class="muted" id="closedNote" style="display:none">Yêu cầu này đã đóng — gửi trả lời sẽ mở lại yêu cầu.</p>
+    </div>
+  </div>
+</div>
+</main>
+<footer>
+  <div class="fwrap">
+    <div>
+      <a href="index.html">Trang chủ</a><a href="tai-khoan.html">Tài khoản</a><a href="ho-tro.html">Hỗ trợ</a><a href="trang-thai-don-hang.html">Trạng thái đơn hàng</a><a href="don-hang-bao-hanh.html">Đơn hàng &amp; bảo hành</a><a href="hoan-tien.html">Hoàn tiền</a><a href="kiem-tien.html">Kiếm tiền</a><a href="dieu-kien-chinh-sach.html">Điều kiện &amp; chính sách</a><a href="chinh-sach-bao-mat.html">Chính sách bảo mật</a>
+    </div>
+    <div>© 2026 Việt Tương Tác — viettuongtac.com · Hỗ trợ: gửi yêu cầu ngay tại trang này hoặc live chat trên trang chủ.</div>
+  </div>
+</footer>
+<script>
+document.getElementById('burgerBtn').addEventListener('click',function(){document.getElementById('mobileNav').classList.toggle('open');});
+var API = "https://smm-proxy.hungcuonghnhm.workers.dev";
+var CATS = { payment: "Thanh toán", order: "Đơn hàng", account: "Tài khoản", service: "Dịch vụ", other: "Khác" };
+var STS = { open: '<span class="st-open">Chờ trả lời</span>', answered: '<span class="st-answered">Đã trả lời</span>', closed: '<span class="st-closed">Đã đóng</span>' };
+function esc(s){return String(s == null ? "" : s).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];});}
+function fmtTime(x){ return x ? new Date(x).toLocaleString("vi-VN") : ""; }
+var token = null;
+try { token = localStorage.getItem("ttt_token"); } catch (e) {}
+var currentTicket = null;
+
+function showNeedLogin(){
+  document.getElementById('supportWrap').style.display = 'none';
+  document.getElementById('needLogin').style.display = '';
+}
+function authFetch(path, opts){
+  opts = opts || {};
+  opts.headers = Object.assign({ "Authorization": "Bearer " + token }, opts.headers || {});
+  return fetch(API + path, opts).then(function(r){ return r.json(); });
+}
+function loadTickets(){
+  authFetch("/api/me/tickets").then(function(d){
+    var w = document.getElementById('tkList');
+    if (d.error) { w.innerHTML = '<p class="err">' + esc(d.error) + '</p>'; return; }
+    var rows = d.tickets || [];
+    if (!rows.length) { w.innerHTML = '<p class="muted">Bạn chưa có yêu cầu hỗ trợ nào. Cần gì cứ gửi ở khung bên cạnh nhé.</p>'; return; }
+    var h = '<table class="hist-table"><thead><tr><th>Mã</th><th>Chủ đề</th><th>Trạng thái</th><th>Cập nhật</th></tr></thead><tbody>';
+    rows.forEach(function(t){
+      h += '<tr class="clickable" data-tid="' + t.id + '"><td>#' + t.id + '</td><td>' + esc(CATS[t.category] || t.category) + '</td><td>' + (STS[t.status] || esc(t.status)) + '</td><td>' + esc(fmtTime(t.updated_at)) + '</td></tr>';
+    });
+    h += '</tbody></table><p class="muted">Bấm vào một dòng để xem chi tiết và trao đổi tiếp.</p>';
+    w.innerHTML = h;
+    var trs = w.querySelectorAll('tr.clickable');
+    for (var i = 0; i < trs.length; i++) trs[i].addEventListener('click', function(){ openTicket(Number(this.getAttribute('data-tid'))); });
+  }).catch(function(){ document.getElementById('tkList').innerHTML = '<p class="muted">Chưa tải được danh sách. Bạn thử tải lại trang nhé.</p>'; });
+}
+function openTicket(tid){
+  currentTicket = tid;
+  authFetch("/api/me/tickets/" + tid).then(function(d){
+    if (d.error) { alert(d.error); return; }
+    var t = d.ticket;
+    document.getElementById('threadTitle').innerHTML = 'Yêu cầu #' + t.id + ' — ' + esc(CATS[t.category] || t.category) + ' · ' + (STS[t.status] || '');
+    var h = '';
+    (d.messages || []).forEach(function(m){
+      var mine = m.sender === 'user';
+      h += '<div class="msg ' + (mine ? 'me' : 'shop') + '">' + esc(m.body) + '<div class="meta">' + (mine ? 'Bạn' : 'Việt Tương Tác') + ' · ' + esc(fmtTime(m.created_at)) + '</div></div>';
+    });
+    document.getElementById('threadMsgs').innerHTML = h || '<p class="muted">Chưa có nội dung.</p>';
+    document.getElementById('closedNote').style.display = t.status === 'closed' ? '' : 'none';
+    var card = document.getElementById('threadCard');
+    card.style.display = '';
+    card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+}
+if (!token) {
+  showNeedLogin();
+} else {
+  authFetch("/api/me").then(function(me){
+    if (me.error) { showNeedLogin(); return; }
+    document.getElementById('needLogin').style.display = 'none';
+    document.getElementById('supportWrap').style.display = '';
+    loadTickets();
+  }).catch(showNeedLogin);
+}
+document.getElementById('tkSend').addEventListener('click', function(){
+  var cat = document.getElementById('tkCat').value;
+  var body = document.getElementById('tkBody').value.trim();
+  var msg = document.getElementById('tkMsg');
+  msg.className = ''; msg.textContent = '';
+  if (body.length < 5) { msg.className = 'err'; msg.textContent = 'Bạn mô tả rõ hơn một chút để shop hỗ trợ chính xác nhé.'; return; }
+  var btn = this; btn.disabled = true; btn.textContent = 'Đang gửi…';
+  authFetch("/api/support/tickets", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ category: cat, body: body }) })
+    .then(function(d){
+      btn.disabled = false; btn.textContent = 'Gửi yêu cầu';
+      if (d.ok) {
+        msg.className = 'ok-msg'; msg.textContent = '✅ Đã gửi yêu cầu #' + d.ticket_id + '. Shop sẽ trả lời tại đây — bạn nhận thông báo ngay khi có trả lời.';
+        document.getElementById('tkBody').value = '';
+        loadTickets();
+        openTicket(d.ticket_id);
+      } else { msg.className = 'err'; msg.textContent = d.error || 'Gửi chưa thành công.'; }
+    })
+    .catch(function(){ btn.disabled = false; btn.textContent = 'Gửi yêu cầu'; msg.className = 'err'; msg.textContent = 'Không kết nối được. Bạn thử lại nhé.'; });
+});
+document.getElementById('btnReply').addEventListener('click', function(){
+  if (!currentTicket) return;
+  var body = document.getElementById('replyBody').value.trim();
+  var msg = document.getElementById('replyMsg');
+  msg.className = ''; msg.textContent = '';
+  if (!body) { msg.className = 'err'; msg.textContent = 'Bạn nhập nội dung trả lời nhé.'; return; }
+  var btn = this; btn.disabled = true; btn.textContent = 'Đang gửi…';
+  authFetch("/api/me/tickets/reply", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ticket_id: currentTicket, body: body }) })
+    .then(function(d){
+      btn.disabled = false; btn.textContent = 'Gửi trả lời';
+      if (d.ok) { document.getElementById('replyBody').value = ''; openTicket(currentTicket); loadTickets(); }
+      else { msg.className = 'err'; msg.textContent = d.error || 'Gửi chưa thành công.'; }
+    })
+    .catch(function(){ btn.disabled = false; btn.textContent = 'Gửi trả lời'; msg.className = 'err'; msg.textContent = 'Không kết nối được. Bạn thử lại nhé.'; });
+});
+document.getElementById('btnBack').addEventListener('click', function(){
+  document.getElementById('threadCard').style.display = 'none';
+  currentTicket = null;
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+});
+</script>
+</body>
+</html>
