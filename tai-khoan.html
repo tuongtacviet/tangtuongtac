@@ -55,7 +55,7 @@ footer{border-top:1px solid #e2e8f0;background:#fff}
 .hist-table{width:100%;border-collapse:collapse;font-size:14px;margin:14px 0 6px}
 .hist-table th,.hist-table td{border-bottom:1px solid #e2e8f0;padding:8px 6px;text-align:left;vertical-align:top}
 .hist-table th{color:#64748b;font-size:12.5px;text-transform:uppercase;letter-spacing:.02em}
-.st-ok{color:#15803d;font-weight:700}.st-failed{color:#b91c1c;font-weight:700}
+.st-ok{color:#15803d;font-weight:700}.st-failed{color:#b91c1c;font-weight:700}.st-refund{color:#0369a1;font-weight:700}
 .inp{width:100%;padding:11px 12px;border:1px solid #cbd5e1;border-radius:10px;font-size:15px;margin:6px 0;background:#fff;color:#0f172a}
 .form-row{margin-top:10px}
 .ok-msg{color:#15803d;font-weight:700}
@@ -217,7 +217,7 @@ if (!token) {
     if (!rows.length) { document.getElementById('ordersWrap').innerHTML = '<p class="muted">Bạn chưa có đơn hàng nào đặt bằng ví. Khi đặt đơn trong lúc đăng nhập, đơn sẽ hiện ở đây.</p>'; return; }
     var h = '<table class="hist-table"><thead><tr><th>Mã đơn</th><th>Gói</th><th>Số lượng</th><th>Số tiền</th><th>Trạng thái</th><th>Thời gian</th></tr></thead><tbody>';
     rows.slice(0, 10).forEach(function(o){
-      var st = o.status === 'ok' ? '<span class="st-ok">Đã đặt thành công</span>' : '<span class="st-failed">Lỗi — đã hoàn ví</span>';
+      var st = (o.refunded_vnd > 0) ? '<span class="st-refund">↩️ Đã hoàn ' + fmt(o.refunded_vnd) + 'đ vào ví</span>' : (o.status === 'ok' ? '<span class="st-ok">Đã đặt thành công</span>' : '<span class="st-failed">Lỗi — đã hoàn ví</span>');
       var t = o.created_at ? new Date(o.created_at).toLocaleString("vi-VN") : "";
       h += '<tr><td>' + esc(o.smm_order_id || "—") + '</td><td>' + esc(o.service_id) + '</td><td>' + fmt(o.quantity) + '</td><td>' + fmt(o.total_vnd) + 'đ</td><td>' + st + '</td><td>' + esc(t) + '</td></tr>';
     });
