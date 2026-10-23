@@ -78,6 +78,10 @@ button:disabled{opacity:.5;cursor:default}
     </div>
     <div style="margin-top:4px"><button id="pushSend">Gửi cho tất cả khách đã bật thông báo</button></div>
     <div class="err" id="pushMsg"></div>
+    <h2 style="margin:18px 0 0">🎫 Hỗ trợ khách hàng (ticket)</h2>
+    <p class="muted">Khách gửi yêu cầu tại trang Hỗ trợ trên web. Bấm vào một yêu cầu để xem và trả lời — khách nhận thông báo đẩy ngay khi bạn trả lời.</p>
+    <div id="tkList"><p class="muted">Đang tải...</p></div>
+    <div id="tkDetail"></div>
   </div>
 </div>
 <script>
@@ -120,6 +124,7 @@ async function load(){
     loadSvcOrders();
     loadPrices();
     loadPushStats();
+    loadTickets();
   }catch(e){ box.innerHTML = `<p class="err">Không kết nối được.</p>`; ubox.innerHTML = ""; }
 }
 const SVC_STATUS = {new:"Mới", contacted:"Đã liên hệ", deposit_paid:"Đã cọc 150k", in_progress:"Đang làm", done:"Hoàn thành", cancelled:"Đã hủy"};
@@ -345,6 +350,72 @@ document.getElementById("pushSend").onclick = async ()=>{
   }catch(e){ msg.style.color = ""; msg.textContent = "Không kết nối được."; }
   btn.disabled = false;
 };
+
+const TK_CATS = {payment:"Thanh toán", order:"Đơn hàng", account:"Tài khoản", service:"Dịch vụ", other:"Khác"};
+const TK_STS = {open:["Chờ trả lời","#f59e0b"], answered:["Đã trả lời","#22c55e"], closed:["Đã đóng","#94a3b8"]};
+const tkEsc = s => String(s == null ? "" : s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+async function loadTickets(){
+  const box = document.getElementById("tkList");
+  if(!box) return;
+  try{
+    const r = await fetch(API_BASE + "/api/admin/tickets?pass=" + encodeURIComponent(pw()));
+    const d = await r.json();
+    if(d.error){ box.innerHTML = `<p class="err">${tkEsc(d.error)}</p>`; return; }
+    const rows = d.tickets || [];
+    if(!rows.length){ box.innerHTML = `<p class="muted">Chưa có yêu cầu hỗ trợ nào.</p>`; return; }
+    box.innerHTML = rows.map(x=>{
+      const st = TK_STS[x.status] || [x.status,"#e2e8f0"];
+      return `<div class="row" style="cursor:pointer" onclick="openTicket(${x.id})">
+        <div><b>#${x.id}</b> · ${tkEsc(TK_CATS[x.category] || x.category)} · <span style="color:${st[1]}"><b>${st[0]}</b></span><br>
+        <span class="muted">${tkEsc(x.display_name || x.username || ("#" + x.user_id))}${x.username ? " (@" + tkEsc(x.username) + ")" : ""}${x.email ? " · " + tkEsc(x.email) : ""} · cập nhật ${new Date(x.updated_at).toLocaleString("vi-VN")}</span><br>
+        <span class="muted">${x.last_sender === "admin" ? "Shop: " : "Khách: "}${tkEsc(String(x.last_body || "").slice(0, 90))}</span></div>
+      </div>`;
+    }).join("");
+  }catch(e){ box.innerHTML = `<p class="err">Không kết nối được.</p>`; }
+}
+async function openTicket(tid){
+  const box = document.getElementById("tkDetail");
+  box.innerHTML = `<p class="muted">Đang tải yêu cầu #${tid}...</p>`;
+  try{
+    const r = await fetch(API_BASE + "/api/admin/tickets/" + tid + "?pass=" + encodeURIComponent(pw()));
+    const d = await r.json();
+    if(d.error){ box.innerHTML = `<p class="err">${tkEsc(d.error)}</p>`; return; }
+    const x = d.ticket, st = TK_STS[x.status] || [x.status,"#e2e8f0"];
+    const msgs = (d.messages || []).map(m=>`<div style="margin:8px 0;padding:10px 12px;border-radius:10px;${m.sender === "admin" ? "background:#14532d" : "background:#1e293b"}">
+      <div>${tkEsc(m.body)}</div><div class="muted" style="font-size:12px;margin-top:4px">${m.sender === "admin" ? "Shop" : "Khách"} · ${new Date(m.created_at).toLocaleString("vi-VN")}</div></div>`).join("");
+    box.innerHTML = `<div style="border:1px solid #334155;border-radius:12px;padding:14px;margin-top:12px">
+      <div><b>Yêu cầu #${x.id}</b> · ${tkEsc(TK_CATS[x.category] || x.category)} · <span style="color:${st[1]}"><b>${st[0]}</b></span></div>
+      <div class="muted">Khách: ${tkEsc(x.display_name || x.username || ("#" + x.user_id))}${x.username ? " (@" + tkEsc(x.username) + ")" : ""}${x.email ? " · " + tkEsc(x.email) : ""} · tạo ${new Date(x.created_at).toLocaleString("vi-VN")}</div>
+      <div style="margin-top:8px">${msgs}</div>
+      <textarea id="tkReplyBody" rows="3" maxlength="2000" placeholder="Nhập câu trả lời cho khách..." style="width:100%;font-family:inherit;padding:10px;border-radius:10px;border:1px solid #334155;background:#0b1220;color:#e2e8f0"></textarea>
+      <div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap">
+        <button onclick="replyTicket(${x.id})">Gửi trả lời</button>
+        ${x.status !== "closed" ? `<button class="ghost" onclick="setTicketStatus(${x.id},'closed')">Đóng yêu cầu</button>` : `<button class="ghost" onclick="setTicketStatus(${x.id},'open')">Mở lại</button>`}
+      </div>
+      <div class="err" id="tkReplyMsg"></div>
+    </div>`;
+    box.scrollIntoView({behavior:"smooth", block:"start"});
+  }catch(e){ box.innerHTML = `<p class="err">Không kết nối được.</p>`; }
+}
+async function replyTicket(tid){
+  const body = document.getElementById("tkReplyBody").value.trim();
+  const msg = document.getElementById("tkReplyMsg");
+  if(!body){ msg.textContent = "Bạn nhập nội dung trả lời."; return; }
+  msg.textContent = "Đang gửi...";
+  try{
+    const r = await fetch(API_BASE + "/api/admin/tickets/reply", {method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({pass: pw(), ticket_id: tid, body})});
+    const d = await r.json();
+    if(d.ok){ loadTickets(); openTicket(tid); } else { msg.textContent = d.error || "Gửi thất bại."; }
+  }catch(e){ msg.textContent = "Không kết nối được."; }
+}
+async function setTicketStatus(tid, st){
+  try{
+    const r = await fetch(API_BASE + "/api/admin/tickets/status", {method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({pass: pw(), ticket_id: tid, status: st})});
+    const d = await r.json();
+    if(d.ok){ loadTickets(); openTicket(tid); } else { alert(d.error || "Thất bại"); }
+  }catch(e){ alert("Không kết nối được."); }
+}
+
 document.getElementById("go").onclick = ()=>{
   const v = document.getElementById("pw").value;
   if(!v){ document.getElementById("gerr").textContent = "Bạn nhập mật khẩu."; return; }
