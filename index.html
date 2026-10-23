@@ -893,5 +893,45 @@ document.getElementById('ttvBurger').addEventListener('click',function(){documen
 (function(){ try{ var m = new URLSearchParams(location.search).get("ref"); if(m){ m = m.trim().toLowerCase(); if(/^[a-z0-9_.]{2,32}$/.test(m)) localStorage.setItem("ttt_ref", m); } }catch(e){} })();
 </script>
 <script src="/push.js" defer></script>
+
+<!-- ===== Thong bao su co dat don da xu ly (23/10/2026, tu het han 26/10) ===== -->
+<style>
+#tttNoticeFix{position:fixed;inset:0;background:rgba(3,7,15,.72);z-index:10050;display:none;align-items:center;justify-content:center;padding:16px}
+#tttNoticeFix .nz-card{background:#0f172a;border:1px solid #1e293b;border-radius:18px;max-width:440px;width:100%;padding:26px 22px 20px;color:#e2e8f0;position:relative;box-shadow:0 24px 60px rgba(0,0,0,.5);max-height:88vh;overflow:auto}
+#tttNoticeFix .nz-x{position:absolute;top:10px;right:12px;background:none;border:none;color:#94a3b8;font-size:22px;cursor:pointer;line-height:1;padding:4px}
+#tttNoticeFix h3{margin:0 28px 12px 0;font-size:19px;color:#4ade80;line-height:1.35}
+#tttNoticeFix p{margin:0 0 12px;font-size:15px;line-height:1.6;color:#cbd5e1}
+#tttNoticeFix .nz-ok{width:100%;background:#03A84E;color:#fff;border:none;border-radius:12px;padding:13px;font-size:15.5px;font-weight:700;cursor:pointer;margin-top:2px}
+</style>
+<div id="tttNoticeFix" role="dialog" aria-modal="true">
+  <div class="nz-card">
+    <button class="nz-x" id="tttNoticeX" aria-label="Đóng">&times;</button>
+    <h3>✅ Sự cố đặt đơn đã được xử lý xong</h3>
+    <p>Đêm 22/10, hệ thống của <b>Việt Tương Tác</b> gặp sự cố kỹ thuật khiến một số đơn hàng không đặt thành công. Nay sự cố đã khắc phục xong, hệ thống đã nhận đơn bình thường trở lại.</p>
+    <p>💰 Toàn bộ đơn bị lỗi đã được <b>hoàn tiền 100% tự động vào ví</b> của bạn. Bạn vui lòng kiểm tra lại số dư ví — nếu thấy chưa đúng, hãy liên hệ hỗ trợ qua ô chat góc phải màn hình hoặc Zalo <b>0868.895.144</b>, shop xử lý ngay cho bạn.</p>
+    <p>Shop xin lỗi vì sự bất tiện này và cảm ơn bạn đã thông cảm! 🙏</p>
+    <button class="nz-ok" id="tttNoticeOk">Đã hiểu, cảm ơn shop</button>
+  </div>
+</div>
+<script>
+(function(){
+  var KEY = "ttt_notice_fix_20261023";
+  var EXP = new Date("2026-10-26T23:59:59+07:00").getTime();
+  try {
+    if (Date.now() > EXP) return;
+    if (localStorage.getItem(KEY)) return;
+  } catch (e) {}
+  var box = document.getElementById("tttNoticeFix");
+  if (!box) return;
+  function close() {
+    box.style.display = "none";
+    try { localStorage.setItem(KEY, "1"); } catch (e) {}
+  }
+  document.getElementById("tttNoticeOk").addEventListener("click", close);
+  document.getElementById("tttNoticeX").addEventListener("click", close);
+  box.addEventListener("click", function (e) { if (e.target === box) close(); });
+  setTimeout(function () { box.style.display = "flex"; }, 700);
+})();
+</script>
 </body>
 </html>
