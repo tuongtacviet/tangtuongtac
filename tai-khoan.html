@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tài khoản của tôi — Việt Tương Tác</title>
+<meta name="description" content="Trang tài khoản khách hàng tại Việt Tương Tác (viettuongtac.com): xem thông tin tài khoản, số dư ví, mã giới thiệu, hoa hồng và các đơn hàng gần đây.">
+<meta name="robots" content="noindex, follow">
+<style>
+*{box-sizing:border-box}
+body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;margin:0;background:#f6f8f7;color:#1e293b;line-height:1.65}
+a{color:#03A84E;text-decoration:none}
+a:hover{text-decoration:underline}
+header.site{position:sticky;top:0;background:#fff;border-bottom:1px solid #e2e8f0;z-index:50}
+.hwrap{max-width:1080px;margin:0 auto;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px;position:relative}
+.logo{font-weight:800;font-size:19px;color:#0f172a}
+.logo span{color:#03A84E}
+nav.main{display:flex;gap:18px;flex-wrap:wrap}
+nav.main a{color:#334155;font-size:15px;font-weight:600}
+nav.main a:hover{color:#03A84E;text-decoration:none}
+nav.main a.act{color:#03A84E}
+.burger{display:none;background:none;border:1px solid #e2e8f0;border-radius:8px;font-size:22px;line-height:1;padding:6px 12px;cursor:pointer;color:#0f172a}
+nav.mobile{display:none;background:#fff;border-top:1px solid #e2e8f0;padding:8px 16px 14px}
+nav.mobile a{display:block;padding:10px 4px;color:#334155;font-weight:600;border-bottom:1px solid #f1f5f9}
+nav.mobile a.act{color:#03A84E}
+nav.mobile.open{display:block}
+@media(max-width:820px){nav.main{display:none}.burger{display:block}}
+main{max-width:860px;margin:0 auto;padding:26px 16px 52px}
+h1{font-size:26px;margin:6px 0 10px}
+h2{font-size:19px;margin-top:30px}
+.card{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:20px;margin-top:16px}
+.muted{color:#64748b;font-size:14px}
+.btn{display:inline-block;background:#03A84E;color:#fff;border:none;border-radius:10px;padding:11px 22px;font-size:15px;font-weight:700;cursor:pointer;text-align:center}
+.btn:hover{background:#029a46;text-decoration:none}
+.btn.ghost{background:#eefbf3;color:#15803d;border:1px solid #bbf7d0}
+.err{color:#dc2626;font-weight:600}
+footer{border-top:1px solid #e2e8f0;background:#fff}
+.fwrap{max-width:1080px;margin:0 auto;padding:22px 16px;color:#64748b;font-size:14px;line-height:1.9}
+.fwrap a{color:#475569;font-weight:600;margin-right:14px}
+.acct-head{display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+.avatar{width:64px;height:64px;border-radius:50%;background:#03A84E;color:#fff;font-size:27px;font-weight:800;display:flex;align-items:center;justify-content:center;flex:none}
+.acct-name{font-size:21px;font-weight:800;color:#0f172a;line-height:1.3}
+.info-rows{margin-top:16px;border-top:1px solid #f1f5f9}
+.info-row{display:flex;justify-content:space-between;gap:14px;padding:9px 0;border-bottom:1px solid #f1f5f9}
+.info-row .k{color:#64748b}
+.info-row .v{font-weight:700;text-align:right;word-break:break-all}
+.balance-big{font-size:25px;color:#03A84E;font-weight:800}
+.btn-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+.btn-row .btn{flex:1;min-width:150px}
+.ref-link-box{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}
+.ref-link-box input{flex:1;min-width:220px;padding:11px 12px;border:1px solid #cbd5e1;border-radius:10px;font-size:15px;background:#f8fafc;color:#0f172a}
+.btn-copy{background:#03A84E;color:#fff;border:none;border-radius:10px;padding:11px 18px;font-weight:700;cursor:pointer;font-size:15px}
+.ref-stats{display:flex;gap:22px;flex-wrap:wrap;margin:12px 0 4px}
+.ref-stats b{font-size:19px;color:#03A84E}
+.hist-table{width:100%;border-collapse:collapse;font-size:14px;margin:14px 0 6px}
+.hist-table th,.hist-table td{border-bottom:1px solid #e2e8f0;padding:8px 6px;text-align:left;vertical-align:top}
+.hist-table th{color:#64748b;font-size:12.5px;text-transform:uppercase;letter-spacing:.02em}
+.st-ok{color:#15803d;font-weight:700}.st-failed{color:#b91c1c;font-weight:700}
+</style>
+</head>
+<body>
+<header class="site">
+  <div class="hwrap">
+    <a class="logo" href="index.html">🚀 Tăng Tương Tác <span>Việt</span></a>
+    <nav class="main">
+      <a href="index.html">Trang chủ</a>
+      <a href="tai-khoan.html" class="act">Tài khoản</a>
+      <a href="trang-thai-don-hang.html">Trạng thái đơn hàng</a>
+      <a href="don-hang-bao-hanh.html">Đơn hàng &amp; bảo hành</a>
+      <a href="hoan-tien.html">Hoàn tiền</a>
+      <a href="kiem-tien.html">Kiếm tiền</a>
+      <a href="dieu-kien-chinh-sach.html">Điều kiện &amp; chính sách</a>
+    </nav>
+    <button class="burger" id="burgerBtn" aria-label="Mở menu">☰</button>
+  </div>
+  <nav class="mobile" id="mobileNav">
+    <a href="index.html">Trang chủ</a>
+    <a href="tai-khoan.html" class="act">Tài khoản</a>
+    <a href="trang-thai-don-hang.html">Trạng thái đơn hàng</a>
+    <a href="don-hang-bao-hanh.html">Đơn hàng &amp; bảo hành</a>
+    <a href="hoan-tien.html">Hoàn tiền</a>
+    <a href="kiem-tien.html">Kiếm tiền</a>
+    <a href="dieu-kien-chinh-sach.html">Điều kiện &amp; chính sách</a>
+  </nav>
+</header>
+<main>
+<h1>👤 Tài khoản của tôi</h1>
+
+<div id="loadingWrap"><p class="muted">Đang tải thông tin tài khoản…</p></div>
+
+<div class="card" id="needLogin" style="display:none">
+  <p><b>Bạn chưa đăng nhập.</b></p>
+  <p class="muted">Đăng nhập (hoặc tạo tài khoản) ở trang chủ để xem thông tin tài khoản, số dư ví, mã giới thiệu và lịch sử đơn hàng của bạn tại Việt Tương Tác.</p>
+  <div class="btn-row"><a class="btn" href="index.html">Về trang chủ đăng nhập</a></div>
+</div>
+
+<div id="acctWrap" style="display:none">
+  <div class="card">
+    <div class="acct-head">
+      <div class="avatar" id="avatarInit">?</div>
+      <div>
+        <div class="acct-name" id="dispName">—</div>
+        <div class="muted" id="userName">@—</div>
+      </div>
+    </div>
+    <div class="info-rows">
+      <div class="info-row"><span class="k">Số dư ví</span><span class="v balance-big" id="balanceVnd">—</span></div>
+      <div class="info-row"><span class="k">Mã giới thiệu của bạn</span><span class="v" id="refCode">—</span></div>
+    </div>
+    <div class="btn-row">
+      <a class="btn" href="index.html">Nạp tiền / Đặt đơn</a>
+      <button class="btn ghost" id="btnLogout" type="button">Đăng xuất</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2 style="margin-top:0">🎁 Giới thiệu bạn bè — nhận hoa hồng 2%</h2>
+    <p class="muted">Chia sẻ link giới thiệu của bạn: khi người được giới thiệu đặt đơn bằng ví, bạn nhận ngay <b>2% hoa hồng</b> vào ví. Xem chi tiết tại trang <a href="kiem-tien.html">Kiếm tiền</a>.</p>
+    <div id="refWrap"><p class="muted">Đang tải link giới thiệu…</p></div>
+  </div>
+
+  <div class="card">
+    <h2 style="margin-top:0">🧾 Đơn hàng gần đây</h2>
+    <div id="ordersWrap"><p class="muted">Đang tải đơn hàng…</p></div>
+    <p class="muted">Xem toàn bộ lịch sử và tra tiến độ từng đơn tại trang <a href="trang-thai-don-hang.html">Trạng thái đơn hàng</a>.</p>
+  </div>
+</div>
+</main>
+<footer>
+  <div class="fwrap">
+    <div>
+      <a href="index.html">Trang chủ</a><a href="tai-khoan.html">Tài khoản</a><a href="trang-thai-don-hang.html">Trạng thái đơn hàng</a><a href="don-hang-bao-hanh.html">Đơn hàng &amp; bảo hành</a><a href="hoan-tien.html">Hoàn tiền</a><a href="kiem-tien.html">Kiếm tiền</a><a href="dieu-kien-chinh-sach.html">Điều kiện &amp; chính sách</a><a href="chinh-sach-bao-mat.html">Chính sách bảo mật</a>
+    </div>
+    <div>© 2026 Việt Tương Tác — viettuongtac.com · Hỗ trợ: live chat trực tiếp trên trang chủ.</div>
+  </div>
+</footer>
+<script>
+document.getElementById('burgerBtn').addEventListener('click',function(){document.getElementById('mobileNav').classList.toggle('open');});
+var API = "https://smm-proxy.hungcuonghnhm.workers.dev";
+function esc(s){return String(s == null ? "" : s).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];});}
+function fmt(n){var x=Number(n);return isNaN(x)?esc(n):x.toLocaleString("vi-VN");}
+var token = null;
+try { token = localStorage.getItem("ttt_token"); } catch (e) {}
+function showNeedLogin(){
+  document.getElementById('loadingWrap').style.display = 'none';
+  document.getElementById('acctWrap').style.display = 'none';
+  document.getElementById('needLogin').style.display = '';
+}
+function authFetch(path){
+  return fetch(API + path, { headers: { "Authorization": "Bearer " + token } }).then(function(r){
+    if (r.status === 401) throw new Error("unauth");
+    return r.json();
+  });
+}
+if (!token) {
+  showNeedLogin();
+} else {
+  authFetch("/api/me").then(function(me){
+    if (me.error) { showNeedLogin(); return; }
+    document.getElementById('loadingWrap').style.display = 'none';
+    document.getElementById('acctWrap').style.display = '';
+    var name = me.display_name || me.username || "";
+    document.getElementById('dispName').textContent = name;
+    document.getElementById('userName').textContent = "@" + (me.username || "");
+    document.getElementById('avatarInit').textContent = (name.trim().charAt(0) || "?").toUpperCase();
+    document.getElementById('balanceVnd').textContent = fmt(me.balance_vnd) + "đ";
+  }).catch(function(e){
+    if (String(e.message) === "unauth") showNeedLogin();
+    else document.getElementById('loadingWrap').innerHTML = '<p class="err">Không tải được thông tin tài khoản. Bạn thử tải lại trang nhé.</p>';
+  });
+
+  authFetch("/api/me/referral").then(function(d){
+    if (d.error) { document.getElementById('refWrap').innerHTML = '<p class="muted">Chưa tải được thông tin giới thiệu.</p>'; return; }
+    document.getElementById('refCode').textContent = d.ref_code || "—";
+    var h = '<div class="ref-link-box"><input type="text" id="refLinkInput" readonly value="' + esc(d.ref_link || "") + '"><button class="btn-copy" id="refCopyBtn" type="button">Sao chép link</button></div>';
+    h += '<div class="ref-stats"><div>Người đã giới thiệu<br><b>' + fmt(d.referred_count || 0) + '</b></div><div>Tổng hoa hồng đã nhận<br><b>' + fmt(d.total_commission_vnd || 0) + 'đ</b></div></div>';
+    document.getElementById('refWrap').innerHTML = h;
+    var btn = document.getElementById('refCopyBtn');
+    if (btn) btn.addEventListener('click', function(){
+      var inp = document.getElementById('refLinkInput');
+      function done(){ btn.textContent = "Đã sao chép ✓"; setTimeout(function(){ btn.textContent = "Sao chép link"; }, 2000); }
+      if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(inp.value).then(done).catch(function(){ inp.select(); document.execCommand('copy'); done(); });
+      else { inp.select(); document.execCommand('copy'); done(); }
+    });
+  }).catch(function(){ document.getElementById('refWrap').innerHTML = '<p class="muted">Chưa tải được thông tin giới thiệu.</p>'; });
+
+  authFetch("/api/me/orders").then(function(d){
+    var rows = (d && d.orders) || [];
+    if (!rows.length) { document.getElementById('ordersWrap').innerHTML = '<p class="muted">Bạn chưa có đơn hàng nào đặt bằng ví. Khi đặt đơn trong lúc đăng nhập, đơn sẽ hiện ở đây.</p>'; return; }
+    var h = '<table class="hist-table"><thead><tr><th>Mã đơn</th><th>Gói</th><th>Số lượng</th><th>Số tiền</th><th>Trạng thái</th><th>Thời gian</th></tr></thead><tbody>';
+    rows.slice(0, 10).forEach(function(o){
+      var st = o.status === 'ok' ? '<span class="st-ok">Đã đặt thành công</span>' : '<span class="st-failed">Lỗi — đã hoàn ví</span>';
+      var t = o.created_at ? new Date(o.created_at).toLocaleString("vi-VN") : "";
+      h += '<tr><td>' + esc(o.smm_order_id || "—") + '</td><td>' + esc(o.service_id) + '</td><td>' + fmt(o.quantity) + '</td><td>' + fmt(o.total_vnd) + 'đ</td><td>' + st + '</td><td>' + esc(t) + '</td></tr>';
+    });
+    h += '</tbody></table>';
+    document.getElementById('ordersWrap').innerHTML = h;
+  }).catch(function(){ document.getElementById('ordersWrap').innerHTML = '<p class="muted">Chưa tải được danh sách đơn hàng.</p>'; });
+}
+var lo = document.getElementById('btnLogout');
+if (lo) lo.addEventListener('click', function(){
+  try { localStorage.removeItem("ttt_token"); } catch (e) {}
+  location.href = "index.html";
+});
+</script>
+</body>
+</html>
