@@ -80,15 +80,15 @@
   var btn = null;
   var lastSync = 0;
   function showBtn(label, onClick) {
-    // Nut chuong TRON GON (chi icon) + z-index 50 < modal dat don (60):
-    // khong con dang pill dai de len nut Dat don/Dieu huong khac (Quang yeu cau 23/10).
-    if (btn) { btn.title = label; btn.setAttribute("aria-label", label); btn.onclick = onClick; return; }
+    // Nut chuong dang pill CO CHU nhung gon: chu nho 12.5px, padding mong,
+    // z-index 50 < modal dat don (60) nen khong de len nut Dat don (Quang chot 23/10).
+    if (btn) { btn.textContent = label; btn.title = label; btn.setAttribute("aria-label", label); btn.onclick = onClick; return; }
     btn = document.createElement("button");
     btn.type = "button";
-    btn.textContent = "\uD83D\uDD14";
+    btn.textContent = label;
     btn.title = label;
     btn.setAttribute("aria-label", label);
-    btn.style.cssText = "position:fixed;left:14px;bottom:14px;z-index:50;width:48px;height:48px;border-radius:50%;background:#03A84E;color:#fff;border:none;padding:0;font-size:21px;line-height:1;box-shadow:0 6px 18px rgba(0,0,0,.28);cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center";
+    btn.style.cssText = "position:fixed;left:14px;bottom:14px;z-index:50;background:#03A84E;color:#fff;border:none;border-radius:999px;padding:8px 13px;font-size:12.5px;font-weight:700;box-shadow:0 6px 18px rgba(0,0,0,.28);cursor:pointer;font-family:inherit;white-space:nowrap";
     btn.onclick = onClick;
     document.body.appendChild(btn);
   }
