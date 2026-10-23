@@ -196,6 +196,26 @@ async function loadPromos(){
   }catch(e){ box.innerHTML = `<p class="err">Không kết nối được.</p>`; }
 }
 async function loadUsers(){
+  const box = document.getElementById("uList");
+  box.innerHTML = `<p class="muted">Đang tải...</p>`;
+  try{
+    const r = await fetch(API_BASE + "/api/admin/users?pass=" + encodeURIComponent(pw()));
+    const d = await r.json();
+    if(d.error){ box.innerHTML = `<p class="err">${d.error}</p>`; return; }
+    const rows = d.users || [];
+    const provVi = p => p === "google" ? "Google" : p === "facebook" ? "Facebook" : "Tên đăng nhập";
+    box.innerHTML = rows.length ? rows.map(u=>`
+      <div class="row">
+        <div><b>${u.display_name || u.username || ("khách #" + u.id)}</b>${u.username && u.display_name ? ` <span class="muted">(${u.username})</span>` : ""}${u.banned ? ` <span style="color:#f87171">· ĐÃ KHÓA</span>` : ""}<br><span class="muted">${provVi(u.provider)} · ví ${fmt(u.balance_vnd)} · ${u.order_count} đơn · tạo ${new Date(u.created_at).toLocaleString("vi-VN")}</span></div>
+        <div style="display:flex;gap:8px;align-items:center">
+          ${u.active_sessions > 0 && !u.banned ? `<span class="ok">● đang đăng nhập</span>` : `<span class="muted">đã thoát</span>`}
+          <button class="ghost" data-u="${u.id}" data-act="bal">+/− tiền</button>
+          <button class="${u.banned ? "" : "danger"}" data-u="${u.id}" data-act="ban">${u.banned ? "Mở khóa" : "Khóa"}</button>
+        </div>
+      </div>`).join("") : `<p class="muted">Chưa có khách hàng nào.</p>`;
+    box.querySelectorAll("button[data-u]").forEach(b=>b.onclick=()=>uact(b.dataset.u, b.dataset.act, b));
+  }catch(e){ box.innerHTML = `<p class="err">Không kết nối được.</p>`; }
+}
 let PRICES = [];
 async function loadPrices(){
   const box = document.getElementById("prList");
@@ -245,26 +265,6 @@ async function priceSave(sid, btn){
 }
 document.getElementById("prFind").onclick = ()=>renderPrices(document.getElementById("prSearch").value);
 document.getElementById("prSearch").addEventListener("keydown", e=>{ if(e.key === "Enter") renderPrices(e.target.value); });
-  const box = document.getElementById("uList");
-  box.innerHTML = `<p class="muted">Đang tải...</p>`;
-  try{
-    const r = await fetch(API_BASE + "/api/admin/users?pass=" + encodeURIComponent(pw()));
-    const d = await r.json();
-    if(d.error){ box.innerHTML = `<p class="err">${d.error}</p>`; return; }
-    const rows = d.users || [];
-    const provVi = p => p === "google" ? "Google" : p === "facebook" ? "Facebook" : "Tên đăng nhập";
-    box.innerHTML = rows.length ? rows.map(u=>`
-      <div class="row">
-        <div><b>${u.display_name || u.username || ("khách #" + u.id)}</b>${u.username && u.display_name ? ` <span class="muted">(${u.username})</span>` : ""}${u.banned ? ` <span style="color:#f87171">· ĐÃ KHÓA</span>` : ""}<br><span class="muted">${provVi(u.provider)} · ví ${fmt(u.balance_vnd)} · ${u.order_count} đơn · tạo ${new Date(u.created_at).toLocaleString("vi-VN")}</span></div>
-        <div style="display:flex;gap:8px;align-items:center">
-          ${u.active_sessions > 0 && !u.banned ? `<span class="ok">● đang đăng nhập</span>` : `<span class="muted">đã thoát</span>`}
-          <button class="ghost" data-u="${u.id}" data-act="bal">+/− tiền</button>
-          <button class="${u.banned ? "" : "danger"}" data-u="${u.id}" data-act="ban">${u.banned ? "Mở khóa" : "Khóa"}</button>
-        </div>
-      </div>`).join("") : `<p class="muted">Chưa có khách hàng nào.</p>`;
-    box.querySelectorAll("button[data-u]").forEach(b=>b.onclick=()=>uact(b.dataset.u, b.dataset.act, b));
-  }catch(e){ box.innerHTML = `<p class="err">Không kết nối được.</p>`; }
-}
 async function uact(uid, act, btn){
   if(act === "bal"){
     const v = prompt("Nhập số tiền điều chỉnh ví (dương = cộng, âm = trừ). Ví dụ: 50000 hoặc -20000");
