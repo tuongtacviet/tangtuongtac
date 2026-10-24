@@ -259,32 +259,32 @@ footer h4{color:var(--text);margin:12px 0 6px;font-size:15px}
   <section class="webservice" id="webservice" aria-label="Dịch vụ làm website">
     <div class="ws-card">
       <div class="ws-badge">DỊCH VỤ MỚI</div>
-      <h2>🌐 Dịch vụ làm website - Landingpage trọn gói — <span class="ws-price">300.000đ</span></h2>
+      <h2>🌐 Dịch vụ làm website - Landingpage trọn gói — <span class="ws-price">586.000đ</span></h2>
       <p class="ws-sub">Website giới thiệu, bán hàng cho doanh nghiệp, cửa hàng, cá nhân — bàn giao trong 1–3 ngày, cửa hàng trỏ tên miền giúp bạn.</p>
       <div class="ws-grid">
         <div class="ws-col">
-          <h4>✅ Trọn gói 300.000đ</h4>
+          <h4>✅ Trọn gói 586.000đ</h4>
           <ul>
             <li>Website 1–5 trang theo yêu cầu: giới thiệu, sản phẩm, bán hàng, liên hệ — chuẩn mobile</li>
             <li>Giỏ hàng + form đặt hàng, thanh toán chuyển khoản</li>
             <li>Form liên hệ / thu thập thông tin khách hàng, nút gọi, Zalo, bản đồ</li>
             <li>Tài khoản đăng nhập/đăng ký bằng email</li>
-            <li>Hosting miễn phí, trỏ tên miền giúp khách</li>
+            <li>Tên miền năm đầu + hosting + SSL — đã gồm trong gói, trỏ tên miền giúp khách</li> <li>Hướng dẫn sử dụng chi tiết + bảo hành kỹ thuật trọn đời</li>
             <li>Chỉnh sửa miễn phí 2 lần trong 7 ngày đầu</li>
           </ul>
         </div>
         <div class="ws-col">
           <h4>❌ Chưa bao gồm</h4>
           <ul>
-            <li>Tên miền (20.000đ ~ 250.000đ/năm tùy đuôi — khách tự mua hoặc nhờ mua hộ)</li>
+            <li>Tên miền từ năm thứ hai trở đi (gia hạn 20.000đ ~ 250.000đ/năm tùy đuôi, theo giá gốc nhà đăng ký)</li>
           </ul>
           <h4 style="margin-top:12px">💰 Thanh toán</h4>
           <ul>
-            <li>Cọc <b style="color:var(--text)">150.000đ</b> trước khi làm, <b style="color:var(--text)">150.000đ</b> còn lại khi bàn giao</li>
+            <li>Không cần cọc — làm thử trước, duyệt ưng ý mới thanh toán <b style="color:var(--text)">586.000đ</b> một lần khi bàn giao</li>
           </ul>
         </div>
       </div>
-      <button class="btn" id="webOrderBtn" style="margin-top:16px">Đặt làm website — 300.000đ</button>
+      <button class="btn" id="webOrderBtn" style="margin-top:16px">Đặt làm website — 586.000đ</button>
       <p class="ws-note">Sau khi gửi yêu cầu, cửa hàng sẽ liên hệ lại trong thời gian sớm nhất để tư vấn chi tiết.</p>
     </div>
   </section>
@@ -406,8 +406,8 @@ footer h4{color:var(--text);margin:12px 0 6px;font-size:15px}
 
 <div class="modal" id="webModal" role="dialog" aria-modal="true" aria-labelledby="wTitle">
   <div class="sheet amodal">
-    <h2 id="wTitle">Đặt làm website - Landingpage — 300.000đ trọn gói</h2>
-    <p style="color:var(--muted);font-size:14px;margin-top:0">Bạn điền thông tin, <b style="color:var(--text)">đặt cọc 150.000đ</b> rồi đơn mới được gửi đi. 150.000đ còn lại thanh toán khi bàn giao.</p>
+    <h2 id="wTitle">Đặt làm website - Landingpage — 586.000đ trọn gói</h2>
+    <p style="color:var(--muted);font-size:14px;margin-top:0">Bạn điền thông tin để gửi yêu cầu — <b style="color:var(--text)">không cần cọc</b>. Bên em làm thử trước, bạn duyệt ưng ý mới thanh toán 586.000đ một lần khi bàn giao.</p>
     <div id="wStep1">
       <label for="wName">Tên của bạn</label>
       <input id="wName" placeholder="vd: Nguyễn Văn A" autocomplete="name">
@@ -426,15 +426,15 @@ footer h4{color:var(--text);margin:12px 0 6px;font-size:15px}
       <textarea id="wDesc" placeholder="vd: Web giới thiệu quán cà phê, 4 trang: trang chủ, menu, hình ảnh, liên hệ. Muốn tông màu nâu ấm, có bản đồ chỉ đường..."></textarea>
       <div class="err" id="wErr"></div>
       <div style="display:flex;gap:10px;margin-top:14px;flex-wrap:wrap">
-        <button class="btn" id="wSubmit" style="flex:1">Tiếp tục — đặt cọc 150.000đ</button>
+        <button class="btn" id="wSubmit" style="flex:1">Gửi yêu cầu — không cần cọc</button>
         <button class="btn ghost" id="wClose">Đóng</button>
       </div>
     </div>
     <div id="wStep2" style="display:none">
-      <p class="ok">Đơn <b id="wCode"></b> đã được tạo. Quét mã QR để <b>cọc 150.000đ</b> (nội dung chuyển khoản đã điền sẵn mã đơn):</p>
-      <div class="qrbox"><img id="wQr" alt="QR cọc làm website" style="width:200px;max-width:75%;border-radius:10px;margin-top:8px;background:#fff;padding:6px"></div>
-      <p style="margin-top:8px">Hoặc chuyển khoản thủ công: <b>VietinBank · 0868895144 · DINH CONG HUY</b> — nội dung: <b id="wCode2"></b>.</p>
-      <div style="border:1px solid var(--green-d);border-radius:10px;padding:10px 12px;margin-top:12px;font-size:14px;background:rgba(34,197,94,.06)">
+      <p class="ok">Đơn <b id="wCode"></b> đã được ghi nhận! Cửa hàng sẽ liên hệ lại trong thời gian sớm nhất để xác nhận và bắt đầu làm thử. Bạn không cần thanh toán bây giờ — chỉ thanh toán <b>586.000đ</b> khi nghiệm thu, nhận bàn giao web hoàn chỉnh.</p>
+      <div class="qrbox" style="display:none"><img id="wQr" alt="QR cọc làm website" style="width:200px;max-width:75%;border-radius:10px;margin-top:8px;background:#fff;padding:6px"></div>
+      <p style="margin-top:8px;display:none">Hoặc chuyển khoản thủ công: <b>VietinBank · 0868895144 · DINH CONG HUY</b> — nội dung: <b id="wCode2"></b>.</p>
+      <div style="border:1px solid var(--green-d);border-radius:10px;padding:10px 12px;margin-top:12px;font-size:14px;background:rgba(34,197,94,.06);display:none">
         🔒 <b>Cọc an toàn:</b> tiền cọc chỉ dùng để triển khai website cho bạn.<br>
         ✅ <b>Cam kết hoàn cọc 100%</b> nếu cửa hàng không thực hiện đúng như tư vấn.<br>
         📞 Cửa hàng gọi lại trong <b>24 giờ</b> để thống nhất yêu cầu trước khi làm.<br>
@@ -443,8 +443,8 @@ footer h4{color:var(--text);margin:12px 0 6px;font-size:15px}
       <div class="err" id="wErr2"></div>
       <div id="wPoll" style="margin-top:10px"></div>
       <div style="display:flex;gap:10px;margin-top:14px;flex-wrap:wrap">
-        <button class="btn" id="wPaid" style="flex:1">Tôi đã chuyển khoản</button>
-        <button class="btn ghost" id="wBack">Sửa thông tin</button>
+        <button class="btn" id="wPaid" style="flex:1;display:none">Tôi đã chuyển khoản</button>
+        <button class="btn ghost" id="wBack">Tạo đơn mới</button>
       </div>
     </div>
   </div>
@@ -819,7 +819,7 @@ function wStopPoll(){ if(wPollTimer){ clearInterval(wPollTimer); wPollTimer = nu
 function wShowStep1(){
   wStopPoll(); wOrderCode = null;
   $("#wStep2").style.display = "none"; $("#wStep1").style.display = "";
-  const btn = $("#wSubmit"); btn.disabled = false; btn.textContent = "Tiếp tục — đặt cọc 150.000đ";
+  const btn = $("#wSubmit"); btn.disabled = false; btn.textContent = "Gửi yêu cầu — không cần cọc";
 }
 function wStartPoll(){
   wStopPoll();
@@ -830,7 +830,7 @@ function wStartPoll(){
       const d = await r.json();
       if(d.ok && d.status === "deposit_paid"){
         wStopPoll();
-        $("#wStep2").innerHTML = `<p class="ok" style="font-size:17px">🎉 <b>Đã nhận được cọc 150.000đ!</b></p><p style="margin-top:8px">Cảm ơn bạn đã tin tưởng. Cửa hàng sẽ liên hệ lại trong thời gian sớm nhất để thống nhất yêu cầu và bắt đầu làm website cho bạn.</p><div style="margin-top:14px"><button class="btn" id="wDoneClose" style="width:100%">Đóng</button></div>`;
+        $("#wStep2").innerHTML = `<p class="ok" style="font-size:17px">🎉 <b>Đã nhận được thanh toán!</b></p><p style="margin-top:8px">Cảm ơn bạn đã tin tưởng. Cửa hàng sẽ liên hệ lại trong thời gian sớm nhất để thống nhất yêu cầu và bắt đầu làm website cho bạn.</p><div style="margin-top:14px"><button class="btn" id="wDoneClose" style="width:100%">Đóng</button></div>`;
         $("#wDoneClose").onclick = ()=>{ $("#webModal").classList.remove("open"); wShowStep1(); };
       }
     }catch(e){}
@@ -858,14 +858,14 @@ $("#wSubmit").onclick = async ()=>{
     if(d.ok){
       wOrderCode = d.code;
       $("#wCode").textContent = d.code; $("#wCode2").textContent = d.code;
-      $("#wQr").src = `https://img.vietqr.io/image/ICB-0868895144-compact.png?amount=150000&addInfo=${encodeURIComponent(d.code)}&accountName=DINH%20CONG%20HUY`;
+      $("#wQr").src = `https://img.vietqr.io/image/ICB-0868895144-compact.png?amount=586000&addInfo=${encodeURIComponent(d.code)}&accountName=DINH%20CONG%20HUY`;
       $("#wErr2").textContent = ""; $("#wPoll").innerHTML = "";
       const pb = $("#wPaid"); pb.disabled = false; pb.textContent = "Tôi đã chuyển khoản";
       $("#wStep1").style.display = "none"; $("#wStep2").style.display = "";
       wStartPoll();
     } else err.textContent = d.error || "Tạo đơn chưa thành công, bạn thử lại nhé.";
   }catch(e){ err.textContent = "Không kết nối được, bạn thử lại sau ít phút nhé."; }
-  btn.disabled = false; btn.textContent = "Tiếp tục — đặt cọc 150.000đ";
+  btn.disabled = false; btn.textContent = "Gửi yêu cầu — không cần cọc";
 };
 
 buildTabs(); render(); refreshMe();
