@@ -523,7 +523,7 @@ function copyOrderCode(code, btn){
 
 function buildTabs(){
   $("#ptabs").innerHTML = PLATFORMS.map(([k,v])=>`<button class="tab${k===curP?" active":""}" data-p="${k}">${pico(k)}${v}</button>`).join("")
-    + `<a class="tab websvc" id="webSvcTab" href="https://webkhoinguon.com" target="_blank" rel="noopener" style="text-decoration:none">🌐 Làm website - Landingpage trọn gói · <b>300k</b></a>`;
+    + `<a class="tab websvc" id="webSvcTab" href="https://webkhoinguon.com" target="_blank" rel="noopener" style="text-decoration:none">🌐 Làm website - Landingpage trọn gói · <b>586k</b></a>`;
   $("#ttabs").innerHTML = TYPES.map(([k,v])=>`<button class="ttab${k===curT?" active":""}" data-t="${k}">${v}</button>`).join("");
   document.querySelectorAll("[data-p]").forEach(b=>b.onclick=()=>{curP=b.dataset.p;buildTabs();render();});
   document.querySelectorAll("[data-t]").forEach(b=>b.onclick=()=>{curT=b.dataset.t;buildTabs();render();});
