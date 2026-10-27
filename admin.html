@@ -93,7 +93,7 @@ button:disabled{opacity:.5;cursor:default}
     <section class="pane" id="sec-users">
     <h2 style="margin:18px 0 0">👥 Khách hàng</h2>
     <p class="muted">Danh sách tài khoản đã đăng ký / đăng nhập trên web (Google, Facebook hoặc tên đăng nhập).</p>
-    <div id="uList"><p class="muted">Đang tải...</p></div>
+    <div id="uList"><p class="muted">Đang tải...</p></div><div id="uHistory"></div>
     </section>
     <section class="pane" id="sec-web">
     <h2 style="margin:18px 0 0">🌐 Đơn làm website</h2>
@@ -246,14 +246,14 @@ async function loadUsers(){
         <div><b>${u.display_name || u.username || ("khách #" + u.id)}</b>${u.username && u.display_name ? ` <span class="muted">(${u.username})</span>` : ""}${u.banned ? ` <span style="color:#f87171">· ĐÃ KHÓA</span>` : ""}<br><span class="muted">${provVi(u.provider)} · ví ${fmt(u.balance_vnd)} · ${u.order_count} đơn · tạo ${new Date(u.created_at).toLocaleString("vi-VN")}</span></div>
         <div style="display:flex;gap:8px;align-items:center">
           ${u.active_sessions > 0 && !u.banned ? `<span class="ok">● đang đăng nhập</span>` : `<span class="muted">đã thoát</span>`}
-          <button class="ghost" data-u="${u.id}" data-act="bal">+/− tiền</button>
+          <button class="ghost" data-u="${u.id}" data-act="bal">+/− tiền</button><button class="ghost" data-u="${u.id}" data-act="hist">Lịch sử</button>
           <button class="${u.banned ? "" : "danger"}" data-u="${u.id}" data-act="ban">${u.banned ? "Mở khóa" : "Khóa"}</button>
         </div>
       </div>`).join("") : `<p class="muted">Chưa có khách hàng nào.</p>`;
     box.querySelectorAll("button[data-u]").forEach(b=>b.onclick=()=>uact(b.dataset.u, b.dataset.act, b));
   }catch(e){ box.innerHTML = `<p class="err">Không kết nối được.</p>`; }
 }
-let PRICES = [];
+async function loadUserHistory(uid){const box=document.getElementById("uHistory");if(!box)return;box.innerHTML='<p class="muted">Đang tải lịch sử...</p>';try{const r=await fetch(API_BASE+"/api/admin/user/history?pass="+encodeURIComponent(pw())+"&user_id="+encodeURIComponent(uid));const d=await r.json();if(d.error){box.innerHTML='<p class="err">'+d.error+'</p>';return;}const sec=(t,rows)=>{if(!rows||!rows.length)return '<h3>'+t+'</h3><p class="muted">Không có.</p>';return '<h3>'+t+'</h3>'+rows.map(x=>'<div class="row"><div>'+(x.created_at||x.time||'')+' · '+(x.title||x.type||x.status||x.note||'')+(x.amount_vnd?' · '+fmt(x.amount_vnd):'')+'</div></div>').join('');};box.innerHTML='<h3>Lịch sử khách #'+uid+'</h3>'+sec('Đăng nhập',d.logins||d.login_history)+sec('Nạp tiền',d.topups)+sec('Đơn hàng',d.orders)+sec('Biến động ví',d.wallet||d.wallet_history||d.transactions);}catch(e){box.innerHTML='<p class="err">Không kết nối được.</p>';}}let PRICES = [];
 async function loadPrices(){
   const box = document.getElementById("prList");
   box.innerHTML = `<p class="muted">Đang tải...</p>`;
@@ -302,7 +302,7 @@ async function priceSave(sid, btn){
 }
 document.getElementById("prFind").onclick = ()=>renderPrices(document.getElementById("prSearch").value);
 document.getElementById("prSearch").addEventListener("keydown", e=>{ if(e.key === "Enter") renderPrices(e.target.value); });
-async function uact(uid, act, btn){
+async function uact(uid, act, btn){if(act === "hist"){loadUserHistory(uid);return;}
   if(act === "bal"){
     const v = prompt("Nhập số tiền điều chỉnh ví (dương = cộng, âm = trừ). Ví dụ: 50000 hoặc -20000");
     if(v === null) return;
