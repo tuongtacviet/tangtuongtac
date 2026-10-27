@@ -346,7 +346,6 @@ footer h4{color:var(--text);margin:12px 0 6px;font-size:15px}
       <div class="err" id="mPromoErr" style="margin-top:6px"></div>
       <div id="mPromoOk" style="margin-top:6px;font-size:14px"></div>
     </div>
-    <div class="paybox" id="mPay"></div>
     <div id="mGuestActions" style="display:flex;gap:10px;margin-top:16px;flex-wrap:wrap">
       <button class="btn" id="mSubmit">Tạo mã thanh toán</button>
       <button class="btn ghost" id="mClose">Đóng</button>
@@ -574,7 +573,6 @@ function openOrder(id){
   $("#mLink").value = ""; $("#mQty").value = curSvc.min || 100; $("#mErr").textContent = ""; $("#mDone").innerHTML = "";
   const ccB = $("#mCommentsBox"); if(ccB){ ccB.style.display = isCC() ? "block" : "none"; $("#mComments").value = ""; $("#mQty").disabled = isCC(); }
   $("#mPromo").value = ""; $("#mPromoErr").textContent = ""; $("#mPromoOk").textContent = "";
-  $("#mPay").innerHTML = `Bấm <b>Tạo mã thanh toán</b>, quét QR chuyển khoản đủ trong 15 phút, đơn mới chạy. Chưa trả thì chưa có mã đơn.`;
   updTotal(); $("#modal").classList.add("open");
 }
 function orderTotal(){ if(!curSvc) return 0; const q = effQty(); return Math.round(curSvc.price_vnd_1000 * q / 1000); }
