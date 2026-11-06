@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head><script async src="https://www.googletagmanager.com/gtag/js?id=G-9Y75DMBHG7"></script><script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-9Y75DMBHG7');</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tài liệu API — Việt Tương Tác</title>
+<meta name="description" content="Tài liệu API cho khách của Việt Tương Tác (viettuongtac.com): cách lấy khóa API, danh sách gói và giá, đặt đơn, xem số dư ví và tra trạng thái đơn qua API chuẩn v2.">
+<style>
+*{box-sizing:border-box}
+body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;margin:0;background:#f6f8f7;color:#1e293b;line-height:1.65}
+a{color:#03A84E;text-decoration:none}
+a:hover{text-decoration:underline}
+header.site{position:sticky;top:0;background:#fff;border-bottom:1px solid #e2e8f0;z-index:50}
+.hwrap{max-width:1080px;margin:0 auto;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px;position:relative}
+.logo{font-weight:800;font-size:19px;color:#0f172a}
+.logo span{color:#03A84E}
+nav.main{display:flex;gap:18px;flex-wrap:wrap}
+nav.main a{color:#334155;font-size:15px;font-weight:600}
+nav.main a:hover{color:#03A84E;text-decoration:none}
+nav.main a.act{color:#03A84E}
+.burger{display:none;background:none;border:1px solid #e2e8f0;border-radius:8px;font-size:22px;line-height:1;padding:6px 12px;cursor:pointer;color:#0f172a}
+nav.mobile{display:none;background:#fff;border-top:1px solid #e2e8f0;padding:8px 16px 14px}
+nav.mobile a{display:block;padding:10px 4px;color:#334155;font-weight:600;border-bottom:1px solid #f1f5f9}
+nav.mobile a.act{color:#03A84E}
+nav.mobile.open{display:block}
+@media(max-width:820px){nav.main{display:none}.burger{display:block}}
+main{max-width:860px;margin:0 auto;padding:26px 16px 52px}
+h1{font-size:26px;margin:6px 0 10px}
+h2{font-size:19px;margin-top:30px}
+.card{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:20px;margin-top:16px}
+.muted{color:#64748b;font-size:14px}
+.btn{display:inline-block;background:#03A84E;color:#fff;border:none;border-radius:10px;padding:11px 22px;font-size:15px;font-weight:700;cursor:pointer;text-align:center}
+.btn:hover{background:#029a46;text-decoration:none}
+.btn.ghost{background:#eefbf3;color:#15803d;border:1px solid #bbf7d0}
+footer{border-top:1px solid #e2e8f0;background:#fff}
+.fwrap{max-width:1080px;margin:0 auto;padding:22px 16px;color:#64748b;font-size:14px;line-height:1.9}
+.fwrap a{color:#475569;font-weight:600;margin-right:14px}
+.hist-table{width:100%;border-collapse:collapse;font-size:14px;margin:14px 0 6px}
+.hist-table th,.hist-table td{border-bottom:1px solid #e2e8f0;padding:8px 6px;text-align:left;vertical-align:top}
+.hist-table th{color:#64748b;font-size:12.5px;text-transform:uppercase;letter-spacing:.02em}
+pre.code{background:#0f172a;color:#e2e8f0;border-radius:10px;padding:14px 16px;overflow-x:auto;font-size:13.5px;line-height:1.55;margin:10px 0}
+code.inl{background:#f1f5f9;border:1px solid #e2e8f0;border-radius:6px;padding:1px 6px;font-size:13.5px;color:#0f172a;word-break:break-all}
+.endpoint{background:#eefbf3;border:1px solid #bbf7d0;border-radius:10px;padding:12px 16px;font-weight:700;color:#0f172a;word-break:break-all;margin:10px 0}
+</style>
+</head>
+<body>
+<header class="site">
+  <div class="hwrap">
+    <a class="logo" href="index.html">🚀 <span>Việt</span> Tương Tác</a>
+    <nav class="main">
+      <a href="index.html">Trang chủ</a>
+      <a href="tai-khoan.html">Tài khoản</a>
+      <a href="ho-tro.html">Hỗ trợ</a>
+      <a href="trang-thai-don-hang.html">Trạng thái đơn hàng</a>
+      <a href="don-hang-bao-hanh.html">Đơn hàng &amp; bảo hành</a>
+      <a href="hoan-tien.html">Hoàn tiền</a>
+      <a href="kiem-tien.html">Kiếm tiền</a>
+      <a href="huong-dan-api.html" class="act">Tài liệu API</a>
+      <a href="dieu-kien-chinh-sach.html">Điều kiện &amp; chính sách</a>
+    </nav>
+    <button class="burger" id="burgerBtn" aria-label="Mở menu">☰</button>
+  </div>
+  <nav class="mobile" id="mobileNav">
+    <a href="index.html">Trang chủ</a>
+    <a href="tai-khoan.html">Tài khoản</a>
+    <a href="trang-thai-don-hang.html">Trạng thái đơn hàng</a>
+    <a href="don-hang-bao-hanh.html">Đơn hàng &amp; bảo hành</a>
+    <a href="hoan-tien.html">Hoàn tiền</a>
+    <a href="kiem-tien.html">Kiếm tiền</a>
+    <a href="huong-dan-api.html" class="act">Tài liệu API</a>
+    <a href="dieu-kien-chinh-sach.html">Điều kiện &amp; chính sách</a>
+  </nav>
+</header>
+<main>
+<h1>🔌 Tài liệu API cho khách</h1>
+<p class="muted">Trang này hướng dẫn cách kết nối hệ thống của bạn (panel, phần mềm, website riêng) với Việt Tương Tác để xem danh sách gói và giá, đặt đơn, xem số dư ví và tra trạng thái đơn — mọi thứ tự động, dùng chung ví và giá như khi đặt trên web.</p>
+
+<div class="card">
+  <h2 style="margin-top:0">1. Thông tin kết nối</h2>
+  <p>Địa chỉ API (gửi yêu cầu bằng phương thức <b>POST</b>):</p>
+  <div class="endpoint">https://smm-proxy.hungcuonghnhm.workers.dev/api/v2</div>
+  <p>API theo chuẩn <b>v2</b> giống các panel quốc tế. Mọi yêu cầu đều gồm 2 tham số bắt buộc:</p>
+  <table class="hist-table">
+    <tr><th>Tham số</th><th>Ý nghĩa</th></tr>
+    <tr><td><code class="inl">key</code></td><td>Khóa API của tài khoản bạn (xem cách lấy ở mục 2)</td></tr>
+    <tr><td><code class="inl">action</code></td><td>Tên lệnh muốn thực hiện: <code class="inl">services</code>, <code class="inl">balance</code>, <code class="inl">add</code> hoặc <code class="inl">status</code></td></tr>
+  </table>
+  <p class="muted">Gửi dữ liệu dạng form (application/x-www-form-urlencoded) hoặc JSON đều được. Kết quả trả về luôn là JSON.</p>
+</div>
+
+<div class="card">
+  <h2 style="margin-top:0">2. Cách lấy khóa API</h2>
+  <p>1. Đăng nhập vào tài khoản của bạn trên viettuongtac.com.<br>
+  2. Mở trang <a href="tai-khoan.html">Tài khoản</a>, kéo xuống mục <b>🔌 Kết nối API</b>.<br>
+  3. Bấm tạo khóa — <b>khóa đầy đủ chỉ hiện 1 lần duy nhất</b>, bạn lưu lại ngay nhé.</p>
+  <p class="muted">Mỗi tài khoản có 1 khóa đang dùng. Bấm "Thay khóa" thì khóa cũ ngừng hoạt động ngay lập tức. Nếu nghi ngờ bị lộ khóa, thay khóa mới ngay trong trang Tài khoản. Quên khóa cũng chỉ cần tạo khóa mới, khóa cũ tự hết hiệu lực.</p>
+  <div class="btn-row" style="margin-top:6px"><a class="btn" href="tai-khoan.html">Tới trang Tài khoản lấy khóa</a></div>
+</div>
+
+<div class="card">
+  <h2 style="margin-top:0">3. Danh sách lệnh</h2>
+
+  <h2>📋 services — Lấy danh sách gói và giá</h2>
+  <p>Không cần tham số nào thêm ngoài <code class="inl">key</code> và <code class="inl">action=services</code>. Kết quả là danh sách toàn bộ gói đang bán, mỗi gói gồm:</p>
+  <table class="hist-table">
+    <tr><th>Trường</th><th>Ý nghĩa</th></tr>
+    <tr><td><code class="inl">service</code></td><td>Mã gói — dùng mã này khi đặt đơn</td></tr>
+    <tr><td><code class="inl">name</code></td><td>Tên gói</td></tr>
+    <tr><td><code class="inl">type</code></td><td>Loại gói (thường là Default; gói bình luận có loại riêng)</td></tr>
+    <tr><td><code class="inl">category</code></td><td>Nhóm dịch vụ (Facebook, TikTok, YouTube…)</td></tr>
+    <tr><td><code class="inl">rate</code></td><td>Giá bán, tính bằng VNĐ cho 1.000 số lượng</td></tr>
+    <tr><td><code class="inl">min</code> / <code class="inl">max</code></td><td>Số lượng nhỏ nhất / lớn nhất được đặt cho 1 đơn</td></tr>
+    <tr><td><code class="inl">refill</code></td><td>true = gói có hỗ trợ bảo hành tụt (chạy bù), false = không có</td></tr>
+    <tr><td><code class="inl">cancel</code></td><td>true = gói có hỗ trợ hủy đơn, false = không có</td></tr>
+  </table>
+  <pre class="code">curl -X POST https://smm-proxy.hungcuonghnhm.workers.dev/api/v2 \
+  -d "key=KHOA_API_CUA_BAN" \
+  -d "action=services"</pre>
+
+  <h2>💰 balance — Xem số dư ví</h2>
+  <pre class="code">curl -X POST https://smm-proxy.hungcuonghnhm.workers.dev/api/v2 \
+  -d "key=KHOA_API_CUA_BAN" \
+  -d "action=balance"</pre>
+  <p>Kết quả mẫu:</p>
+  <pre class="code">{"balance": 250000, "currency": "VND"}</pre>
+
+  <h2>🛒 add — Đặt đơn</h2>
+  <table class="hist-table">
+    <tr><th>Tham số</th><th>Bắt buộc</th><th>Ý nghĩa</th></tr>
+    <tr><td><code class="inl">service</code></td><td>Có</td><td>Mã gói (lấy từ lệnh services)</td></tr>
+    <tr><td><code class="inl">link</code></td><td>Có</td><td>Link cần tăng (phải bắt đầu bằng http:// hoặc https://)</td></tr>
+    <tr><td><code class="inl">quantity</code></td><td>Có*</td><td>Số lượng cần đặt, nằm trong khoảng min–max của gói</td></tr>
+    <tr><td><code class="inl">comments</code></td><td>Không</td><td>*Chỉ dùng cho gói bình luận: mỗi bình luận viết 1 dòng; khi gửi comments thì số lượng tính theo số dòng, không cần gửi quantity</td></tr>
+  </table>
+  <pre class="code">curl -X POST https://smm-proxy.hungcuonghnhm.workers.dev/api/v2 \
+  -d "key=KHOA_API_CUA_BAN" \
+  -d "action=add" \
+  -d "service=948" \
+  -d "link=https://www.facebook.com/viettuongtac" \
+  -d "quantity=1000"</pre>
+  <p>Kết quả mẫu khi đặt thành công — số trả về là <b>mã đơn của shop</b>, giữ lại để tra trạng thái:</p>
+  <pre class="code">{"order": 166}</pre>
+  <p class="muted">Tiền được trừ từ ví của bạn, tính theo giá gói × số lượng ÷ 1.000. Nếu đơn bị lỗi ngay lúc đặt, tiền tự động hoàn về ví và API trả về nội dung lỗi tiếng Việt để bạn đọc.</p>
+
+  <h2>🔍 status — Tra trạng thái đơn</h2>
+  <table class="hist-table">
+    <tr><th>Tham số</th><th>Ý nghĩa</th></tr>
+    <tr><td><code class="inl">order</code></td><td>Mã đơn của shop (số nhận được khi đặt đơn qua API)</td></tr>
+  </table>
+  <pre class="code">curl -X POST https://smm-proxy.hungcuonghnhm.workers.dev/api/v2 \
+  -d "key=KHOA_API_CUA_BAN" \
+  -d "action=status" \
+  -d "order=166"</pre>
+  <p>Kết quả mẫu:</p>
+  <pre class="code">{"status": "Completed", "charge": 9900, "start_count": 1200, "remains": 0, "currency": "VND"}</pre>
+  <table class="hist-table">
+    <tr><th>Trường</th><th>Ý nghĩa</th></tr>
+    <tr><td><code class="inl">status</code></td><td>Trạng thái đơn: Pending (chờ xử lý), Processing / In progress (đang chạy), Completed (hoàn thành), Partial (hoàn thành một phần, phần còn lại được hoàn tiền), Canceled (đã hủy, đã hoàn tiền)</td></tr>
+    <tr><td><code class="inl">charge</code></td><td>Tổng tiền của đơn, tính bằng VNĐ</td></tr>
+    <tr><td><code class="inl">start_count</code></td><td>Số đếm tại thời điểm bắt đầu chạy</td></tr>
+    <tr><td><code class="inl">remains</code></td><td>Số lượng còn lại chưa chạy</td></tr>
+  </table>
+  <p class="muted">Mỗi khóa chỉ tra được đơn của chính tài khoản mình.</p>
+</div>
+
+<div class="card">
+  <h2 style="margin-top:0">4. Ví dụ bằng PHP và Python</h2>
+  <p><b>PHP</b> — đặt một đơn:</p>
+  <pre class="code">&lt;?php
+$ch = curl_init();
+curl_setopt_array($ch, [
+    CURLOPT_URL =&gt; "https://smm-proxy.hungcuonghnhm.workers.dev/api/v2",
+    CURLOPT_RETURNTRANSFER =&gt; true,
+    CURLOPT_POST =&gt; true,
+    CURLOPT_POSTFIELDS =&gt; [
+        "key" =&gt; "KHOA_API_CUA_BAN",
+        "action" =&gt; "add",
+        "service" =&gt; 948,
+        "link" =&gt; "https://www.facebook.com/viettuongtac",
+        "quantity" =&gt; 1000,
+    ],
+]);
+$res = json_decode(curl_exec($ch), true);
+print_r($res); // ["order" =&gt; 166] khi đặt thành công</pre>
+  <p><b>Python</b> — xem số dư và tra trạng thái:</p>
+  <pre class="code">import requests
+
+API = "https://smm-proxy.hungcuonghnhm.workers.dev/api/v2"
+KEY = "KHOA_API_CUA_BAN"
+
+print(requests.post(API, data={"key": KEY, "action": "balance"}).json())
+print(requests.post(API, data={"key": KEY, "action": "status", "order": 166}).json())</pre>
+</div>
+
+<div class="card">
+  <h2 style="margin-top:0">5. Bảng mã lỗi</h2>
+  <table class="hist-table">
+    <tr><th>Lỗi trả về</th><th>Nghĩa là gì</th><th>Cách xử lý</th></tr>
+    <tr><td><code class="inl">Invalid API key</code> (401)</td><td>Khóa không đúng, đã bị thay hoặc đã thu hồi</td><td>Mở trang Tài khoản, xem lại khóa đang dùng hoặc tạo khóa mới</td></tr>
+    <tr><td><code class="inl">Invalid action</code> (400)</td><td>Sai tên lệnh</td><td>Chỉ dùng 4 lệnh: services, balance, add, status</td></tr>
+    <tr><td><code class="inl">Invalid service</code> / <code class="inl">Invalid service or quantity</code> (400)</td><td>Mã gói không tồn tại hoặc số lượng không hợp lệ</td><td>Lấy lại mã gói từ lệnh services</td></tr>
+    <tr><td><code class="inl">Invalid link</code> (400)</td><td>Link chưa đúng định dạng</td><td>Link phải bắt đầu bằng http:// hoặc https://</td></tr>
+    <tr><td><code class="inl">Minimum quantity is X</code> / <code class="inl">Maximum quantity is X</code> (400)</td><td>Số lượng ngoài khoảng cho phép của gói</td><td>Đặt trong khoảng min–max của gói đó</td></tr>
+    <tr><td><code class="inl">Insufficient balance</code> (402)</td><td>Số dư ví không đủ cho đơn này</td><td>Nạp thêm tiền vào ví rồi đặt lại</td></tr>
+    <tr><td><code class="inl">Daily API spend limit exceeded</code> (403)</td><td>Đã vượt hạn mức chi qua API trong ngày (mặc định 5.000.000đ/ngày cho mỗi khóa)</td><td>Đặt tiếp vào ngày hôm sau, hoặc nhắn shop qua live chat nếu cần nâng hạn mức</td></tr>
+    <tr><td><code class="inl">Invalid order id</code> (400) / <code class="inl">Order not found</code> (404)</td><td>Mã đơn sai, hoặc đơn không thuộc tài khoản của bạn</td><td>Kiểm tra lại mã đơn nhận được lúc đặt</td></tr>
+    <tr><td><code class="inl">Rate limit exceeded</code> (429)</td><td>Gọi API quá nhanh (tối đa 300 lượt gọi/phút, trong đó đặt đơn tối đa 60 đơn/phút cho mỗi khóa)</td><td>Giảm tần suất gọi rồi thử lại</td></tr>
+  </table>
+  <p class="muted">Riêng khi đặt đơn (lệnh add) không thành công vì lý do xử lý, API trả về câu thông báo tiếng Việt dễ hiểu và tiền đã được hoàn về ví — bạn đọc nội dung thông báo rồi đặt lại sau ít phút nhé.</p>
+</div>
+
+<div class="card">
+  <h2 style="margin-top:0">6. Lưu ý quan trọng</h2>
+  <p>✅ Giá qua API bằng đúng giá trên web, tính bằng VNĐ cho 1.000 số lượng.<br>
+  ✅ Đơn đặt qua API dùng chung ví, và hiện trong lịch sử đơn hàng trên web như đơn đặt thường. Đơn lỗi, đơn hủy được hoàn tiền tự động như đơn web.<br>
+  ✅ Nếu bạn vô tình gửi trùng cùng một lệnh đặt đơn trong vòng vài giây, hệ thống trả về mã đơn cũ — không trừ tiền hai lần.<br>
+  ⚠️ Mã giảm giá không áp dụng cho đơn đặt qua API.<br>
+  ⚠️ Giữ khóa API như giữ mật khẩu: đừng đăng công khai, đừng gửi cho người lạ. Lộ khóa thì thay khóa mới ngay trong trang Tài khoản.</p>
+</div>
+
+<div class="card">
+  <h2 style="margin-top:0">7. Câu hỏi thường gặp</h2>
+  <p><b>Dùng API có mất thêm phí không?</b><br>Không. Bạn chỉ trả tiền các đơn như đặt trên web, giá bằng nhau.</p>
+  <p><b>Một tài khoản có mấy khóa API?</b><br>Mỗi tài khoản có 1 khóa đang dùng. Cần khóa mới thì bấm "Thay khóa", khóa cũ ngừng hoạt động ngay.</p>
+  <p><b>API có đủ gói như trên web không?</b><br>Có, toàn bộ gói đang bán trên web đều có trong lệnh services, giá cập nhật theo web.</p>
+  <p><b>Đặt đơn qua API có được hoa hồng giới thiệu như đơn web không?</b><br>Có, đơn qua API vẫn tính hoa hồng 2% cho người giới thiệu như đơn đặt bằng ví trên web.</p>
+  <p><b>Gặp lỗi không tự xử lý được thì hỏi ở đâu?</b><br>Nhắn cho shop qua live chat trực tiếp trên trang chủ, gửi kèm mã đơn (nếu có) để shop kiểm tra nhanh cho bạn nhé.</p>
+</div>
+
+</main>
+<footer>
+  <div class="fwrap">
+    <div>
+      <a href="index.html">Trang chủ</a><a href="tai-khoan.html">Tài khoản</a><a href="ho-tro.html">Hỗ trợ</a><a href="trang-thai-don-hang.html">Trạng thái đơn hàng</a><a href="don-hang-bao-hanh.html">Đơn hàng &amp; bảo hành</a><a href="hoan-tien.html">Hoàn tiền</a><a href="kiem-tien.html">Kiếm tiền</a><a href="huong-dan-api.html">Tài liệu API</a><a href="dieu-kien-chinh-sach.html">Điều kiện &amp; chính sách</a><a href="chinh-sach-bao-mat.html">Chính sách bảo mật</a>
+    </div>
+    <div>© 2026 Việt Tương Tác — viettuongtac.com · Hỗ trợ: live chat trực tiếp trên trang chủ.</div>
+  </div>
+</footer>
+<script>
+document.getElementById('burgerBtn').addEventListener('click',function(){document.getElementById('mobileNav').classList.toggle('open');});
+</script>
+</body>
+</html>
