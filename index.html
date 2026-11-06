@@ -945,7 +945,7 @@ document.getElementById('ttvBurger').addEventListener('click',function(){documen
 </script>
 <script src="/push.js" defer></script>
 
-<!-- ===== Thong bao su co dat don da xu ly (23/10/2026, tu het han 26/10) ===== -->
+<!-- ===== Thong bao su co dat don 4/11 (06/11/2026, tu het han 13/11) ===== -->
 <style>
 #tttNoticeFix{position:fixed;inset:0;background:rgba(3,7,15,.72);z-index:10050;display:none;align-items:center;justify-content:center;padding:16px}
 #tttNoticeFix .nz-card{background:#0f172a;border:1px solid #1e293b;border-radius:18px;max-width:440px;width:100%;padding:26px 22px 20px;color:#e2e8f0;position:relative;box-shadow:0 24px 60px rgba(0,0,0,.5);max-height:88vh;overflow:auto}
@@ -957,17 +957,15 @@ document.getElementById('ttvBurger').addEventListener('click',function(){documen
 <div id="tttNoticeFix" role="dialog" aria-modal="true">
   <div class="nz-card">
     <button class="nz-x" id="tttNoticeX" aria-label="Đóng">&times;</button>
-    <h3>✅ Sự cố đặt đơn đã được xử lý xong</h3>
-    <p>Đêm 22/10, hệ thống của <b>Việt Tương Tác</b> gặp sự cố kỹ thuật khiến một số đơn hàng không đặt thành công. Nay sự cố đã khắc phục xong, hệ thống đã nhận đơn bình thường trở lại.</p>
-    <p>💰 Toàn bộ đơn bị lỗi đã được <b>hoàn tiền 100% tự động vào ví</b> của bạn. Bạn vui lòng kiểm tra lại số dư ví — nếu thấy chưa đúng, hãy <a href="ho-tro.html" style="color:#4ade80;font-weight:700;text-decoration:underline">gửi yêu cầu hỗ trợ</a> ngay trên web (đăng nhập tài khoản rồi bấm Gửi yêu cầu), shop xử lý ngay cho bạn.</p>
-    <p>Shop xin lỗi vì sự bất tiện này và cảm ơn bạn đã thông cảm! 🙏</p>
+    <h3>📢 Thông báo về sự cố đặt đơn ngày 4/11</h3>
+    <p>Shop xin lỗi vì sự cố ngày 4/11: hệ thống bị nghẽn một chút khiến một số đơn không thực hiện được và Quý khách phải chờ đợi. Hiện hệ thống đã ổn định trở lại, đơn thất bại đã được hoàn tiền về ví — nếu đặt chưa được, Quý khách vui lòng quay lại sau ít phút đặt lại giúp shop.</p>
     <button class="nz-ok" id="tttNoticeOk">Đã hiểu, cảm ơn shop</button>
   </div>
 </div>
 <script>
 (function(){
-  var KEY = "ttt_notice_fix_20261023";
-  var EXP = new Date("2026-10-26T23:59:59+07:00").getTime();
+  var KEY = "ttt_notice_20261106";
+  var EXP = new Date("2026-11-13T23:59:59+07:00").getTime();
   try {
     if (Date.now() > EXP) return;
     if (localStorage.getItem(KEY)) return;
