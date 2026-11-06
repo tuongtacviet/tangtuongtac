@@ -288,8 +288,8 @@ async function loadUserHistory(uid){
       const cost = costFull == null ? null : (tot > 0 ? Math.round(costFull * charged / tot) : 0);
       const profit = cost == null ? null : charged - cost;
       let txt = qty + " × " + fmt(unit) + "/1.000 = " + fmt(tot);
-      if(cost == null) txt += " · vốn nguồn: chưa có dữ liệu giá gốc";
-      else txt += " · vốn nguồn ≈ " + fmt(cost) + " · lãi ≈ " + fmt(profit);
+      if(cost == null) txt += " · vốn nguồn (giá gốc hiện tại): chưa có dữ liệu";
+      else txt += " · vốn nguồn (giá gốc hiện tại) ≈ " + fmt(cost) + " · lãi ≈ " + fmt(profit);
       return { txt, charged, cost: cost || 0, profit: profit || 0 };
     };
     let sumOk = 0, sumRef = 0, sumCharged = 0, sumCost = 0, sumProfit = 0;
