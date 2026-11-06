@@ -273,9 +273,31 @@ async function loadUserHistory(uid){
       const mins = Math.max(0, Math.round((new Date(d.last_activity_at) - new Date(latestLogin)) / 60000));
       atLeast = mins + " phút";
     }
+    let priceMap = {};
+    try{
+      if(!PRICES.length){ const rp = await fetch(API_BASE + "/api/admin/prices?pass=" + encodeURIComponent(pw())); const dp = await rp.json(); if(dp && dp.prices) PRICES = dp.prices; }
+      (PRICES || []).forEach(p => { priceMap[String(p.service_id)] = p; });
+    }catch(e){}
+    const ordCalc = o => {
+      const qty = Number(o.quantity) || 0, tot = Number(o.total_vnd) || 0, ref = Number(o.refund_vnd) || 0;
+      const unit = qty > 0 ? Math.round(tot * 1000 / qty) : 0;
+      const pr = priceMap[String(o.service_id)];
+      const costFull = (pr && pr.cost_usd != null && qty > 0) ? Math.round(Number(pr.cost_usd) * 26000 * qty / 1000) : null;
+      if(o.status === "failed") return { txt: qty + " × " + fmt(unit) + "/1.000 = " + fmt(tot) + " (chưa trừ tiền)", charged: 0, cost: 0, profit: 0 };
+      const charged = Math.max(0, tot - ref);
+      const cost = costFull == null ? null : (tot > 0 ? Math.round(costFull * charged / tot) : 0);
+      const profit = cost == null ? null : charged - cost;
+      let txt = qty + " × " + fmt(unit) + "/1.000 = " + fmt(tot);
+      if(cost == null) txt += " · vốn nguồn: chưa có dữ liệu giá gốc";
+      else txt += " · vốn nguồn ≈ " + fmt(cost) + " · lãi ≈ " + fmt(profit);
+      return { txt, charged, cost: cost || 0, profit: profit || 0 };
+    };
+    let sumOk = 0, sumRef = 0, sumCharged = 0, sumCost = 0, sumProfit = 0;
+    orders.forEach(o => { if(o.status === "ok"){ const c = ordCalc(o); sumOk += Number(o.total_vnd) || 0; sumRef += Number(o.refund_vnd) || 0; sumCharged += c.charged; sumCost += c.cost; sumProfit += c.profit; } });
+    const orderSummary = orders.length ? `<p class="muted">Tổng đơn thành công: <b>${fmt(sumOk)}</b> · Đã hoàn: <b>${fmt(sumRef)}</b> · Khách thực trả: <b>${fmt(sumCharged)}</b> · Vốn nguồn ≈ <b>${fmt(sumCost)}</b> · Lãi ≈ <b>${fmt(sumProfit)}</b> (tính trên các đơn đang hiện; vốn theo giá gốc hiện tại; đơn thất bại không trừ tiền nên không tính)</p>` : "";
     const loginRows = logins.length ? logins.map(x => `<div class="row"><div>${dt(x.created_at)}</div><div class="muted">${esc(x.provider === "google" ? "Google" : x.provider === "facebook" ? "Facebook" : (x.provider || "—"))}</div></div>`).join("") : `<p class="muted">Chưa có lịch sử đăng nhập. Lịch sử đăng nhập chỉ có từ ngày triển khai 27/10/2026, các lần trước đó không ghi lại được.</p>`;
     const topupRows = topups.length ? topups.map(t => `<div class="row"><div><b>${esc(t.code)}</b><br><span class="muted">${dt(t.created_at)}${t.confirmed_at ? " · xác nhận " + dt(t.confirmed_at) : ""}</span></div><div>${fmt(t.amount_vnd)} · ${tpVi(t.status)}</div></div>`).join("") : `<p class="muted">Chưa có lịch sử nạp tiền.</p>`;
-    const orderRows = orders.length ? orders.map(o => `<div class="row"><div style="flex:1;min-width:220px"><b>#${esc(o.service_id)}</b> · mã nguồn ${esc(o.smm_order_id || "—")}<br><span class="muted">${esc(String(o.link || "").slice(0, 80))} · ${dt(o.created_at)}</span></div><div>${o.quantity} · ${fmt(o.total_vnd)} · ${odVi(o.status)}${o.refund_vnd ? " · hoàn " + fmt(o.refund_vnd) : ""}</div></div>`).join("") : `<p class="muted">Chưa có đơn hàng nào.</p>`;
+    const orderRows = orders.length ? orders.map(o => `<div class="row"><div style="flex:1;min-width:220px"><b>#${esc(o.service_id)}</b> · mã nguồn ${esc(o.smm_order_id || "—")}<br><span class="muted">${esc(String(o.link || "").slice(0, 80))} · ${dt(o.created_at)}</span></div><div style="text-align:right">${o.quantity} · ${fmt(o.total_vnd)} · ${odVi(o.status)}${o.refund_vnd ? " · hoàn " + fmt(o.refund_vnd) : ""}<br><span class="muted" style="font-size:12px">${ordCalc(o).txt}</span></div></div>`).join("") : `<p class="muted">Chưa có đơn hàng nào.</p>`;
     const adjRows = adjs.length ? adjs.map(a => `<div class="row"><div><span style="color:${Number(a.delta_vnd) >= 0 ? "#22c55e" : "#f87171"};font-weight:700">${Number(a.delta_vnd) >= 0 ? "+" : ""}${fmt(a.delta_vnd)}</span>${a.note ? `<br><span class="muted">${esc(a.note)}</span>` : ""}</div><div class="muted">${dt(a.created_at)}</div></div>`).join("") : `<p class="muted">Chưa có biến động ví tay nào.</p>`;
     box.innerHTML = `<div class="card" style="margin:12px 0">
       <h3 style="margin:0 0 6px">Lịch sử: ${esc(u.display_name || u.username || ("khách #" + u.id))}</h3>
@@ -283,7 +305,7 @@ async function loadUserHistory(uid){
       <p class="muted">Vào lần gần nhất: <b>${dt(latestLogin)}</b> · Hoạt động cuối: <b>${dt(d.last_activity_at)}</b> · Ở ít nhất: <b>${atLeast}</b> (cách nhẹ: không có thời gian ra chính xác, vì không theo dõi lúc đóng trang).</p>
       <h4 style="margin:14px 0 4px">1. Vào và hoạt động</h4>${loginRows}
       <h4 style="margin:14px 0 4px">2. Nạp tiền</h4>${topupRows}
-      <h4 style="margin:14px 0 4px">3. Đơn hàng</h4>${orderRows}
+      <h4 style="margin:14px 0 4px">3. Đơn hàng</h4>${orderSummary}${orderRows}
       <h4 style="margin:14px 0 4px">4. Biến động ví tay</h4>${adjRows}
     </div>`;
     box.scrollIntoView({behavior:"smooth", block:"start"});
