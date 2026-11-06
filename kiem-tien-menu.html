@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head><script async src="https://www.googletagmanager.com/gtag/js?id=G-9Y75DMBHG7"></script><script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-9Y75DMBHG7');</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kiếm tiền — Giới thiệu bạn bè, hoa hồng 2% — Việt Tương Tác</title>
+<meta name="description" content="Chương trình giới thiệu bạn bè của Việt Tương Tác: chia sẻ link giới thiệu, nhận hoa hồng 2% trên giá trị đơn của khách bạn giới thiệu, cộng thẳng vào ví.">
+<style>
+*{box-sizing:border-box}
+body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;margin:0;background:#f6f8f7;color:#1e293b;line-height:1.65}
+a{color:#03A84E;text-decoration:none}
+a:hover{text-decoration:underline}
+header.site{position:sticky;top:0;background:#fff;border-bottom:1px solid #e2e8f0;z-index:50}
+.hwrap{max-width:1080px;margin:0 auto;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px;position:relative}
+.logo{font-weight:800;font-size:19px;color:#0f172a}
+.logo span{color:#03A84E}
+nav.main{display:flex;gap:18px;flex-wrap:wrap}
+nav.main a{color:#334155;font-size:15px;font-weight:600}
+nav.main a:hover{color:#03A84E;text-decoration:none}
+nav.main a.act{color:#03A84E}
+.burger{display:none;background:none;border:1px solid #e2e8f0;border-radius:8px;font-size:22px;line-height:1;padding:6px 12px;cursor:pointer;color:#0f172a}
+nav.mobile{display:none;background:#fff;border-top:1px solid #e2e8f0;padding:8px 16px 14px}
+nav.mobile a{display:block;padding:10px 4px;color:#334155;font-weight:600;border-bottom:1px solid #f1f5f9}
+nav.mobile a.act{color:#03A84E}
+nav.mobile.open{display:block}
+@media(max-width:820px){nav.main{display:none}.burger{display:block}}
+main{max-width:860px;margin:0 auto;padding:26px 16px 52px}
+h1{font-size:26px;margin:6px 0 10px}
+h2{font-size:19px;margin-top:30px}
+.card{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:20px;margin-top:16px}
+.big{font-size:34px;font-weight:800;color:#03A84E}
+.muted{color:#64748b;font-size:14px}
+.btn{display:inline-block;background:#03A84E;color:#fff;border-radius:10px;padding:13px 22px;font-size:16px;font-weight:700;margin-top:8px}
+.btn:hover{background:#029a46;text-decoration:none}
+footer{border-top:1px solid #e2e8f0;background:#fff}
+.fwrap{max-width:1080px;margin:0 auto;padding:22px 16px;color:#64748b;font-size:14px;line-height:1.9}
+.fwrap a{color:#475569;font-weight:600;margin-right:14px}
+.ref-link-box{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}
+.ref-link-box input{flex:1;min-width:220px;padding:11px 12px;border:1px solid #cbd5e1;border-radius:10px;font-size:15px;background:#f8fafc;color:#0f172a}
+.btn-copy{background:#03A84E;color:#fff;border:none;border-radius:10px;padding:11px 18px;font-weight:700;cursor:pointer;font-size:15px}
+.ref-stats{display:flex;gap:22px;flex-wrap:wrap;margin:12px 0 4px}
+.ref-stats b{font-size:19px;color:#03A84E}
+.hist-table{width:100%;border-collapse:collapse;font-size:14px;margin-top:10px}
+.hist-table th,.hist-table td{border-bottom:1px solid #e2e8f0;padding:8px 6px;text-align:left}
+.hist-table th{color:#64748b;font-size:12.5px;text-transform:uppercase}
+</style>
+</head>
+<body>
+<header class="site">
+  <div class="hwrap">
+    <a class="logo" href="index.html">🚀 <span>Việt</span> Tương Tác</a>
+    <nav class="main">
+      <a href="index.html">Trang chủ</a>
+      <a href="ho-tro.html">Hỗ trợ</a>
+      <a href="trang-thai-don-hang.html">Trạng thái đơn hàng</a>
+      <a href="don-hang-bao-hanh.html">Đơn hàng &amp; bảo hành</a>
+      <a href="hoan-tien.html">Hoàn tiền</a>
+      <a href="kiem-tien.html" class="act">Kiếm tiền</a>
+      <a href="huong-dan-api.html">Tài liệu API</a>
+      <a href="dieu-kien-chinh-sach.html">Điều kiện &amp; chính sách</a>
+    </nav>
+    <button class="burger" id="burgerBtn" aria-label="Mở menu">☰</button>
+  </div>
+  <nav class="mobile" id="mobileNav">
+    <a href="index.html">Trang chủ</a>
+    <a href="ho-tro.html">Hỗ trợ</a>
+    <a href="trang-thai-don-hang.html">Trạng thái đơn hàng</a>
+    <a href="don-hang-bao-hanh.html">Đơn hàng &amp; bảo hành</a>
+    <a href="hoan-tien.html">Hoàn tiền</a>
+    <a href="kiem-tien.html" class="act">Kiếm tiền</a>
+    <a href="huong-dan-api.html">Tài liệu API</a>
+    <a href="dieu-kien-chinh-sach.html">Điều kiện &amp; chính sách</a>
+  </nav>
+</header>
+<main>
+<h1>💰 Kiếm tiền cùng Việt Tương Tác</h1>
+<p>Bạn bè, khách hàng hay cộng đồng của bạn đang cần tăng like, follow, view? Giới thiệu họ đến Việt Tương Tác và nhận hoa hồng trên mỗi đơn họ đặt — không cần vốn, không giới hạn số người giới thiệu.</p>
+
+<div class="card" style="text-align:center">
+<div class="big">2%</div>
+<p style="margin:6px 0 0"><b>Hoa hồng trên tổng giá trị đơn hàng</b> của khách do bạn giới thiệu.<br>Ví dụ: khách bạn giới thiệu đặt đơn tổng 1.000.000đ → bạn nhận <b>20.000đ</b> vào ví.</p>
+</div>
+
+
+<h2>Link giới thiệu của bạn</h2>
+<div id="refWrap"><p>Đang kiểm tra đăng nhập…</p></div>
+
+<h2>Cách tham gia — 3 bước</h2>
+<ul>
+<li><b>Bước 1:</b> Đăng ký tài khoản miễn phí trên <a href="index.html">trang chủ</a> (đăng nhập bằng Google hoặc tạo tài khoản).</li>
+<li><b>Bước 2:</b> <b>Link giới thiệu cá nhân</b> của bạn nằm ngay tại mục <b>"Link giới thiệu của bạn" ở đầu trang này</b> — đăng nhập là thấy, bấm <b>"Sao chép link"</b> là dùng ngay, không cần kích hoạt thủ công.</li>
+<li><b>Bước 3:</b> Chia sẻ link ở bất cứ đâu: Facebook, TikTok, Zalo, nhóm cộng đồng, blog... Khách bấm link, đăng ký và đặt đơn — hệ thống ghi nhận đó là khách của bạn.</li>
+</ul>
+
+<h2>Hoa hồng được tính và trả thế nào?</h2>
+<ul>
+<li>Hoa hồng = <b>2% × giá trị đơn đã hoàn thành</b> của khách được giới thiệu (không tính đơn bị hủy hoặc đã hoàn tiền).</li>
+<li>Hoa hồng được <b>cộng vào ví</b> trong tài khoản của bạn tại Việt Tương Tác — dùng để đặt dịch vụ bất cứ lúc nào.</li>
+<li>Khách được giới thiệu vẫn hưởng giá và khuyến mãi bình thường — hoa hồng là phần Việt Tương Tác trích từ doanh thu, khách không bị tăng giá.</li>
+<li>Bạn giới thiệu càng nhiều khách, hoa hồng càng lớn — không giới hạn số lượng.</li>
+</ul>
+
+<h2>Quy định chương trình</h2>
+<ul>
+<li>Không tự giới thiệu chính mình (tự tạo tài khoản phụ qua link của mình) — hoa hồng gian lận sẽ bị hủy và tài khoản có thể bị khóa.</li>
+<li>Không spam link tràn lan vào các nhóm/trang không liên quan; hãy chia sẻ có trách nhiệm.</li>
+<li>Chương trình áp dụng cho khách mới đăng ký qua link giới thiệu. Việt Tương Tác có quyền điều chỉnh tỷ lệ hoa hồng cho các giai đoạn sau và sẽ thông báo trên trang này trước khi áp dụng.</li>
+</ul>
+
+<a class="btn" href="index.html">Đăng ký tài khoản &amp; bắt đầu giới thiệu →</a>
+
+<p class="muted">Thắc mắc về chương trình: nhắn live chat trên trang chủ, đội ngũ hỗ trợ ngay. Xem thêm: <a href="dieu-kien-chinh-sach.html">Điều kiện &amp; chính sách</a>.</p>
+</main>
+<footer>
+  <div class="fwrap">
+    <div>
+      <a href="index.html">Trang chủ</a><a href="ho-tro.html">Hỗ trợ</a><a href="trang-thai-don-hang.html">Trạng thái đơn hàng</a><a href="don-hang-bao-hanh.html">Đơn hàng &amp; bảo hành</a><a href="hoan-tien.html">Hoàn tiền</a><a href="kiem-tien.html">Kiếm tiền</a><a href="dieu-kien-chinh-sach.html">Điều kiện &amp; chính sách</a><a href="chinh-sach-bao-mat.html">Chính sách bảo mật</a>
+    </div>
+    <div>© 2026 Việt Tương Tác — viettuongtac.com · Hỗ trợ: live chat trực tiếp trên trang chủ.</div>
+  </div>
+</footer>
+<script>
+document.getElementById('burgerBtn').addEventListener('click',function(){document.getElementById('mobileNav').classList.toggle('open');});
+</script>
+
+<script>
+(function(){
+  var wrap = document.getElementById("refWrap");
+  var token = localStorage.getItem("ttt_token");
+  if(!token){
+    wrap.innerHTML = '<p>Bạn chưa đăng nhập. <a href="index.html"><b>Về trang chủ đăng nhập</b></a> rồi quay lại đây — link giới thiệu cá nhân và hoa hồng của bạn sẽ hiện tại mục này.</p>';
+    return;
+  }
+  fetch("https://smm-proxy.hungcuonghnhm.workers.dev/api/me/referral", { headers: { "Authorization": "Bearer " + token } }).then(function(r){
+    return r.json().then(function(d){ return { status: r.status, d: d }; });
+  }).then(function(res){
+    if(res.status === 401){
+      wrap.innerHTML = '<p>Phiên đăng nhập đã hết hạn. <a href="index.html"><b>Đăng nhập lại tại trang chủ</b></a> rồi quay lại trang này nhé.</p>';
+      return;
+    }
+    var d = res.d || {};
+    var h = '<div class="ref-link-box"><input type="text" id="refLinkInput" readonly value="' + (d.ref_link || "") + '"><button class="btn-copy" id="refCopyBtn">Sao chép link</button></div>';
+    h += '<div class="ref-stats"><div>Người đã giới thiệu<br><b>' + Number(d.referred_count || 0).toLocaleString("vi-VN") + '</b></div><div>Tổng hoa hồng đã nhận<br><b>' + Number(d.total_commission_vnd || 0).toLocaleString("vi-VN") + 'đ</b></div></div>';
+    if(d.commissions && d.commissions.length){
+      h += '<table class="hist-table"><tr><th>Thời gian</th><th>Hoa hồng gần đây</th></tr>';
+      d.commissions.forEach(function(c){
+        var t = ""; try{ t = new Date(c.created_at).toLocaleString("vi-VN"); }catch(e){ t = c.created_at || ""; }
+        h += '<tr><td>' + t + '</td><td><b>+' + Number(c.amount_vnd || 0).toLocaleString("vi-VN") + 'đ</b></td></tr>';
+      });
+      h += '</table>';
+    }
+    wrap.innerHTML = h;
+    document.getElementById("refCopyBtn").addEventListener("click", function(){
+      var inp = document.getElementById("refLinkInput");
+      inp.select();
+      function done(){ document.getElementById("refCopyBtn").textContent = "Đã sao chép ✓"; }
+      if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(inp.value).then(done).catch(function(){ document.execCommand("copy"); done(); }); }
+      else { document.execCommand("copy"); done(); }
+    });
+  }).catch(function(){
+    wrap.innerHTML = '<p>Chưa tải được thông tin lúc này — bạn thử tải lại trang sau ít phút nhé.</p>';
+  });
+})();
+</script>
+<script src="/push.js" defer></script>
+</body>
+</html>
