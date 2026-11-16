@@ -408,6 +408,8 @@ footer h4{color:var(--text);margin:12px 0 6px;font-size:15px}
   <div class="sheet amodal">
     <h2 id="tTitle">Nạp tiền vào ví</h2>
     <p style="color:var(--muted);font-size:14px;margin-top:0">Nạp tối thiểu 10.000đ. Chuyển khoản đúng <b>số tiền</b> và <b>nội dung</b> bên dưới, cửa hàng xác nhận rồi cộng tiền vào ví của bạn.</p>
+    <p style="margin:10px 0 0;font-weight:700">🎁 Thưởng thêm khi nạp tiền — tiền thưởng cộng thẳng vào ví cùng lúc xác nhận:</p>
+    <p style="margin:4px 0 0;font-size:14px;color:var(--muted)">Từ 50.000đ: <b style="color:var(--text)">+2%</b> &nbsp;·&nbsp; từ 100.000đ: <b style="color:var(--text)">+3%</b> &nbsp;·&nbsp; từ 300.000đ: <b style="color:var(--text)">+4%</b> &nbsp;·&nbsp; từ 400.000đ: <b style="color:var(--text)">+5%</b> &nbsp;·&nbsp; từ 500.000đ: <b style="color:var(--text)">+7%</b></p>
     <div class="chipsrow" id="tAmts"></div>
     <label for="tAmt">Số tiền (đ)</label>
     <input id="tAmt" type="number" inputmode="numeric" min="10000" step="1000" value="50000">
@@ -829,7 +831,7 @@ $("#tCreate").onclick = async ()=>{
     const r = await api("/api/topup", {method:"POST", body:{amount_vnd: amt}});
     const d = await r.json();
     if(d.code){
-      $("#tDone").innerHTML = `<div class="qrbox"><p class="ok">Mã nạp của bạn: <b>${d.code}</b></p><p>Quét mã QR để chuyển đúng <b>${fmt(d.amount_vnd)}</b> — nội dung chuyển khoản đã điền sẵn mã nạp:</p><img src="${d.qr_url}" alt="QR nạp tiền" style="width:200px;max-width:75%;border-radius:10px;margin-top:8px;background:#fff;padding:6px"><p style="margin-top:8px">Hoặc chuyển khoản thủ công: <b>${d.bank.bank} · ${d.bank.account} · ${d.bank.name}</b> — nội dung: <b>${d.code}</b>.</p><p style="color:var(--muted);font-size:14px">Cửa hàng xác nhận sau khi nhận được tiền, số dư sẽ cộng vào ví của bạn.</p></div>`;
+      $("#tDone").innerHTML = `<div class="qrbox"><p class="ok">Mã nạp của bạn: <b>${d.code}</b></p><p>Quét mã QR để chuyển đúng <b>${fmt(d.amount_vnd)}</b> — nội dung chuyển khoản đã điền sẵn mã nạp:</p><img src="${d.qr_url}" alt="QR nạp tiền" style="width:200px;max-width:75%;border-radius:10px;margin-top:8px;background:#fff;padding:6px"><p style="margin-top:8px">Hoặc chuyển khoản thủ công: <b>${d.bank.bank} · ${d.bank.account} · ${d.bank.name}</b> — nội dung: <b>${d.code}</b>.</p>${d.bonus_vnd ? `<p style="color:var(--green);font-weight:700">🎁 Bạn được thưởng thêm ${fmt(d.bonus_vnd)} — ví sẽ nhận tổng ${fmt(d.credited_vnd)} sau khi xác nhận.</p>` : ""}<p style="color:var(--muted);font-size:14px">Cửa hàng xác nhận sau khi nhận được tiền, số dư sẽ cộng vào ví của bạn.</p></div>`;
       loadTopupHist();
     } else err.textContent = d.error || "Tạo mã nạp chưa thành công.";
   }catch(e){ err.textContent = "Không kết nối được, bạn thử lại nhé."; }
@@ -840,7 +842,7 @@ async function loadTopupHist(){
   try{
     const r = await api("/api/topups"); const d = await r.json();
     const rows = d.topups || [];
-    box.innerHTML = rows.length ? rows.map(t=>`<div class="tr"><span><b>${t.code}</b> · ${fmt(t.amount_vnd)}</span><span class="st-${t.status}">${t.status==="pending"?"Chờ xác nhận":t.status==="confirmed"?"Đã cộng tiền":"Từ chối"}</span></div>`).join("")
+    box.innerHTML = rows.length ? rows.map(t=>`<div class="tr"><span><b>${t.code}</b> · ${fmt(t.amount_vnd)}${t.bonus_vnd ? ` <span style="color:var(--green)">+${fmt(t.bonus_vnd)} thưởng</span>` : ""}</span><span class="st-${t.status}">${t.status==="pending"?"Chờ xác nhận":t.status==="confirmed"?"Đã cộng tiền":"Từ chối"}</span></div>`).join("")
       : `<p style="color:var(--muted)">Chưa có lần nạp nào.</p>`;
   }catch(e){ box.innerHTML = `<p style="color:var(--muted)">Chưa tải được lịch sử.</p>`; }
 }
