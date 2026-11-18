@@ -93,6 +93,11 @@ button:disabled{opacity:.5;cursor:default}
     <section class="pane" id="sec-users">
     <h2 style="margin:18px 0 0">👥 Khách hàng</h2>
     <p class="muted">Danh sách tài khoản đã đăng ký / đăng nhập trên web (Google, Facebook hoặc tên đăng nhập).</p>
+    <div class="card" style="margin:12px 0">
+      <h3 style="margin:0 0 6px">🕐 Hoạt động mới <button class="ghost" id="actReload" style="margin-left:8px">Làm mới</button></h3>
+      <p class="muted">Ai mới vào và ai mới đặt đơn, mới nhất lên đầu. Tự làm mới mỗi phút khi đang ở trang này.</p>
+      <div id="actList"><p class="muted">Đang tải...</p></div>
+    </div>
     <div id="uList"><p class="muted">Đang tải...</p></div><div id="uHistory"></div>
     </section>
     <section class="pane" id="sec-web">
@@ -158,6 +163,7 @@ async function load(){
       </div>`).join("") : `<p class="muted">Không có khoản nào.</p>`;
     loadPromos();
     loadUsers();
+    loadActivity();
     loadSvcOrders();
     loadPrices();
     loadPushStats();
@@ -252,6 +258,29 @@ async function loadUsers(){
       </div>`).join("") : `<p class="muted">Chưa có khách hàng nào.</p>`;
     box.querySelectorAll("button[data-u]").forEach(b=>b.onclick=()=>uact(b.dataset.u, b.dataset.act, b));
   }catch(e){ box.innerHTML = `<p class="err">Không kết nối được.</p>`; }
+}
+let actTimer = null;
+async function loadActivity(){
+  const box = document.getElementById("actList");
+  if(!box) return;
+  const rb = document.getElementById("actReload");
+  if(rb && !rb.dataset.wired){ rb.dataset.wired = "1"; rb.onclick = ()=>loadActivity(); }
+  const esc = v => String(v == null ? "" : v).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+  const dt = v => v ? new Date(v).toLocaleString("vi-VN") : "—";
+  const provVi = p => p === "google" ? "Google" : p === "facebook" ? "Facebook" : "Tên đăng nhập";
+  const odVi = st => st === "ok" ? "Thành công" : st === "failed" ? "Thất bại" : (st || "—");
+  try{
+    const r = await fetch(API_BASE + "/api/admin/activity?limit=30&pass=" + encodeURIComponent(pw()));
+    const d = await r.json();
+    if(d.error){ box.innerHTML = `<p class="err">${esc(d.error)}</p>`; return; }
+    const evs = d.events || [];
+    box.innerHTML = evs.length ? evs.map(e=>{
+      const name = esc(e.display_name || e.username || ("khách #" + e.user_id));
+      if(e.type === "login") return `<div class="row"><div>🟢 <b>${name}</b> mới vào <span class="muted">(${provVi(e.provider)})</span></div><div class="muted">${dt(e.created_at)}</div></div>`;
+      return `<div class="row"><div>🛒 <b>${name}</b> đặt đơn <b>#${esc(e.service_id)}</b> · ${e.quantity} · ${fmt(e.total_vnd)} · ${odVi(e.status)}${e.refund_vnd ? " · hoàn " + fmt(e.refund_vnd) : ""}${e.via ? ` <span class="muted">(${esc(e.via)})</span>` : ""}<br><span class="muted">${esc(String(e.link || "").slice(0, 80))} · mã nguồn ${esc(e.smm_order_id || "—")}</span></div><div class="muted">${dt(e.created_at)}</div></div>`;
+    }).join("") : `<p class="muted">Chưa có hoạt động nào.</p>`;
+  }catch(e){ box.innerHTML = `<p class="err">Không kết nối được.</p>`; }
+  if(!actTimer) actTimer = setInterval(()=>{ const pane = document.getElementById("sec-users"); if(pane && pane.classList.contains("act")) loadActivity(); }, 60000);
 }
 async function loadUserHistory(uid){
   const box = document.getElementById("uHistory");
