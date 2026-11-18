@@ -987,45 +987,5 @@ document.getElementById('ttvBurger').addEventListener('click',function(){documen
 })();
 </script>
 
-<!-- ===== Thong bao mo API cho khach (06/11/2026, tu het han 27/11) ===== -->
-<style>
-#tttApiNotice{position:fixed;inset:0;background:rgba(3,7,15,.72);z-index:10060;display:none;align-items:center;justify-content:center;padding:16px}
-#tttApiNotice .az-card{background:#0f172a;border:1px solid #1e293b;border-radius:18px;max-width:440px;width:100%;padding:26px 22px 20px;color:#e2e8f0;position:relative;box-shadow:0 24px 60px rgba(0,0,0,.5);max-height:88vh;overflow:auto}
-#tttApiNotice .az-x{position:absolute;top:10px;right:12px;background:none;border:none;color:#94a3b8;font-size:22px;cursor:pointer;line-height:1;padding:4px}
-#tttApiNotice h3{margin:0 28px 12px 0;font-size:19px;color:#4ade80;line-height:1.35}
-#tttApiNotice p{margin:0 0 12px;font-size:15px;line-height:1.6;color:#cbd5e1}
-#tttApiNotice .az-ok{display:block;text-align:center;background:#03A84E;color:#fff;border-radius:12px;padding:13px;font-size:15.5px;font-weight:700;cursor:pointer;margin-top:2px;text-decoration:none}
-#tttApiNotice .az-later{width:100%;background:none;border:none;color:#94a3b8;font-size:14.5px;font-weight:600;cursor:pointer;padding:10px;margin-top:4px}
-</style>
-<div id="tttApiNotice" role="dialog" aria-modal="true">
-  <div class="az-card">
-    <button class="az-x" id="tttApiX" aria-label="Đóng">&times;</button>
-    <h3>🔌 Mới: Shop đã mở API cho khách dùng công cụ riêng</h3>
-    <p>Bạn nào dùng panel hoặc phần mềm riêng thì nay kết nối trực tiếp với shop được rồi nhé: tạo khóa API trong trang Tài khoản, nạp ví như bình thường là đặt đơn và tra trạng thái ngay từ hệ thống của bạn, giá bằng giá trên web. Shop có sẵn trang hướng dẫn chi tiết từng bước, bạn xem thử nhé.</p>
-    <a class="az-ok" id="tttApiGo" href="huong-dan-api.html">Xem hướng dẫn API</a>
-    <button class="az-later" id="tttApiLater">Để sau</button>
-  </div>
-</div>
-<script>
-(function(){
-  var KEY = "ttt_notice_api_20261106";
-  var EXP = new Date("2026-11-27T23:59:59+07:00").getTime();
-  var INC_EXP = new Date("2026-11-13T23:59:59+07:00").getTime();
-  try {
-    if (Date.now() > EXP) return;
-    if (localStorage.getItem(KEY)) return;
-    if (Date.now() <= INC_EXP && !localStorage.getItem("ttt_notice_20261106")) return;
-  } catch (e) {}
-  var box = document.getElementById("tttApiNotice");
-  if (!box) return;
-  function mark(){ try { localStorage.setItem(KEY, "1"); } catch (e) {} }
-  function close(){ box.style.display = "none"; mark(); }
-  document.getElementById("tttApiX").addEventListener("click", close);
-  document.getElementById("tttApiLater").addEventListener("click", close);
-  document.getElementById("tttApiGo").addEventListener("click", mark);
-  box.addEventListener("click", function (e) { if (e.target === box) close(); });
-  setTimeout(function () { box.style.display = "flex"; }, 900);
-})();
-</script>
 </body>
 </html>
