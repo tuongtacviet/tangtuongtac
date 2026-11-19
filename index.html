@@ -244,7 +244,7 @@ footer h4{color:var(--text);margin:12px 0 6px;font-size:15px}
     <div class="chips">
       <div class="chip">Giá chỉ từ <b>vài trăm đồng</b>/1.000 lượt xem</div>
       <div class="chip">Xử lý tự động <b>24/7</b></div>
-      <div class="chip">Nhiều gói <b>bảo hành bù</b> khi tụt</div>
+      <div class="chip">Các gói ghi "BH" được <b>bảo hành bù</b> khi tụt</div>
       <div class="chip">Không cần mật khẩu tài khoản</div>
     </div>
     <div class="steps">
@@ -258,7 +258,7 @@ footer h4{color:var(--text);margin:12px 0 6px;font-size:15px}
     <summary>📌 Ghi chú — bấm để xem trước khi đặt đơn</summary>
     <ul>
       <li>Định dạng link: dán link bài post hoặc ID bài viết.</li>
-      <li>Bài viết phải để ở chế độ công khai và bật nút Like. Nếu bài viết không công khai hoặc không mở nút Like, đơn sẽ tự động hoàn thành (không chạy được).</li>
+      <li>Bài viết phải để ở chế độ công khai và bật nút Like. Nếu bài viết không công khai hoặc không mở nút Like, đơn sẽ không chạy được nhưng hệ thống vẫn đánh dấu là đã hoàn thành, và trường hợp này không được hoàn tiền (lỗi do link chưa đúng).</li>
       <li>Chúng tôi không thể hủy đơn đặt hàng của bạn khi nó đã được gửi.</li>
       <li>Kiểm tra định dạng link cẩn thận trước khi đặt hàng. Nếu sai định dạng link sẽ không được hỗ trợ.</li>
       <li>Vui lòng đảm bảo tài khoản của bạn ở chế độ công khai, không riêng tư.</li>
@@ -277,7 +277,7 @@ footer h4{color:var(--text);margin:12px 0 6px;font-size:15px}
     <div class="ws-card">
       <div class="ws-badge">DỊCH VỤ MỚI</div>
       <h2>🌐 Dịch vụ làm website - Landingpage trọn gói — <span class="ws-price">586.000đ</span></h2>
-      <p class="ws-sub">Website giới thiệu, bán hàng cho doanh nghiệp, cửa hàng, cá nhân — bàn giao trong 1–3 ngày, cửa hàng trỏ tên miền giúp bạn.</p>
+      <p class="ws-sub">Website giới thiệu, bán hàng cho doanh nghiệp, cửa hàng, cá nhân — bàn giao trong 1–3 ngày, chúng tôi trỏ tên miền giúp bạn.</p>
       <div class="ws-grid">
         <div class="ws-col">
           <h4>✅ Trọn gói 586.000đ</h4>
@@ -302,7 +302,7 @@ footer h4{color:var(--text);margin:12px 0 6px;font-size:15px}
         </div>
       </div>
       <button class="btn" id="webOrderBtn" style="margin-top:16px">Đặt làm website — 586.000đ</button>
-      <p class="ws-note">Sau khi gửi yêu cầu, cửa hàng sẽ liên hệ lại trong thời gian sớm nhất để tư vấn chi tiết.</p>
+      <p class="ws-note">Sau khi gửi yêu cầu, chúng tôi sẽ liên hệ lại trong thời gian sớm nhất để tư vấn chi tiết.</p>
     </div>
   </section>
 
@@ -323,7 +323,7 @@ footer h4{color:var(--text);margin:12px 0 6px;font-size:15px}
     <details class="notice">
       <summary>Lưu ý - bấm để xem trước khi đặt đơn</summary>
       <ul>
-        <li>Link phải là link bài post/ID bài viết, bài viết để công khai và bật nút Like — nếu không, đơn sẽ tự động hoàn thành.</li>
+        <li>Link phải là link bài post/ID bài viết, bài viết để công khai và bật nút Like — nếu không, đơn sẽ không chạy được nhưng vẫn được đánh dấu là đã hoàn thành và không được hoàn tiền (lỗi do link chưa đúng).</li>
         <li>Đơn đã gửi không hủy được; kiểm tra kỹ định dạng link, sai link không được hỗ trợ.</li>
         <li>Tài khoản phải ở chế độ công khai; không đặt trùng nhiều đơn cho cùng một link khi đơn trước chưa xong.</li>
         <li>Số lượng là bội số của 10, 100, 200, 500, 1000...</li>
@@ -425,7 +425,7 @@ footer h4{color:var(--text);margin:12px 0 6px;font-size:15px}
 <div class="modal" id="webModal" role="dialog" aria-modal="true" aria-labelledby="wTitle">
   <div class="sheet amodal">
     <h2 id="wTitle">Đặt làm website - Landingpage — 586.000đ trọn gói</h2>
-    <p style="color:var(--muted);font-size:14px;margin-top:0">Bạn điền thông tin để gửi yêu cầu — <b style="color:var(--text)">không cần cọc</b>. Bên em làm thử trước, bạn duyệt ưng ý mới thanh toán 586.000đ một lần khi bàn giao.</p>
+    <p style="color:var(--muted);font-size:14px;margin-top:0">Bạn điền thông tin để gửi yêu cầu — <b style="color:var(--text)">không cần cọc</b>. Chúng tôi làm thử trước, bạn duyệt ưng ý mới thanh toán 586.000đ một lần khi bàn giao.</p>
     <div id="wStep1">
       <label for="wName">Tên của bạn</label>
       <input id="wName" placeholder="vd: Nguyễn Văn A" autocomplete="name">
@@ -449,14 +449,14 @@ footer h4{color:var(--text);margin:12px 0 6px;font-size:15px}
       </div>
     </div>
     <div id="wStep2" style="display:none">
-      <p class="ok">Đơn <b id="wCode"></b> đã được ghi nhận! Cửa hàng sẽ liên hệ lại trong thời gian sớm nhất để xác nhận và bắt đầu làm thử. Bạn không cần thanh toán bây giờ — chỉ thanh toán <b>586.000đ</b> khi nghiệm thu, nhận bàn giao web hoàn chỉnh.</p>
+      <p class="ok">Đơn <b id="wCode"></b> đã được ghi nhận! Chúng tôi sẽ liên hệ lại trong thời gian sớm nhất để xác nhận và bắt đầu làm thử. Bạn không cần thanh toán bây giờ — chỉ thanh toán <b>586.000đ</b> khi nghiệm thu, nhận bàn giao web hoàn chỉnh.</p>
       <div class="qrbox" style="display:none"><img id="wQr" alt="QR cọc làm website" style="width:200px;max-width:75%;border-radius:10px;margin-top:8px;background:#fff;padding:6px"></div>
       <p style="margin-top:8px;display:none">Hoặc chuyển khoản thủ công: <b>VietinBank · 0868895144 · DINH CONG HUY</b> — nội dung: <b id="wCode2"></b>.</p>
       <div style="border:1px solid var(--green-d);border-radius:10px;padding:10px 12px;margin-top:12px;font-size:14px;background:rgba(34,197,94,.06);display:none">
         🔒 <b>Cọc an toàn:</b> tiền cọc chỉ dùng để triển khai website cho bạn.<br>
-        ✅ <b>Cam kết hoàn cọc 100%</b> nếu cửa hàng không thực hiện đúng như tư vấn.<br>
-        📞 Cửa hàng gọi lại trong <b>24 giờ</b> để thống nhất yêu cầu trước khi làm.<br>
-        💬 Hoặc bạn <a href="ho-tro.html" style="color:#4ade80;font-weight:700;text-decoration:underline">gửi yêu cầu hỗ trợ</a> ngay trên web, shop phản hồi tại đó.
+        ✅ <b>Cam kết hoàn cọc 100%</b> nếu chúng tôi không thực hiện đúng như tư vấn.<br>
+        📞 Chúng tôi gọi lại trong <b>24 giờ</b> để thống nhất yêu cầu trước khi làm.<br>
+        💬 Hoặc bạn <a href="ho-tro.html" style="color:#4ade80;font-weight:700;text-decoration:underline">gửi yêu cầu hỗ trợ</a> ngay trên web, chúng tôi phản hồi tại đó.
       </div>
       <div class="err" id="wErr2"></div>
       <div id="wPoll" style="margin-top:10px"></div>
@@ -649,7 +649,7 @@ $("#mSubmit").onclick = async ()=>{
   if(curSvc.max && Number(curSvc.max) < 2147483647 && q > Number(curSvc.max)){ err.textContent = `Số lượng tối đa của gói này là ${fmt0(curSvc.max)}.`; return; }
   err.textContent = "";
   if(!CONFIG.API_BASE){
-    $("#mDone").innerHTML = `<p class="ok">Bạn đã soạn xong đơn: gói #${curSvc.id}, số lượng ${q.toLocaleString("vi-VN")}, tổng ${$("#mTotal").textContent}. Hệ thống đặt đơn tự động đang được kích hoạt — cửa hàng sẽ mở nhận đơn ngay khi hoàn tất bước này.</p>`;
+    $("#mDone").innerHTML = `<p class="ok">Bạn đã soạn xong đơn: gói #${curSvc.id}, số lượng ${q.toLocaleString("vi-VN")}, tổng ${$("#mTotal").textContent}. Hệ thống đặt đơn tự động đang được kích hoạt — chúng tôi sẽ mở nhận đơn ngay khi hoàn tất bước này.</p>`;
     return;
   }
   stopGuestPoll();
@@ -657,7 +657,7 @@ $("#mSubmit").onclick = async ()=>{
   try{
     const r = await fetch(CONFIG.API_BASE + "/api/guest-order/create", {method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({service: curSvc.id, link, quantity: q, promo_code: promoState.code, comments: isCC() ? ccLines().join("\n") : undefined})});
     const d = await r.json();
-    if(d.error || !d.code){ err.textContent = d.error || "Tạo mã thanh toán chưa thành công, bạn thử lại giúp cửa hàng nhé."; btn.disabled = false; btn.textContent = "Tạo mã thanh toán"; return; }
+    if(d.error || !d.code){ err.textContent = d.error || "Tạo mã thanh toán chưa thành công, bạn thử lại giúp chúng tôi nhé."; btn.disabled = false; btn.textContent = "Tạo mã thanh toán"; return; }
     guestState = "pending";
     const amt = d.charged_vnd;
     const exp = new Date(d.expires_at);
@@ -690,8 +690,8 @@ $("#mSubmit").onclick = async ()=>{
           btn.disabled = false; btn.textContent = "Tạo mã thanh toán";
         } else if(dd.status === "paid_source_failed" || dd.status === "paid_source_unverified"){
           guestState = "paid_awaiting"; stopGuestPoll();
-          $("#mDone").innerHTML = `<p>Đã nhận tiền <b>${amt.toLocaleString("vi-VN")}đ</b>, shop đang kiểm tra và liên hệ lại cho bạn, bạn đừng đặt lại để tránh trùng đơn nhé.</p>`;
-          btn.disabled = true; btn.textContent = "Đã nhận tiền - chờ shop xử lý";
+          $("#mDone").innerHTML = `<p>Đã nhận tiền <b>${amt.toLocaleString("vi-VN")}đ</b>, chúng tôi đang kiểm tra và liên hệ lại cho bạn, bạn đừng đặt lại để tránh trùng đơn nhé.</p>`;
+          btn.disabled = true; btn.textContent = "Đã nhận tiền - chờ chúng tôi xử lý";
         }
       }catch(e){}
     }, 10000);
@@ -719,11 +719,11 @@ $("#mWalletSubmit").onclick = async ()=>{
       $("#mDone").innerHTML = `<p class="ok">Đặt đơn thành công! Mã đơn của bạn: <b>${d.order}</b>.${d.promo ? ` Đã áp dụng mã <b>${d.promo.code}</b> giảm <b>${d.promo.percent_off}%</b>.` : ""}</p><p style="margin-top:8px">Đã trừ <b>${fmt(charged)}</b> từ ví. Số dư còn lại: <b>${fmt(d.balance_vnd)}</b>.</p><p style="margin-top:8px">Lưu mã đơn <b>${d.order}</b> <button class="btn ghost" type="button" style="padding:4px 10px;font-size:13px;vertical-align:middle" onclick="copyOrderCode('${d.order}',this)">📋 Copy</button> để tra trạng thái.</p>`;
     } else if(d.verified){
       ME.balance_vnd = d.balance_vnd; renderAcct(); refreshOrderActions();
-      $("#mDone").innerHTML = `<p class="ok">Đơn của bạn đã được nguồn tiếp nhận (đã trừ <b>${fmt(d.charged_vnd || payAmt)}</b> từ ví) nhưng hệ thống chưa lấy được mã đơn. Bạn đừng đặt lại để tránh trùng đơn — cửa hàng sẽ kiểm tra và gửi mã đơn cho bạn ngay.</p>`;
+      $("#mDone").innerHTML = `<p class="ok">Đơn của bạn đã được nguồn tiếp nhận (đã trừ <b>${fmt(d.charged_vnd || payAmt)}</b> từ ví) nhưng hệ thống chưa lấy được mã đơn. Bạn đừng đặt lại để tránh trùng đơn — chúng tôi sẽ kiểm tra và gửi mã đơn cho bạn ngay.</p>`;
     } else if(r.status === 402 || d.need_topup){
       err.innerHTML = `${d.error || "Ví chưa đủ số dư."} <a href="#" id="mGoTopup" style="color:var(--green)">Nạp tiền ngay</a>`;
       const g = $("#mGoTopup"); if(g) g.onclick = (e)=>{ e.preventDefault(); $("#modal").classList.remove("open"); openTopup(); };
-    } else { err.textContent = d.error || "Gửi đơn chưa thành công, bạn thử lại giúp cửa hàng nhé."; }
+    } else { err.textContent = d.error || "Gửi đơn chưa thành công, bạn thử lại giúp chúng tôi nhé."; }
   }catch(e){ err.textContent = "Không kết nối được hệ thống đặt đơn, bạn thử lại sau ít phút nhé."; }
   btn.disabled = false; refreshOrderActions();
 };
@@ -885,7 +885,7 @@ function wStartPoll(){
       const d = await r.json();
       if(d.ok && d.status === "deposit_paid"){
         wStopPoll();
-        $("#wStep2").innerHTML = `<p class="ok" style="font-size:17px">🎉 <b>Đã nhận được thanh toán!</b></p><p style="margin-top:8px">Cảm ơn bạn đã tin tưởng. Cửa hàng sẽ liên hệ lại trong thời gian sớm nhất để thống nhất yêu cầu và bắt đầu làm website cho bạn.</p><div style="margin-top:14px"><button class="btn" id="wDoneClose" style="width:100%">Đóng</button></div>`;
+        $("#wStep2").innerHTML = `<p class="ok" style="font-size:17px">🎉 <b>Đã nhận được thanh toán!</b></p><p style="margin-top:8px">Cảm ơn bạn đã tin tưởng. Chúng tôi sẽ liên hệ lại trong thời gian sớm nhất để thống nhất yêu cầu và bắt đầu làm website cho bạn.</p><div style="margin-top:14px"><button class="btn" id="wDoneClose" style="width:100%">Đóng</button></div>`;
         $("#wDoneClose").onclick = ()=>{ $("#webModal").classList.remove("open"); wShowStep1(); };
       }
     }catch(e){}
@@ -896,16 +896,16 @@ $("#wClose").onclick = ()=>{ $("#webModal").classList.remove("open"); wShowStep1
 $("#webModal").addEventListener("click", e=>{ if(e.target.id==="webModal"){ $("#webModal").classList.remove("open"); wShowStep1(); } });
 $("#wBack").onclick = ()=>{ wShowStep1(); };
 $("#wPaid").onclick = ()=>{
-  $("#wPoll").innerHTML = `<p style="color:var(--muted);font-size:14.5px">✅ Đã ghi nhận! Hệ thống đang chờ tiền về (thường 1–5 phút) — tiền về là đơn của bạn tự chuyển "Đã cọc" và cửa hàng bắt đầu làm ngay. Bạn có thể đóng cửa sổ này, không cần chờ.</p>`;
+  $("#wPoll").innerHTML = `<p style="color:var(--muted);font-size:14.5px">✅ Đã ghi nhận! Hệ thống đang chờ tiền về (thường 1–5 phút) — tiền về là đơn của bạn tự chuyển "Đã cọc" và chúng tôi bắt đầu làm ngay. Bạn có thể đóng cửa sổ này, không cần chờ.</p>`;
   const btn = $("#wPaid"); btn.disabled = true; btn.textContent = "Đang chờ tiền về...";
 };
 $("#wSubmit").onclick = async ()=>{
   const err = $("#wErr");
   err.textContent = "";
   const body = {name: $("#wName").value.trim(), phone: $("#wPhone").value.trim(), web_type: $("#wType").value, description: $("#wDesc").value.trim()};
-  if(body.name.length < 2){ err.textContent = "Bạn cho cửa hàng xin tên nhé."; return; }
+  if(body.name.length < 2){ err.textContent = "Bạn cho chúng tôi xin tên nhé."; return; }
   if(!/^(0|\+84)(\d{9,10})$/.test(body.phone.replace(/[\s.]/g,""))){ err.textContent = "Số điện thoại/Zalo chưa đúng, bạn kiểm tra lại nhé."; return; }
-  if(body.description.length < 10){ err.textContent = "Bạn mô tả thêm về website cần làm để cửa hàng tư vấn chính xác nhé."; return; }
+  if(body.description.length < 10){ err.textContent = "Bạn mô tả thêm về website cần làm để chúng tôi tư vấn chính xác nhé."; return; }
   const btn = $("#wSubmit"); btn.disabled = true; btn.textContent = "Đang tạo đơn...";
   try{
     const r = await fetch(CONFIG.API_BASE + "/api/service-order", {method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify(body)});
@@ -949,43 +949,6 @@ document.getElementById('ttvBurger').addEventListener('click',function(){documen
 </script>
 <script src="/push.js" defer></script>
 
-<!-- ===== Thong bao su co dat don 4/11 (06/11/2026, tu het han 13/11) ===== -->
-<style>
-#tttNoticeFix{position:fixed;inset:0;background:rgba(3,7,15,.72);z-index:10050;display:none;align-items:center;justify-content:center;padding:16px}
-#tttNoticeFix .nz-card{background:#0f172a;border:1px solid #1e293b;border-radius:18px;max-width:440px;width:100%;padding:26px 22px 20px;color:#e2e8f0;position:relative;box-shadow:0 24px 60px rgba(0,0,0,.5);max-height:88vh;overflow:auto}
-#tttNoticeFix .nz-x{position:absolute;top:10px;right:12px;background:none;border:none;color:#94a3b8;font-size:22px;cursor:pointer;line-height:1;padding:4px}
-#tttNoticeFix h3{margin:0 28px 12px 0;font-size:19px;color:#4ade80;line-height:1.35}
-#tttNoticeFix p{margin:0 0 12px;font-size:15px;line-height:1.6;color:#cbd5e1}
-#tttNoticeFix .nz-ok{width:100%;background:#03A84E;color:#fff;border:none;border-radius:12px;padding:13px;font-size:15.5px;font-weight:700;cursor:pointer;margin-top:2px}
-</style>
-<div id="tttNoticeFix" role="dialog" aria-modal="true">
-  <div class="nz-card">
-    <button class="nz-x" id="tttNoticeX" aria-label="Đóng">&times;</button>
-    <h3>📢 Thông báo về sự cố đặt đơn ngày 4/11</h3>
-    <p>Shop xin lỗi vì sự cố ngày 4/11: hệ thống bị nghẽn một chút khiến một số đơn không thực hiện được và Quý khách phải chờ đợi. Hiện hệ thống đã ổn định trở lại, đơn thất bại đã được hoàn tiền về ví — nếu đặt chưa được, Quý khách vui lòng quay lại sau ít phút đặt lại giúp shop.</p>
-    <button class="nz-ok" id="tttNoticeOk">Đã hiểu, cảm ơn shop</button>
-  </div>
-</div>
-<script>
-(function(){
-  var KEY = "ttt_notice_20261106";
-  var EXP = new Date("2026-11-13T23:59:59+07:00").getTime();
-  try {
-    if (Date.now() > EXP) return;
-    if (localStorage.getItem(KEY)) return;
-  } catch (e) {}
-  var box = document.getElementById("tttNoticeFix");
-  if (!box) return;
-  function close() {
-    box.style.display = "none";
-    try { localStorage.setItem(KEY, "1"); } catch (e) {}
-  }
-  document.getElementById("tttNoticeOk").addEventListener("click", close);
-  document.getElementById("tttNoticeX").addEventListener("click", close);
-  box.addEventListener("click", function (e) { if (e.target === box) close(); });
-  setTimeout(function () { box.style.display = "flex"; }, 700);
-})();
-</script>
 
 </body>
 </html>
