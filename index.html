@@ -489,6 +489,11 @@ const CATALOG = [{"id": "1211", "platform": "facebook", "type": "comment", "cate
         if(p && p.price_vnd > 0 && p.price_vnd !== CATALOG[i].price_vnd_1000){
           CATALOG[i].price_vnd_1000 = p.price_vnd; changed = true;
         }
+        // Gioi han dat don moi nhat tu Worker (dong bo 30 phut theo nguon, 26/11/2026):
+        // de ca min/max len catalog dong goi san — khach thay dung so luong toi
+        // thieu/toi da hien tai, khong con dat theo so cu roi bi tu choi.
+        if(p && p.min_qty > 0 && String(p.min_qty) !== String(CATALOG[i].min)){ CATALOG[i].min = String(p.min_qty); changed = true; }
+        if(p && p.max_qty > 0 && String(p.max_qty) !== String(CATALOG[i].max)){ CATALOG[i].max = String(p.max_qty); changed = true; }
       }
       if(changed && typeof render === "function") render();
     }).catch(function(){});
