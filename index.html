@@ -204,6 +204,32 @@ footer h4{color:var(--text);margin:12px 0 6px;font-size:15px}
 </div>
 </div>
 <script>try{if(localStorage.getItem('slowNoticeClosed')==='1'){document.getElementById('slowNotice').style.display='none';}}catch(e){}</script>
+<div class="modal" id="stackNotice" role="dialog" aria-modal="true" aria-labelledby="stackNoticeTitle">
+  <div class="sheet">
+    <div style="display:flex;align-items:flex-start;gap:10px;">
+      <div style="flex:1;min-width:0;">
+        <h2 id="stackNoticeTitle" style="margin:0 0 8px;font-size:19px;">⚠️ Lưu ý khi đặt đơn</h2>
+        <p style="margin:0 0 8px;line-height:1.65;">Vui lòng <b>KHÔNG đặt chồng đơn cùng 1 link</b> trong cùng 1 thời điểm — đặt từng đơn 1, sau khi chạy xong mới tiếp tục đặt đơn tiếp theo. Hệ thống chạy chồng chéo sẽ khiến đơn bị kẹt, chạy chậm hoặc lỗi.</p>
+        <p style="margin:0;line-height:1.65;">Vui lòng đọc lưu ý trước khi đặt đơn. Xin cảm ơn!</p>
+      </div>
+      <button type="button" id="stackNoticeX" aria-label="Đóng thông báo" style="flex:none;border:1px solid var(--line);background:transparent;border-radius:999px;width:36px;height:36px;font-size:16px;cursor:pointer;line-height:1;">✕</button>
+    </div>
+    <button type="button" id="stackNoticeOk" style="margin-top:16px;width:100%;padding:12px;border:0;border-radius:12px;background:#F59E0B;color:#451A03;font-weight:800;font-size:16px;cursor:pointer;">Đã hiểu</button>
+  </div>
+</div>
+<script>
+(function(){try{
+  var EXPIRY=new Date('2026-11-30T23:59:59+07:00').getTime();
+  var el=document.getElementById('stackNotice');
+  if(!el) return;
+  if(Date.now()>EXPIRY||localStorage.getItem('tttStackNoticeSeen')==='1'){el.remove();return;}
+  el.classList.add('open');
+  var close=function(){try{localStorage.setItem('tttStackNoticeSeen','1');}catch(e){} el.classList.remove('open');};
+  document.getElementById('stackNoticeOk').addEventListener('click',close);
+  document.getElementById('stackNoticeX').addEventListener('click',close);
+  el.addEventListener('click',function(e){if(e.target===el) close();});
+}catch(e){}})();
+</script>
 <header><div class="wrap hbar">
   <div class="logo"><span>VIỆT</span> TƯƠNG TÁC</div>
   <div class="search"><input id="q" type="search" autocomplete="off" readonly onfocus="this.removeAttribute('readonly')" placeholder="Tìm dịch vụ: follow TikTok, like Facebook... hoặc gõ số thứ tự (vd: 25)" aria-label="Tìm dịch vụ"></div>
